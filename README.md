@@ -9,3 +9,6 @@ The repo for the Digital Audio Player (DAP) project for HKUST ELEC3300 (Fall 202
 ## STM32 Models and Pins
 - Currently this repo uses STM32F103VET6. Later when F4 arrives, the pinouts and dependencies will be changed accordingly.
 - All pinouts follow those in labs and development board unless otherwise stated (e.g. same FSMC and GPIO config for LCD).
+
+## Code Generation
+- The paths in `.mxproject` seem to depend on the person who generated the code. Please tell me if it causes any difficulty.
