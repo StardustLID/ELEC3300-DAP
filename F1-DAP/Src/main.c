@@ -23,7 +23,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lcd.h"
+#include "menu.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,6 +93,10 @@ int main(void)
   MX_GPIO_Init();
   MX_FSMC_Init();
   /* USER CODE BEGIN 2 */
+  LCD_INIT();
+
+  MENU_Main();
+  HAL_Delay(1000);
 
   /* USER CODE END 2 */
 
@@ -99,6 +104,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    MENU_Song();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
