@@ -1,8 +1,0 @@
-Removed Pin From Net: NetName=SWCLK Pin=JP1-2
-Removed Pin From Net: NetName=SWDIO Pin=JP1-3
-Removed Pin From Net: NetName=UART1_TX Pin=JP3-2
-Removed Pin From Net: NetName=UART1_RX Pin=JP3-3
-Added Pin To Net: NetName=UART1_TX Pin=JP1-2
-Added Pin To Net: NetName=UART1_RX Pin=JP1-3
-Added Pin To Net: NetName=SWCLK Pin=JP3-2
-Added Pin To Net: NetName=SWDIO Pin=JP3-3

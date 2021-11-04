@@ -1,3 +1,0 @@
-Removed Pin From Net: NetName=Rot_Encoder_TIM5_CH1 Pin=U1-24
-Added Pin To Net: NetName=Rot_Encoder_TIM5_CH2 Pin=U1-24
-Added Net: Name=Rot_Encoder_TIM5_CH2
