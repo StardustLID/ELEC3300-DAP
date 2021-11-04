@@ -1,0 +1,50 @@
+Removed Pin From Net: NetName=LINEOUT_L Pin=R5-2
+Removed Pin From Net: NetName=LINEOUT_GND Pin=R6-2
+Removed Pin From Net: NetName=LINEOUT_L Pin=R7-2
+Removed Pin From Net: NetName=LINEOUT_GND Pin=R9-2
+Removed Pin From Net: NetName=LINEOUT_R Pin=R10-2
+Removed Pin From Net: NetName=LINEOUT_GND Pin=R11-2
+Removed Pin From Net: NetName=LINEOUT_R Pin=R12-2
+Removed Pin From Net: NetName=LINEOUT_GND Pin=R13-2
+Removed Member From Class: ClassName=ELEC3300_DAP Member=P1
+Removed Member From Class: ClassName=ELEC3300_DAP Member=P3
+Removed Member From Class: ClassName=ELEC3300_DAP Member=R5
+Removed Member From Class: ClassName=ELEC3300_DAP Member=R6
+Removed Member From Class: ClassName=ELEC3300_DAP Member=R7
+Removed Member From Class: ClassName=ELEC3300_DAP Member=R9
+Removed Member From Class: ClassName=ELEC3300_DAP Member=R10
+Removed Member From Class: ClassName=ELEC3300_DAP Member=R11
+Removed Member From Class: ClassName=ELEC3300_DAP Member=R12
+Removed Member From Class: ClassName=ELEC3300_DAP Member=R13
+Change Component Footprint: Designator=CON1 Old Footprint=USB-UB-S-HM New Footprint=USB-UB-S-HML
+Added Component: Designator=JP?(LOCKEDHDR-4W)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Revision"; Value = "17-Jul-2002: Re-released for DXP Platform."; VariantName = "[No Variations]"
+Added Component: Designator=JP?(LOCKEDHDR-4W)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Revision"; Value = "17-Jul-2002: Re-released for DXP Platform."; VariantName = "[No Variations]"
+Added Component: Designator=JP?(LOCKEDHDR-4W)
+Add component. Clean all parameters for all variants
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Limited"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Revision"; Value = "17-Jul-2002: Re-released for DXP Platform."; VariantName = "[No Variations]"
+Added Pin To Net: NetName=5V Pin=JP?-1
+Added Pin To Net: NetName=5V Pin=JP?-1
+Added Pin To Net: NetName=5V Pin=JP?-1
+Added Pin To Net: NetName=UART1_TX Pin=JP?-2
+Added Pin To Net: NetName=UART2_TX Pin=JP?-2
+Added Pin To Net: NetName=UART1_RX Pin=JP?-3
+Added Pin To Net: NetName=UART2_RX Pin=JP?-3
+Added Pin To Net: NetName=Headphone_G Pin=JP?-4
+Added Pin To Net: NetName=Headphone_G Pin=JP?-4
+Added Pin To Net: NetName=Headphone_G Pin=JP?-4
+Added Pin To Net: NetName=SWCLK Pin=JP?-2
+Added Pin To Net: NetName=SWCLK Pin=U1-76
+Added Net: Name=SWCLK
+Added Pin To Net: NetName=SWDIO Pin=JP?-3
+Added Pin To Net: NetName=SWDIO Pin=U1-72
+Added Net: Name=SWDIO
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component JP? CONN0M
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component JP? CONN0M
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component JP? CONN0M

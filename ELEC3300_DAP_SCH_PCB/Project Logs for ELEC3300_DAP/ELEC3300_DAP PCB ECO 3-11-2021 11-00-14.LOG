@@ -1,0 +1,109 @@
+Removed Pin From Net: NetName=EEPROM_I2C2_SCL Pin=U4-2
+Removed Pin From Net: NetName=EEPROM_Write_Protect Pin=U4-3
+Removed Pin From Net: NetName=Headphone_G Pin=U4-6
+Removed Pin From Net: NetName=Headphone_G Pin=U4-7
+Change Component Designator: OldDesignator=JP? NewDesignator=JP1
+Change Component Designator: OldDesignator=JP? NewDesignator=JP2
+Change Component Designator: OldDesignator=JP? NewDesignator=JP3
+Change Component Designator: OldDesignator=LED0 NewDesignator=LED1
+Change Component Designator: OldDesignator=LED1 NewDesignator=LED2
+Change Component Designator: OldDesignator=LED2 NewDesignator=LED3
+Change Component Designator: OldDesignator=P2 NewDesignator=P1
+Change Component Designator: OldDesignator=P4 NewDesignator=P2
+Change Component Designator: OldDesignator=P5 NewDesignator=P3
+Change Component Designator: OldDesignator=P6 NewDesignator=P4
+Change Component Designator: OldDesignator=R8 NewDesignator=R5
+Change Component Designator: OldDesignator=R14 NewDesignator=R6
+Change Component Designator: OldDesignator=R15 NewDesignator=R7
+Change Component Designator: OldDesignator=R16 NewDesignator=R8
+Change Component Designator: OldDesignator=R17 NewDesignator=R9
+Change Component Designator: OldDesignator=R18 NewDesignator=R10
+Change Component Designator: OldDesignator=R19 NewDesignator=R11
+Change Component Designator: OldDesignator=R20 NewDesignator=R12
+Change Component Designator: OldDesignator=R21 NewDesignator=R13
+Change Component Designator: OldDesignator=R22 NewDesignator=R14
+Change Component Designator: OldDesignator=R23 NewDesignator=R15
+Added Pin To Net: NetName=Headphone_G Pin=U4-1
+Added Pin To Net: NetName=Headphone_G Pin=U4-2
+Added Pin To Net: NetName=Headphone_G Pin=U4-3
+Added Pin To Net: NetName=EEPROM_I2C2_SCL Pin=U4-5
+Added Pin To Net: NetName=EEPROM_I2C2_SCL Pin=U4-6
+Added Pin To Net: NetName=EEPROM_Write_Protect Pin=U4-7
+Added Pin To Net: NetName=3.3V Pin=U4-8
+Change Net Name : Old Net Name=NetLED0_1 New Net Name=NetLED1_1
+Change Net Name : Old Net Name=NetLED1_1 New Net Name=NetLED2_1
+Change Net Name : Old Net Name=NetLED2_1 New Net Name=NetLED3_1
+Change Net Name : Old Net Name=NetP6_1 New Net Name=NetP4_1
+Change Net Name : Old Net Name=NetP6_2 New Net Name=NetP4_2
+Change Net Name : Old Net Name=NetR14_1 New Net Name=NetR6_1
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C1 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C2 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C3 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C4 4.7uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C5 4.7uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C6 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C7 1uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C8 1uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C9 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C10 2.2uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C11 2.2uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C12 2.2uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C13 4.7uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C14 4.7uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C15 20pF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C16 20pF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C17 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C18 2.2uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C19 2.2uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C20 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C21 1uF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C22 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C23 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C24 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C25 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C26 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C27 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C28 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C29 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C30 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component C31 100nF
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component CON1 USB
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component D1 LED
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component D2 LED
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component JP1 CONN0M
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component JP2 CONN0M
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component JP3 CONN0M
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component L1 10uH
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component LED1 LED
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component LED2 LED
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component LED3 LED
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component P1 3.5mm Audio Jack
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component P2 Header 16x2
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component P3 Header 8
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component P4 Buzzer
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component Q1 AO3400
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R1 10k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R2 10k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R3 100k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R4 10k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R5 10k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R6 10k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R7 33R
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R8 10k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R9 10k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R10 10k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R11 2k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R12 2k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R13 5k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R14 2k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component R15 2k
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component S1 EC11B15242AE
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component SW1 RESET
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component SW2 RESET
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component SW3 RESET
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component SW4 RESET
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component U1 STM32F405VGT6
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component U2 WM8918
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component U3 LP5907
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component U4 AT24C02BN
+Added Member To Class: ClassName=ELEC3300_DAP Member=Component X1 8MHz
