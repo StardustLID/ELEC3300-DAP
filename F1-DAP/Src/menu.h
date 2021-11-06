@@ -10,7 +10,7 @@
 /**
  * entry point of the menu
  */
-void MENU_Welocme(void);
+void MENU_Welcome(void);
 
 /**
  * @note the menu when a song is being selected

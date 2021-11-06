@@ -49,7 +49,7 @@ TIM_HandleTypeDef htim2;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
-
+uint16_t playtimeElapsed = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,13 +106,24 @@ int main(void)
   HAL_Delay(1000);
   
   // start timer
-  HAL_TIM_Base_Start_IT(&htim2);
+  // HAL_TIM_Base_Start_IT(&htim2);
 
-	// while( ! XPT2046_Touch_Calibrate () );   
+	while( ! XPT2046_Touch_Calibrate () );   
 
 	LCD_GramScan ( 1 );
 	LCD_Clear(0, 0, 240, 320, DARK);
   MENU_PlaySong();
+
+	// TODO: refactor touch input into helper func
+	while(1) {
+		if ( ucXPT2046_TouchFlag == 1 ) {
+			if (Check_touchPlay() == 1) {
+        HAL_TIM_Base_Start_IT(&htim2);
+      }
+			ucXPT2046_TouchFlag = 0;
+      HAL_Delay(500);
+		}
+	}
 	// LCD_Clear ( 90,  230,  60, 60, BLUE	);
 
   /* USER CODE END 2 */
@@ -121,13 +132,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    // if ( ucXPT2046_TouchFlag == 1 )	         
-    // {
-		// 	Check_touchkey();			
-    //   ucXPT2046_TouchFlag = 0;		            
-    // }					
-		// HAL_Delay(50);	
-    // MENU_SelectSong();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -354,8 +358,13 @@ static void MX_FSMC_Init(void)
 // Callback: timer has rolled over
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  // if (htim == &htim2 )
-  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
+  if (htim == &htim2) {
+    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
+    const uint16_t time = ++playtimeElapsed;
+    char time_mmss[6];
+    sprintf(time_mmss, "%d:%d", time / 60, time % 60);
+    LCD_DrawString_Color(0, 0, time_mmss, GREEN, BLUE);
+  }
 }
 /* USER CODE END 4 */
 

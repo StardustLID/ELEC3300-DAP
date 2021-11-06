@@ -101,6 +101,7 @@ uint8_t                  XPT2046_Touch_Calibrate         ( void );
 uint8_t                  XPT2046_Get_TouchedPoint        ( strType_XPT2046_Coordinate * displayPtr, strType_XPT2046_TouchPara * para );
  
 void Check_touchkey (void);  
+uint8_t Check_touchPlay (void);
 
 //-----------------------------
   

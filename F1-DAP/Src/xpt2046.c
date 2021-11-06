@@ -1,5 +1,6 @@
 #include "xpt2046.h"
 #include "lcdtp.h"
+#include "stm32f1xx_hal_tim.h"
 #include <stdio.h> 
 #include <string.h>
 
@@ -508,6 +509,16 @@ void Check_touchkey(void) {
 	if (XPT2046_Get_TouchedPoint(&strDispCoor, &strXPT2046_TouchPara)) {
 		if (_touchedWithin(&strDispCoor, 95, 145, 232, 282)) GPIOB -> ODR ^= GPIO_PIN_1;
 	}
+}
+
+uint8_t Check_touchPlay(void) {
+	strType_XPT2046_Coordinate strDispCoor;
+	
+	if (XPT2046_Get_TouchedPoint(&strDispCoor, &strXPT2046_TouchPara)) {
+		// TODO: stop IRQ when exitting playSong()
+		return _touchedWithin(&strDispCoor, 100, 140, 240, 256);
+	}
+	return 0;
 }
 
 // true if TouchedPoint is within the area, false otherwise

@@ -35,7 +35,7 @@ uint8_t MENU_SelectSong() {
 void MENU_PlaySong() {
 	// TODO: replace with icons (format tbc, with DMA)
 	_createButton(68, SONG_NAME_USP, "-5s", CYAN, WHITE);
-	_createButton(100, SONG_NAME_USP, "Pause", CYAN, WHITE);
+	_createButton(100, SONG_NAME_USP, "Start", CYAN, WHITE);
 	_createButton(148, SONG_NAME_USP, "+5s", CYAN, WHITE);
 }
 
