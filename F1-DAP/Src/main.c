@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lcdtp.h"
+#include "xpt2046.h"
 #include "menu.h"
 /* USER CODE END Includes */
 
@@ -93,7 +94,20 @@ int main(void)
   MX_GPIO_Init();
   MX_FSMC_Init();
   /* USER CODE BEGIN 2 */
-  LCD_INIT();
+	macXPT2046_CS_DISABLE();
+	
+	LCD_INIT();
+
+	LCD_Clear (50, 80, 140, 70, RED);
+	LCD_DrawString(68, 100, "TOUCHPAD DEMO");
+	HAL_Delay(2000);
+
+	while( ! XPT2046_Touch_Calibrate () );   
+
+	LCD_GramScan ( 1 );
+	LCD_Clear ( 0, 0, 240, 320, GREY );
+	LCD_Clear ( 90,  230,  60, 60, BLUE	);
+
 
   MENU_Main();
   HAL_Delay(1000);
@@ -104,7 +118,13 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    MENU_SelectSong();
+    if ( ucXPT2046_TouchFlag == 1 )	         
+    {
+			Check_touchkey();			
+      ucXPT2046_TouchFlag = 0;		            
+    }					
+		HAL_Delay(50);	
+    // MENU_SelectSong();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -218,6 +238,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI4_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI4_IRQn);
 
 }
 
