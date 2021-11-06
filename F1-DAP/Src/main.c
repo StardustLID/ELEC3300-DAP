@@ -362,7 +362,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
     const uint16_t time = ++playtimeElapsed;
     char time_mmss[6];
-    sprintf(time_mmss, "%d:%d", time / 60, time % 60);
+    sprintf(time_mmss, "%02d:%02d", time / 60, time % 60);
     LCD_DrawString_Color(0, 0, time_mmss, GREEN, BLUE);
   }
 }
