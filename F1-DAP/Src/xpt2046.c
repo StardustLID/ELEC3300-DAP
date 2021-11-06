@@ -12,7 +12,7 @@ static void                   XPT2046_ReadAdc_XY                    ( int16_t * 
 static uint8_t                XPT2046_ReadAdc_Smooth_XY             ( strType_XPT2046_Coordinate * pScreenCoordinate );
 static uint8_t                XPT2046_Calculate_CalibrationFactor   ( strType_XPT2046_Coordinate * pDisplayCoordinate, strType_XPT2046_Coordinate * pScreenSample, strType_XPT2046_Calibration * pCalibrationFactor );
 
-
+static inline uint8_t _touchedWithin(strType_XPT2046_Coordinate* strDisCoor, uint16_t x0, uint16_t x1, uint16_t y0, uint16_t y1);
 
 strType_XPT2046_TouchPara strXPT2046_TouchPara = { 0.085958, -0.001073, -4.979353, -0.001750, 0.065168, -13.318824 };  
                                               // { 0.001030, 0.064188, -10.804098, -0.085584, 0.001420, 324.127036 };  
@@ -502,19 +502,15 @@ uint8_t XPT2046_Get_TouchedPoint ( strType_XPT2046_Coordinate * pDisplayCoordina
 } 
 
 
-void Check_touchkey(void)
-{
-		strType_XPT2046_Coordinate strDisplayCoordinate;
+void Check_touchkey(void) {
+	strType_XPT2046_Coordinate strDispCoor;
 	
-	if ( XPT2046_Get_TouchedPoint ( & strDisplayCoordinate, & strXPT2046_TouchPara ) )
-	{
-		if ( ( strDisplayCoordinate .y > 232 ) && ( strDisplayCoordinate .y < 282 ) )
-		{
-			if ( ( strDisplayCoordinate .x > 95 ) && ( strDisplayCoordinate .x < 145 ) )
-			{
-				GPIOB -> ODR ^= GPIO_PIN_1;
-			}					
-		}
-
+	if (XPT2046_Get_TouchedPoint(&strDispCoor, &strXPT2046_TouchPara)) {
+		if (_touchedWithin(&strDispCoor, 95, 145, 232, 282)) GPIOB -> ODR ^= GPIO_PIN_1;
 	}
+}
+
+// true if TouchedPoint is within the area, false otherwise
+static inline uint8_t _touchedWithin(strType_XPT2046_Coordinate* strDisCoor, uint16_t x0, uint16_t x1, uint16_t y0, uint16_t y1) {
+	return strDisCoor->x > x0 && strDisCoor->x < x1 && strDisCoor->y > y0 && strDisCoor->y < y1;
 }
