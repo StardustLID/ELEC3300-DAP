@@ -1,7 +1,11 @@
+// VS Code
+.vscode/*
+
 // Altium
 /History
 
 // STM32 and Keil
 **/MDK-ARM
+F1-DAP.uvguix.stardust
 !*.uvoptx
 !*.uvprojx
