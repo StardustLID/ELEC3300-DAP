@@ -49,6 +49,8 @@
 #define      YELLOW                        0xFFE0	 
 #define      BACKGROUND		           WHITE  
 
+#define      DARK   0x1082
+
 
 #define      CMD_Set_COLUMN		   0x2A	     
 #define      CMD_Set_PAGE		   0x2B	     

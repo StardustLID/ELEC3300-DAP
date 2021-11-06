@@ -98,19 +98,15 @@ int main(void)
 	
 	LCD_INIT();
 
-	LCD_Clear (50, 80, 140, 70, RED);
-	LCD_DrawString(68, 100, "TOUCHPAD DEMO");
-	HAL_Delay(2000);
+  MENU_Welcome();
+  HAL_Delay(1000);
 
-	while( ! XPT2046_Touch_Calibrate () );   
+	// while( ! XPT2046_Touch_Calibrate () );   
 
 	LCD_GramScan ( 1 );
-	LCD_Clear ( 0, 0, 240, 320, GREY );
-	LCD_Clear ( 90,  230,  60, 60, BLUE	);
-
-
-  MENU_Main();
-  HAL_Delay(1000);
+	LCD_Clear(0, 0, 240, 320, DARK);
+  MENU_PlaySong();
+	// LCD_Clear ( 90,  230,  60, 60, BLUE	);
 
   /* USER CODE END 2 */
 
@@ -118,12 +114,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    if ( ucXPT2046_TouchFlag == 1 )	         
-    {
-			Check_touchkey();			
-      ucXPT2046_TouchFlag = 0;		            
-    }					
-		HAL_Delay(50);	
+    // if ( ucXPT2046_TouchFlag == 1 )	         
+    // {
+		// 	Check_touchkey();			
+    //   ucXPT2046_TouchFlag = 0;		            
+    // }					
+		// HAL_Delay(50);	
     // MENU_SelectSong();
     /* USER CODE END WHILE */
 
