@@ -1,4 +1,4 @@
-#include "lcd.h"
+#include "lcdtp.h"
 #include "ascii.h"	
 #include "Math.h"
 
@@ -429,28 +429,12 @@ void LCD_DrawString ( uint16_t usC, uint16_t usP, const char * pStr )
 }
 
 
-//Task 2
 void LCD_DrawDot(uint16_t usCOLUMN, uint16_t usPAGE, uint16_t usColor)	
 {	
-	/*
-	 *  Task 2 : Implement the LCD_DrawDot to turn on a particular dot on the LCD.
-	 */
-	// set column address
-	LCD_Write_Cmd(0x2A);
-	LCD_Write_Data(usCOLUMN / 0x100);
-	LCD_Write_Data(usCOLUMN % 0x100);
-	LCD_Write_Data(usCOLUMN / 0x100);
-	LCD_Write_Data(usCOLUMN % 0x100);
-	// set page address
-	LCD_Write_Cmd(0x2B);
-	LCD_Write_Data(usPAGE / 0x100);
-	LCD_Write_Data(usPAGE % 0x100);
-	LCD_Write_Data(usPAGE / 0x100);
-	LCD_Write_Data(usPAGE % 0x100);
-	// memory write
-	LCD_Write_Cmd(0x2C);
-	LCD_OpenWindow(usCOLUMN, usPAGE, 1, 1);
-	LCD_FillColor(1, usColor);
+	if (( usCOLUMN < LCD_DispWindow_COLUMN ) && ( usPAGE < LCD_DispWindow_PAGE )) {
+		LCD_OpenWindow(usCOLUMN, usPAGE, 1, 1);
+		LCD_FillColor(1, usColor);
+	}
 }
 
 //Task 3
@@ -464,4 +448,176 @@ void LCD_DrawEllipse ( uint16_t usC, uint16_t usP, uint16_t SR, uint16_t LR, uin
 		LCD_DrawDot(usC+i, usP+y, usColor);
 		LCD_DrawDot(usC+i, usP-y, usColor);
 	}
+}
+
+
+void LCD_DrawCircle ( uint16_t usC, uint16_t usP, uint16_t R, uint16_t usColor)
+{	
+
+}
+
+void LCD_DrawChar_Color ( uint16_t usC, uint16_t usP, const char cChar, uint16_t usColor_Background, uint16_t usColor_Foreground )
+{
+	uint8_t ucTemp, ucRelativePositon, ucPage, ucColumn;
+
+	ucRelativePositon = cChar - ' ';
+	
+	LCD_OpenWindow ( usC, usP, WIDTH_EN_CHAR, HEIGHT_EN_CHAR );
+	
+	LCD_Write_Cmd ( CMD_SetPixel );	
+	
+	for ( ucPage = 0; ucPage < HEIGHT_EN_CHAR; ucPage ++ )
+	{
+		ucTemp = ucAscii_1608 [ ucRelativePositon ] [ ucPage ];
+		
+		for ( ucColumn = 0; ucColumn < WIDTH_EN_CHAR; ucColumn ++ )
+		{
+			if ( ucTemp & 0x01 )
+				LCD_Write_Data ( usColor_Foreground );
+			
+			else
+				LCD_Write_Data ( usColor_Background );								
+			
+			ucTemp >>= 1;		
+			
+		}
+		
+	}
+	
+}
+
+void LCD_DrawCross ( uint16_t usX, uint16_t usY )
+{
+  LCD_Clear ( usX - 10, usY, 20, 1, RED);
+  LCD_Clear ( usX, usY - 10, 1, 20, RED);
+	
+}
+
+
+void LCD_DrawString_Color ( uint16_t usC, uint16_t usP, const char * pStr, uint16_t usColor_Background, uint16_t usColor_Foreground )
+{
+	while ( * pStr != '\0' )
+	{
+		if ( ( usC - LCD_DispWindow_Start_COLUMN + WIDTH_EN_CHAR ) > LCD_DispWindow_COLUMN )
+		{
+			usC = LCD_DispWindow_Start_COLUMN;
+			usP += HEIGHT_EN_CHAR;
+		}
+		
+		if ( ( usP - LCD_DispWindow_Start_PAGE + HEIGHT_EN_CHAR ) > LCD_DispWindow_PAGE )
+		{
+			usC = LCD_DispWindow_Start_COLUMN;
+			usP = LCD_DispWindow_Start_PAGE;
+		}
+		
+		LCD_DrawChar_Color  ( usC, usP, * pStr, usColor_Background, usColor_Foreground );
+		
+		pStr ++;
+		
+		usC += WIDTH_EN_CHAR;
+		
+	}
+	
+}
+
+
+void LCD_GramScan ( uint8_t ucOption )
+{	
+	switch ( ucOption )
+	{
+		case 1:
+
+//		____ x(240)      
+//	 |  
+//	 |	y(320)        
+		  
+			LCD_Write_Cmd ( 0x36 ); 
+			LCD_Write_Data ( 0xC8 );   
+			LCD_Write_Cmd ( 0x2A  ); 
+			LCD_Write_Data ( 0x00 );	/* x start */	
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x00 );  /* x end */	
+			LCD_Write_Data ( 0xEF );
+
+			LCD_Write_Cmd ( 0x2B ); 
+			LCD_Write_Data ( 0x00 );	/* y start */  
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x01 );	/* y end */   
+			LCD_Write_Data ( 0x3F );
+					
+		  break;
+		
+		case 2:
+
+//		|x(320)            
+//		|
+//		|___ y(240)
+		  
+			LCD_Write_Cmd ( 0x36 ); 
+			LCD_Write_Data ( 0x68 );	
+			LCD_Write_Cmd ( 0x2A  ); 
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x01 );
+			LCD_Write_Data ( 0x3F );	
+
+			LCD_Write_Cmd ( 0x2B ); 
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0xEF );		
+		
+		  break;
+		
+		case 3:
+
+//		           |x(320)   
+//		           |           
+//		y(240) ____|
+		
+			LCD_Write_Cmd ( 0x36 ); 
+			LCD_Write_Data ( 0x28 );	
+			LCD_Write_Cmd ( 0x2A  ); 
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x01 );
+			LCD_Write_Data ( 0x3F );	
+
+			LCD_Write_Cmd ( 0x2B ); 
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0xEF );			
+		  
+		  break;
+
+		case 4:
+
+//		|y(320)              
+//		|
+//		|___ x(240)			
+		  
+			LCD_Write_Cmd ( 0x36 ); 
+			LCD_Write_Data ( 0x48 );	
+			LCD_Write_Cmd ( 0x2A  ); 
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0xEF );	
+
+			LCD_Write_Cmd ( 0x2B ); 
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x00 );
+			LCD_Write_Data ( 0x01 );
+			LCD_Write_Data ( 0x3F );		
+		
+	    break;
+		
+	}
+	
+	
+	/* write gram start */
+	LCD_Write_Cmd ( 0x2C );
+	
+	
 }

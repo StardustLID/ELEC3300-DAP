@@ -3,8 +3,8 @@
 
 static void _refreshSong(uint8_t songIndex);
 static void _clearLine(uint16_t usP);
-static inline uint8_t nextSong();
-static inline uint8_t chooseSong();
+static inline uint8_t nextSong(void);
+static inline uint8_t chooseSong(void);
 
 void MENU_Main() {
 	LCD_DrawString(0, 0, "ELEC3300 Digital Audio Player");

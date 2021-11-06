@@ -2,7 +2,7 @@
 #define	__MENU_H
 
 #include "stm32f1xx_hal.h"
-#include "lcd.h"
+#include "lcdtp.h"
 
 #define SONG_NAME_USP 240
 

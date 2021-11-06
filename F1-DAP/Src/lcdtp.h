@@ -32,6 +32,9 @@
 #define      WIDTH_EN_CHAR		8	      
 #define      HEIGHT_EN_CHAR		16		    
 
+#define      LCD_Default_Max_Width		240     
+#define      LCD_Default_Max_Heigth		320    
+
 #define      GetGBKCode( ucBuffer, usChar )  	 
 
  
@@ -66,5 +69,11 @@ void            LCD_DrawChar		( uint16_t usC, uint16_t usP, const char cChar);
 void            LCD_DrawString		( uint16_t usC, uint16_t usP, const char * pStr);
 void            LCD_DrawDot		( uint16_t usC, uint16_t usP, uint16_t usColor );
 void 		LCD_DrawEllipse		( uint16_t usC, uint16_t usP, uint16_t SR, uint16_t LR, uint16_t usColor);
+void 			LCD_DrawCircle		( uint16_t usC, uint16_t usP, uint16_t R, uint16_t usColor);
+
+void LCD_DrawCross ( uint16_t usX, uint16_t usY );
+void LCD_DrawChar_Color ( uint16_t usC, uint16_t usP, const char cChar, uint16_t usColor_Background, uint16_t usColor_Foreground );
+void LCD_DrawString_Color ( uint16_t usC, uint16_t usP, const char * pStr, uint16_t usColor_Background, uint16_t usColor_Foreground );
+void LCD_GramScan ( uint8_t ucOption );
 #endif 
 
