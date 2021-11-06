@@ -3,3 +3,5 @@
 
 // STM32 and Keil
 **/MDK-ARM
+!*.uvoptx
+!*.uvprojx
