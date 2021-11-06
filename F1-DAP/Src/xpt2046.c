@@ -521,6 +521,24 @@ uint8_t Check_touchPlay(void) {
 	return 0;
 }
 
+uint8_t Check_touchFw(void) {
+	strType_XPT2046_Coordinate strDispCoor;
+	
+	if (XPT2046_Get_TouchedPoint(&strDispCoor, &strXPT2046_TouchPara)) {
+		return _touchedWithin(&strDispCoor, 148, 172, 240, 256);
+	}
+	return 0;
+}
+
+uint8_t Check_touchBw(void) {
+	strType_XPT2046_Coordinate strDispCoor;
+	
+	if (XPT2046_Get_TouchedPoint(&strDispCoor, &strXPT2046_TouchPara)) {
+		return _touchedWithin(&strDispCoor, 68, 92, 240, 256);
+	}
+	return 0;
+}
+
 // true if TouchedPoint is within the area, false otherwise
 static inline uint8_t _touchedWithin(strType_XPT2046_Coordinate* strDisCoor, uint16_t x0, uint16_t x1, uint16_t y0, uint16_t y1) {
 	return strDisCoor->x > x0 && strDisCoor->x < x1 && strDisCoor->y > y0 && strDisCoor->y < y1;

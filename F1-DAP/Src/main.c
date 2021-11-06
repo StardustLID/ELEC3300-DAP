@@ -35,7 +35,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define WELCOME_DELAY 1000
+#define INPUT_DELAY 100
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -49,6 +50,7 @@ TIM_HandleTypeDef htim2;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
+uint8_t playFlag = 0;
 uint16_t playtimeElapsed = 0;
 /* USER CODE END PV */
 
@@ -58,6 +60,8 @@ static void MX_GPIO_Init(void);
 static void MX_FSMC_Init(void);
 static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
+
+static void _updatePlayTime(const uint16_t time);
 
 /* USER CODE END PFP */
 
@@ -103,7 +107,7 @@ int main(void)
 	LCD_INIT();
 
   MENU_Welcome();
-  HAL_Delay(1000);
+  HAL_Delay(WELCOME_DELAY);
   
   // start timer
   // HAL_TIM_Base_Start_IT(&htim2);
@@ -114,16 +118,6 @@ int main(void)
 	LCD_Clear(0, 0, 240, 320, DARK);
   MENU_PlaySong();
 
-	// TODO: refactor touch input into helper func
-	while(1) {
-		if ( ucXPT2046_TouchFlag == 1 ) {
-			if (Check_touchPlay() == 1) {
-        HAL_TIM_Base_Start_IT(&htim2);
-      }
-			ucXPT2046_TouchFlag = 0;
-      HAL_Delay(500);
-		}
-	}
 	// LCD_Clear ( 90,  230,  60, 60, BLUE	);
 
   /* USER CODE END 2 */
@@ -132,6 +126,24 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    // TODO: refactor touch input into helper func
+		if ( ucXPT2046_TouchFlag == 1 ) {
+			if (Check_touchPlay() == 1) {
+        if (playFlag == 0) HAL_TIM_Base_Start_IT(&htim2);
+        else HAL_TIM_Base_Stop_IT(&htim2);
+        playFlag = !playFlag;
+      }
+			else if (Check_touchFw() == 1) {
+        playtimeElapsed += 5;
+      }
+			else if (Check_touchBw() == 1) {
+        if (playtimeElapsed < 5) playtimeElapsed = 0; // avoid underflow
+        else playtimeElapsed -= 5;
+      }
+			ucXPT2046_TouchFlag = 0;
+      _updatePlayTime(playtimeElapsed);
+      HAL_Delay(INPUT_DELAY);
+		}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -355,15 +367,18 @@ static void MX_FSMC_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+static void _updatePlayTime(const uint16_t time) {
+  char time_mmss[6];
+  sprintf(time_mmss, "%02d:%02d", time / 60, time % 60);
+  LCD_DrawString_Color(0, 0, time_mmss, GREEN, BLUE);
+}
+
 // Callback: timer has rolled over
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim == &htim2) {
     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
-    const uint16_t time = ++playtimeElapsed;
-    char time_mmss[6];
-    sprintf(time_mmss, "%02d:%02d", time / 60, time % 60);
-    LCD_DrawString_Color(0, 0, time_mmss, GREEN, BLUE);
+    _updatePlayTime(++playtimeElapsed);
   }
 }
 /* USER CODE END 4 */
