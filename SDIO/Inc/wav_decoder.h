@@ -22,6 +22,11 @@ typedef struct wav_fact_chunk{
 typedef struct wav_list_chunk{
 	// 4 byte: "LIST"
 	uint32_t size; // size of list_chunk - 8
+	uint8_t artist[54];
+	uint8_t title[54];
+	uint8_t album[54];
+	uint8_t Date[16];
+	uint8_t genre[32];
 	// 4 byte: "INFO"
 }wav_list_chunk;
 
@@ -52,7 +57,10 @@ typedef struct wav_tag_header{
 #define WAV_INFO_ID_DATE			"ICRD" // The date the subject of the file was created (creation date)
 #define WAV_INFO_ID_GENRE			"IGNR" // The genre of the subject
 
-
+#define WAV_ID_DATA						"data"
+#define WAV_ID_FACT						"fact"
+#define WAV_ID_LIST						"LIST"
+#define WAV_ID_END_OF_LIST		"INFO"
 void wav_read_header(char* file_name);
 
 #endif
