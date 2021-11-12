@@ -22,33 +22,29 @@ Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
 C:\Users\Bill Fung\Documents\GitHub\ELEC3300-DAP\SDIO\MDK-ARM\SDIO.uvprojx
-Project File Date:  11/09/2021
+Project File Date:  11/10/2021
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'SDIO'
-compiling wav_decoder.c...
-../Inc/wav_decoder.h(58): warning:  #1-D: last line of file ends without a newline
-  #endif
-../Inc/file_sys_func.h(10): warning:  #1-D: last line of file ends without a newline
-  #endif
-..\Src\wav_decoder.c(26): warning:  #167-D: argument of type "int *" is incompatible with parameter of type "UINT *"
-  	f_read(&myFILE, ReadBuffer, 4, &fnum);
-..\Src\wav_decoder.c(29): warning:  #167-D: argument of type "int *" is incompatible with parameter of type "UINT *"
-  	f_read(&myFILE, ReadBuffer, 4, &fnum);
-..\Src\wav_decoder.c(31): warning:  #167-D: argument of type "int *" is incompatible with parameter of type "UINT *"
-  	f_read(&myFILE, ReadBuffer, wav_tag.fmt_chunk.size, &fnum);
-..\Src\wav_decoder.c(39): warning:  #223-D: function "sprintf" declared implicitly
-  	sprintf(string, "codec_fmt: %d", wav_tag.fmt_chunk.codec_fmt);
-..\Src\wav_decoder.c(52): warning:  #1-D: last line of file ends without a newline
+compiling MP3_decoder.c...
+../Inc/mp3_decoder.h(29): warning:  #47-D: incompatible redefinition of macro "MP3_FRAME_ID_UNSYNC_LYRICIST"  (declared at line 28)
+  #define MP3_FRAME_ID_UNSYNC_LYRICIST	"SYLT"
+..\Src\MP3_decoder.c(18): warning:  #223-D: function "strcat" declared implicitly
+  	strcat(path, "0:/MUSIC/");
+..\Src\MP3_decoder.c(25): warning:  #167-D: argument of type "int *" is incompatible with parameter of type "UINT *"
+  	f_read(&myFILE, ReadBuffer, 1, &fnum);
+..\Src\MP3_decoder.c(29): warning:  #1-D: last line of file ends without a newline
   }
-..\Src\wav_decoder.c(13): warning:  #177-D: variable "res"  was declared but never referenced
+..\Src\MP3_decoder.c(13): warning:  #177-D: variable "res"  was declared but never referenced
   	FRESULT res;
-..\Src\wav_decoder.c: 8 warnings, 0 errors
+..\Src\MP3_decoder.c(16): warning:  #177-D: variable "string"  was declared but never referenced
+  	char string[1024] = {0};
+..\Src\MP3_decoder.c: 6 warnings, 0 errors
 linking...
-Program Size: Code=18656 RO-data=3424 RW-data=44 ZI-data=38076  
+Program Size: Code=22592 RO-data=3432 RW-data=44 ZI-data=38292  
 FromELF: creating hex file...
-"SDIO\SDIO.axf" - 0 Error(s), 8 Warning(s).
+"SDIO\SDIO.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -71,7 +67,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.5.0
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

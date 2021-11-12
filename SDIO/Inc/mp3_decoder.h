@@ -2,6 +2,11 @@
 #define __MP3_DECODER_H
 
 
+typedef struct mp3_id_frame{
+	uint32_t size;
+	char data[50];
+}mp3_id_frame;
+
 typedef struct mp3_tag_header{
 	uint8_t ID3_ver;
 	uint8_t flag; // 0xabc0 0000, a:Unsynchronisation, b:Extended header, c:Experimental indicator

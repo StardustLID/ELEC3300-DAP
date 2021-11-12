@@ -311,7 +311,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -434,11 +434,6 @@
               <FileName>wav_decoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\wav_decoder.c</FilePath>
-            </File>
-            <File>
-              <FileName>wav_decoder.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\wav_decoder.h</FilePath>
             </File>
           </Files>
         </Group>
