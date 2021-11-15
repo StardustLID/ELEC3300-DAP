@@ -24,7 +24,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lcd.h"
+#include "file_sys_func.h"
+#include "wav_decoder.h"
+#include "codec.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,8 +49,11 @@ I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c2;
 
 I2S_HandleTypeDef hi2s3;
+DMA_HandleTypeDef hdma_spi3_tx;
 
 SD_HandleTypeDef hsd;
+DMA_HandleTypeDef hdma_sdio_rx;
+DMA_HandleTypeDef hdma_sdio_tx;
 
 SPI_HandleTypeDef hspi1;
 
@@ -74,6 +80,7 @@ static void MX_SPI1_Init(void);
 static void MX_TIM5_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_DMA_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -121,9 +128,33 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_FATFS_Init();
+  MX_DMA_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
+	LCD_INIT();
+	
+	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
+	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
+	HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
+	
+	FATFS myFATFS;
+	FRESULT res;
+	res = f_mount(&myFATFS,SDPath,1);
 
+	if (res == FR_OK)
+	{
+		scan_file("0:/MUSIC");
+		wav_read_header("Sample-wav-file.wav");
+	}
+	
+	uint8_t data[2] = {0};
+	char string[50] = {0};
+	HAL_I2C_Mem_Read(&hi2c1,WM8918_DEVICE_ID, 0x00, 2, data,2 ,100);
+	sprintf(string, "data: %x, %x", data[0], data[1]);
+	LCD_DrawString(0,300,string);
+	wav_play_music(&hi2s3, "Sample-wav-file.wav");
+
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -131,8 +162,14 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+		
     /* USER CODE BEGIN 3 */
+		uint32_t this_tick = HAL_GetTick();
+		static uint32_t last_led_tick = 0;
+		if(this_tick - last_led_tick >= 300){
+			HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
+			last_led_tick = this_tick;
+		}
   }
   /* USER CODE END 3 */
 }
@@ -303,7 +340,7 @@ static void MX_SDIO_SD_Init(void)
   hsd.Init.ClockPowerSave = SDIO_CLOCK_POWER_SAVE_DISABLE;
   hsd.Init.BusWide = SDIO_BUS_WIDE_1B;
   hsd.Init.HardwareFlowControl = SDIO_HARDWARE_FLOW_CONTROL_ENABLE;
-  hsd.Init.ClockDiv = 8;
+  hsd.Init.ClockDiv = 5;
   /* USER CODE BEGIN SDIO_Init 2 */
 
   /* USER CODE END SDIO_Init 2 */
@@ -460,6 +497,29 @@ static void MX_USART2_UART_Init(void)
   /* USER CODE BEGIN USART2_Init 2 */
 
   /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+  __HAL_RCC_DMA2_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+  /* DMA2_Stream3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
+  /* DMA2_Stream6_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream6_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream6_IRQn);
 
 }
 
