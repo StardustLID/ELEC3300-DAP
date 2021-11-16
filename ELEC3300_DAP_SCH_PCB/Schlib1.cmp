@@ -1,0 +1,45 @@
+Component Name : WM8918
+
+Part Count : 2
+
+Part : U?
+     Pins - (Normal) : 0
+          Hidden Pins : 
+
+Part : U?
+     Pins - (Normal) : 33
+          IRQ/GPIO1      1              I/O
+          SCLK           2              Input
+          SDA            3              I/O
+          BDVDD          4              Power
+          DGND           5              Power
+          DCVDD          6              Power
+          CPVDD          7              Power
+          CPCA           8              Passive
+          CPGND          9              Power
+          CPCB           10             Passive
+          CPVOUTP        11             Output
+          CPVOUTN        12             Output
+          HPOUTL         13             Output
+          HPOUTFB        14             Input
+          HPOUTR         15             Output
+          LINEOUTL       16             Output
+          LINEOUTFB      17             Input
+          LINEOUTR       18             Output
+          MICVDD         19             Power
+          MICBIAS        20             Power
+          VMIDC          21             Power
+          AGND           22             Power
+          AVDD           23             Power
+          IN2R           24             Input
+          IN1R/DMICDAT2  25             Input
+          IN2L           26             Input
+          IN1L/DMICDAT1  27             Input
+          MCLK           28             Input
+          BCLK/GPIO4     29             I/O
+          LRCLK          30             I/O
+          AIFTXDAT       31             Output
+          AIFRXDAT       32             Input
+          PADGND         33             Power
+          Hidden Pins : 
+
