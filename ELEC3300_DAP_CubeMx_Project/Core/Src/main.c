@@ -24,7 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lcd.h"
+#include "lcdtp.h"
 #include "file_sys_func.h"
 #include "wav_decoder.h"
 #include "codec.h"

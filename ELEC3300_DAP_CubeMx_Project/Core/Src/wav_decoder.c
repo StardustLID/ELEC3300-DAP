@@ -1,7 +1,7 @@
 #include "mp3common.h"
 #include "main.h"
 #include "fatfs.h"
-#include "lcd.h"
+#include "lcdtp.h"
 #include <string.h>
 #include "wav_decoder.h"
 #include "file_sys_func.h"

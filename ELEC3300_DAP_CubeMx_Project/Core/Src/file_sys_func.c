@@ -1,6 +1,6 @@
 #include "main.h"
 #include "fatfs.h"
-#include "lcd.h"
+#include "lcdtp.h"
 #include <string.h>
 #include "file_sys_func.h"
 

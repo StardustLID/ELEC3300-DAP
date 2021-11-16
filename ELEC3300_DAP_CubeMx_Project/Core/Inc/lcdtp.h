@@ -5,19 +5,19 @@
 
 #define      FSMC_Addr_LCD_CMD         ( ( uint32_t ) 0x60000000 )	    
 #define      FSMC_Addr_LCD_DATA        ( ( uint32_t ) 0x60020000 )          
-/*
+
 #define      FSMC_Bank1_NORSRAMx       FSMC_Bank1_NORSRAM1
 
 #define      LCD_RST_APBxClock_FUN     RCC_APB2PeriphClockCmd
 #define      LCD_RST_CLK               RCC_APB2Periph_GPIOE   
-#define      LCD_RST_PORT              GPIOD
-#define      LCD_RST_PIN               GPIO_PIN_13
+#define      LCD_RST_PORT              GPIOE
+#define      LCD_RST_PIN               GPIO_PIN_1
 
 #define      LCD_BK_APBxClock_FUN      RCC_APB2PeriphClockCmd
 #define      LCD_BK_CLK                RCC_APB2Periph_GPIOD    
 #define      LCD_BK_PORT               GPIOD
 #define      LCD_BK_PIN                GPIO_PIN_12
-*/
+
 #define      DEBUG_DELAY()                
 
 #define      LCD_Default_Max_COLUMN	240     
@@ -32,6 +32,9 @@
 #define      WIDTH_EN_CHAR		8	      
 #define      HEIGHT_EN_CHAR		16		    
 
+#define      LCD_Default_Max_Width		240     
+#define      LCD_Default_Max_Heigth		320    
+
 #define      GetGBKCode( ucBuffer, usChar )  	 
 
  
@@ -45,6 +48,8 @@
 #define      CYAN                          0x7FFF	   
 #define      YELLOW                        0xFFE0	 
 #define      BACKGROUND		           WHITE  
+
+#define      DARK   0x1082
 
 
 #define      CMD_Set_COLUMN		   0x2A	     
@@ -66,6 +71,11 @@ void            LCD_DrawChar		( uint16_t usC, uint16_t usP, const char cChar);
 void            LCD_DrawString		( uint16_t usC, uint16_t usP, const char * pStr);
 void            LCD_DrawDot		( uint16_t usC, uint16_t usP, uint16_t usColor );
 void 		LCD_DrawEllipse		( uint16_t usC, uint16_t usP, uint16_t SR, uint16_t LR, uint16_t usColor);
-void LCD_chinese_name(uint16_t usC, uint16_t usP,uint16_t usColor,uint16_t us_backgrdColor);
+void 			LCD_DrawCircle		( uint16_t usC, uint16_t usP, uint16_t R, uint16_t usColor);
+
+void LCD_DrawCross ( uint16_t usX, uint16_t usY );
+void LCD_DrawChar_Color ( uint16_t usC, uint16_t usP, const char cChar, uint16_t usColor_Background, uint16_t usColor_Foreground );
+void LCD_DrawString_Color ( uint16_t usC, uint16_t usP, const char * pStr, uint16_t usColor_Background, uint16_t usColor_Foreground );
+void LCD_GramScan ( uint8_t ucOption );
 #endif 
 
