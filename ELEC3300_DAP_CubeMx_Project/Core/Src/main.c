@@ -132,7 +132,7 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
-	
+	codec_init(&hi2c1);
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
 	HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
@@ -147,11 +147,6 @@ int main(void)
 		wav_read_header("Sample-wav-file.wav");
 	}
 	
-	uint8_t data[2] = {0};
-	char string[50] = {0};
-	HAL_I2C_Mem_Read(&hi2c1,WM8918_DEVICE_ID, 0x00, 2, data,2 ,100);
-	sprintf(string, "data: %x, %x", data[0], data[1]);
-	LCD_DrawString(0,300,string);
 	wav_play_music(&hi2s3, "Sample-wav-file.wav");
 
 	
