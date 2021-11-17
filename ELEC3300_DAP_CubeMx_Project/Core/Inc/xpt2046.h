@@ -17,7 +17,7 @@
 
 #define             macXPT2046_EXTI_ActiveLevel                     0
 
-#define             macXPT2046_EXTI_Read()											HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_4)
+#define             macXPT2046_EXTI_Read()											HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_6)
 
 /*
 #define             macXPT2046_SPI_GPIO_CLK                     RCC_APB2Periph_GPIOE| RCC_APB2Periph_GPIOD
