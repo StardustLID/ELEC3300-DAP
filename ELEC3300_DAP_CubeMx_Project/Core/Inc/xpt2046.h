@@ -35,16 +35,16 @@
 #define	            macXPT2046_SPI_MISO_PORT	                  GPIOE
 */
 
-#define             macXPT2046_CS_ENABLE()         HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_SET)
-#define             macXPT2046_CS_DISABLE()        HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, GPIO_PIN_RESET)
+#define             macXPT2046_CS_ENABLE()         HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_SET)
+#define             macXPT2046_CS_DISABLE()        HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET)
 
-#define             macXPT2046_CLK_HIGH()         HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_SET)
-#define             macXPT2046_CLK_LOW()          HAL_GPIO_WritePin(GPIOE, GPIO_PIN_0, GPIO_PIN_RESET)
+#define             macXPT2046_CLK_HIGH()         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET)
+#define             macXPT2046_CLK_LOW()          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET)
 
-#define             macXPT2046_MOSI_1()          HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_SET)
-#define             macXPT2046_MOSI_0()          HAL_GPIO_WritePin(GPIOE, GPIO_PIN_2, GPIO_PIN_RESET)
+#define             macXPT2046_MOSI_1()          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET)
+#define             macXPT2046_MOSI_0()          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET)
 
-#define             macXPT2046_MISO()            HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_3)
+#define             macXPT2046_MISO()            HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6)
 
 
 #define             macXPT2046_Coordinate_GramScan                  1               
