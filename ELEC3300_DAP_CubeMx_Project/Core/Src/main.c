@@ -133,20 +133,26 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
 	codec_init(&hi2c1);
+	
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
 	HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
-	
+	//LCD_Clear(0, 0, 240, 320, BACKGROUND);
 	FATFS myFATFS;
 	FRESULT res;
 	res = f_mount(&myFATFS,SDPath,1);
 
+	static uint32_t buf0 = {0};
+	static uint32_t buf1 = {0};
+	
+	//HAL_DMAEx_MultiBufferStart_IT(&hdma_spi3_tx, buf0, (uint32_t)*(hi2s3.pTxBuffPtr), buf1,16);
+	
 	if (res == FR_OK)
 	{
 		scan_file("0:/MUSIC");
 		wav_read_header("Sample-wav-file.wav");
 	}
-	
+
 	wav_play_music(&hi2s3, "Sample-wav-file.wav");
 
 	
@@ -157,7 +163,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-		
+
     /* USER CODE BEGIN 3 */
 		uint32_t this_tick = HAL_GetTick();
 		static uint32_t last_led_tick = 0;

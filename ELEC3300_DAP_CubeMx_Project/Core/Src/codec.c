@@ -1,110 +1,49 @@
 #include "main.h"
 #include "wav_decoder.h"
 #include "codec.h"
+#include "lcd.h"
 
 void codec_init(I2C_HandleTypeDef *hi2c){
-	uint8_t buf[4] = {0};// 0: device address 1:device address 2:reg_address 3:reg_address
-	uint8_t readbuf[2] = {0};
+	uint8_t buf[2] = {0};// 0: device address 1:device address 2:reg_address 3:reg_address
+	//uint8_t readbuf[4] = {0};
+	//char string[50] = {0};
+
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, 0x00, 1, buf, 2, 50); 
 	
-	
-	HAL_I2C_Master_Transmit(hi2c, WM8918_DEVICE_ID, buf, 4,100);
-	//HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, 0x00, 2, buf, 2, 50); 
-	
-	buf[0] = WM8918_CLOCK_RATE_2 & 0xff00;
-	buf[1] = WM8918_CLOCK_RATE_2 & 0x00ff;
-	buf[2] = 0x00;
-	buf[3] = 0x06;
-	HAL_I2C_Master_Transmit(hi2c, WM8918_DEVICE_ID, buf, 4,100);
-	/*
+	buf[0] = 0x00;
 	buf[1] = 0x06;
-	//HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CLOCK_RATE_2, 2, buf, 2, 50);
-	*/
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CLOCK_RATE_2, 1, buf, 2, 50);
 	
-	buf[0] = WM8918_WRITE_SEQUENCER_0 & 0xff00;
-	buf[1] = WM8918_WRITE_SEQUENCER_0 & 0x00ff;
-	buf[2] = 0x01;
-	buf[3] = 0x00;
-	HAL_I2C_Master_Transmit(hi2c, WM8918_DEVICE_ID, buf, 4,100);
+	buf[0] = 0x01;
+	buf[1] = 0x00;
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_WRITE_SEQUENCER_0, 1, buf, 2, 50);
 	HAL_Delay(300);
-	/*
-	readbuf[0] = 0x01;
-	readbuf[1] = 0x00;
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_WRITE_SEQUENCER_0, 2, buf, 2, 50);
+
+	buf[0] = 0x01;
+	buf[1] = 0x00;
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_WRITE_SEQUENCER_3, 1, buf, 2, 50);
 	HAL_Delay(300);
-	*/
 	
-	buf[0] = WM8918_WRITE_SEQUENCER_3 & 0xff00;
-	buf[1] = WM8918_WRITE_SEQUENCER_3 & 0x00ff;
-	buf[2] = 0x01;
-	buf[3] = 0x00;
-	HAL_I2C_Master_Transmit(hi2c, WM8918_DEVICE_ID, buf, 4,100);
-	HAL_Delay(300);
-	/*
-	readbuf[0] = 0x01;
-	readbuf[1] = 0x00;
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_WRITE_SEQUENCER_3, 2, buf, 2, 50);
-	HAL_Delay(300);
-	*/
+	buf[0] = 0x00;
+	buf[1] = 0x00;
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CLOCK_RATE_0, 1, buf, 2, 50);
 	
-	buf[0] = WM8918_CLOCK_RATE_0 & 0xff00;
-	buf[1] = WM8918_CLOCK_RATE_0 & 0x00ff;
-	buf[2] = 0x00;
-	buf[3] = 0x00;
-	HAL_I2C_Master_Transmit(hi2c, WM8918_DEVICE_ID, buf, 4,100);
+	buf[0] = 0x00;
+	buf[1] = 0x33;
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_OUT_1_LEFT, 1, buf, 2, 50);
 	
-	/*
-	readbuf[0] = 0x00;
-	readbuf[1] = 0x00;
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CLOCK_RATE_0, 2, buf, 2, 50);
-	*/
+	buf[0] = 0x00;
+	buf[1] = 0xB3;
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_OUT_1_RIGHT, 1, buf, 2, 50);
 	
-	buf[0] = WM8918_ANALOGUE_OUT_1_LEFT & 0xff00;
-	buf[1] = WM8918_ANALOGUE_OUT_1_LEFT & 0x00ff;
-	buf[2] = 0x00;
-	buf[3] = 0x33;
-	HAL_I2C_Master_Transmit(hi2c, WM8918_DEVICE_ID, buf, 4,100);
+	buf[0] = 0x00;
+	buf[1] = 0x00;
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_DAC_DIGITAL_1, 1, buf, 2, 50);
 	
-	/*
-	readbuf[0] = 0x00;
-	readbuf[1] = 0x39;
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_OUT_1_LEFT, 2, buf, 2, 50);
-	*/
+	buf[0] = 0x00;
+	buf[1] = 0x01;
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CP_DYN_PWR, 1, buf, 2, 50);
 	
-	buf[0] = WM8918_ANALOGUE_OUT_1_RIGHT & 0xff00;
-	buf[1] = WM8918_ANALOGUE_OUT_1_RIGHT & 0x00ff;
-	buf[2] = 0x00;
-	buf[3] = 0xB3;
-	HAL_I2C_Master_Transmit(hi2c, WM8918_DEVICE_ID, buf, 4,100);
-	
-	/*
-	readbuf[0] = 0x00;
-	readbuf[1] = 0xB3;
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_OUT_1_RIGHT, 2, buf, 2, 50);
-	*/
-	
-	buf[0] = WM8918_DAC_DIGITAL_1 & 0xff00;
-	buf[1] = WM8918_DAC_DIGITAL_1 & 0x00ff;
-	buf[2] = 0x00;
-	buf[3] = 0x00;
-	HAL_I2C_Master_Transmit(hi2c, WM8918_DEVICE_ID, buf, 4,100);
-	
-	/*
-	readbuf[0] = 0x00;
-	readbuf[1] = 0x00;
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_DAC_DIGITAL_1, 2, buf, 2, 50);
-	*/
-	
-	buf[0] = WM8918_CP_DYN_PWR & 0xff00;
-	buf[1] = WM8918_CP_DYN_PWR & 0x00ff;
-	buf[2] = 0x00;
-	buf[3] = 0x01;
-	HAL_I2C_Master_Transmit(hi2c, WM8918_DEVICE_ID, buf, 4,100);
-	
-	/*
-	readbuf[0] = 0x00;
-	readbuf[1] = 0x01;
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CP_DYN_PWR, 2, buf, 2, 50);
-	*/
 	
 	/*
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, 0x00, 2, buf, 2, 50); // software reset

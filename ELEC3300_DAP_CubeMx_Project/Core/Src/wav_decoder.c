@@ -183,6 +183,7 @@ void wav_play_music(I2S_HandleTypeDef* hi2s,char* file_name){
 	while(size < wav_tag.file_size){
 		f_read(&myFILE, ReadBuffer, 2, &fnum); // read the sub-chunk ID, size
 		data = ReadBuffer[0] << 8 | ReadBuffer[1];
+		HAL_I2S_Transmit(hi2s,&data,1,50);
 		//sprintf(string, "data: %x ", data);
 		//LCD_DrawString(0,300,string);
 		size += 2;
