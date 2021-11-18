@@ -53,7 +53,8 @@
 #define	            macXPT2046_CHANNEL_X 	                          0x90 	         
 #define	            macXPT2046_CHANNEL_Y 	                          0xd0	        
 
-
+#define macXPT2046_WRITE_DELAY 5
+#define macXPT2046_READ_DELAY 1
 
 typedef	struct         
 {	
