@@ -160,34 +160,18 @@ void wav_read_header(char* file_name){
 	f_close(&myFILE);
 }
 
-void wav_play_music(I2S_HandleTypeDef* hi2s,char* file_name){
-	FIL myFILE;
-	FRESULT res;
-	UINT fnum;
-	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
-	char string[128] = {0};
-	
-	strcat(path, "0:/MUSIC/");
-	strcat(path, file_name);
+uint32_t wav_get_file_size(){
+	return wav_tag.file_size + 8;
+}
 
-	char ReadBuffer[2] = {0};
-	uint32_t size = wav_tag.data_chunk.data_offest;
-	uint16_t data = 0;
-	
-	coded_i2s_set_up(hi2s, wav_tag.fmt_chunk.sample_rate, wav_tag.fmt_chunk.bit_per_sample);
-	
-	f_open(&myFILE, path, FA_READ |FA_OPEN_EXISTING);
-	
-	f_lseek(&myFILE, wav_tag.data_chunk.data_offest); // jump to the music data
-	
-	while(size < wav_tag.file_size){
-		f_read(&myFILE, ReadBuffer, 2, &fnum); // read the sub-chunk ID, size
-		data = ReadBuffer[0] << 8 | ReadBuffer[1];
-		HAL_I2S_Transmit(hi2s,&data,1,50);
-		//sprintf(string, "data: %x ", data);
-		//LCD_DrawString(0,300,string);
-		size += 2;
-	}
-	
-	f_close(&myFILE);
+uint32_t wav_get_sample_rate(){
+	return wav_tag.fmt_chunk.sample_rate;
+}
+
+uint16_t wav_get_bit_per_sample(){
+	return wav_tag.fmt_chunk.bit_per_sample;
+}
+
+uint32_t wav_get_data_offest(){
+	return wav_tag.data_chunk.data_offest;
 }

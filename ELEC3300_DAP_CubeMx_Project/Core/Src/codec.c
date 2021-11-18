@@ -2,8 +2,16 @@
 #include "wav_decoder.h"
 #include "codec.h"
 #include "lcd.h"
+#include "fatfs.h"
+#include <string.h>
 
-void codec_init(I2C_HandleTypeDef *hi2c){
+static uint16_t buffer[AUDIO_BUFFER_SIZE];
+
+uint16_t buf_pos = 0;
+uint8_t file_read_flag = 0;
+uint8_t music_play_flag = 0;
+uint8_t tx_dma_done = 0;
+void codec_init(I2C_HandleTypeDef *hi2c, I2S_HandleTypeDef* hi2s3, DMA_HandleTypeDef* hdma_spi3_tx){
 	uint8_t buf[2] = {0};// 0: device address 1:device address 2:reg_address 3:reg_address
 	//uint8_t readbuf[4] = {0};
 	//char string[50] = {0};
@@ -24,12 +32,30 @@ void codec_init(I2C_HandleTypeDef *hi2c){
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_WRITE_SEQUENCER_3, 1, buf, 2, 50);
 	HAL_Delay(300);
 	
+	buf[0] = 0x00;	
+	buf[1] = 0x00; 
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_LINEOUT_ENABLE_ADDRESS, 1, buf, 2, 50);
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_MICINPUT_ENABLE_ADDRESS, 1, buf, 2, 50);
+	
+	
+	buf[0] = 0x00;	
+	buf[1] = 0x77; 
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_LINEOUT_0, 1, buf, 2, 50);
+	
+	buf[0] = 0x00;	
+	buf[1] = 0x00; 
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_LINEOUT_0, 1, buf, 2, 50);
+	
+	buf[0] = 0x00;	
+	buf[1] = 0x0C; 
+	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_DC_SERVO_0, 1, buf, 2, 50);
+	
 	buf[0] = 0x00;
 	buf[1] = 0x00;
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CLOCK_RATE_0, 1, buf, 2, 50);
 	
 	buf[0] = 0x00;
-	buf[1] = 0x33;
+	buf[1] = 0xB3;
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_OUT_1_LEFT, 1, buf, 2, 50);
 	
 	buf[0] = 0x00;
@@ -43,55 +69,12 @@ void codec_init(I2C_HandleTypeDef *hi2c){
 	buf[0] = 0x00;
 	buf[1] = 0x01;
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CP_DYN_PWR, 1, buf, 2, 50);
-	
-	
-	/*
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, 0x00, 2, buf, 2, 50); // software reset
-	
-	buf[1] = 1; // enable analog func
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_BIAS_CONTROL_0, 2, buf, 2, 50);
-	
-	buf[1] = 0x22;
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_VMID_CONTROL_0, 2, buf, 2, 50);
-	
-	buf[1] = 0x03; // enable L/R (bit1 , bit0)
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_HEADPHONE_OUTPUT_ENABLE_ADDRESS, 2, buf, 2, 50);
-	buf[1] = 0x00; // disable L/R (bit1 , bit0)
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_LINEOUT_ENABLE_ADDRESS, 2, buf, 2, 50);
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_MICINPUT_ENABLE_ADDRESS, 2, buf, 2, 50);
-	
-	
-	buf[1] = 0x02; // enable DSP clock source
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CLOCK_RATE_2, 2, buf, 2, 50);
-	
-	buf[1] = 0x0C; // enable L/R DAC
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_POWER_MANAGEMENT_06, 2, buf, 2, 50);
-	
-	buf[1] = 0x01; // enable pump digits
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CP_ENABLE, 2, buf, 2, 50);
-	
-	buf[1] = 0x11; // enable L/R HPOUT
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_HP_0, 2, buf, 2, 50);
-	
-	buf[1] = 0x22; // enable L/R HPOUT intermediate stage
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_HP_0, 2, buf, 2, 50);
-	
-	buf[1] = 0x03; // enable L/R HPOUT
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_DC_SERVO_0, 2, buf, 2, 50);
-	
-	buf[1] = 0x18; // set trig start up
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_DC_SERVO_1, 2, buf, 2, 50);
-	
-	buf[1] = 0x44; // enable L/R HPOUT output stage
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_HP_0, 2, buf, 2, 50);
-	
-	buf[1] = 0x88; // enable L/R HPOUT remove short
-	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_HP_0, 2, buf, 2, 50);
-	*/
+	HAL_Delay(10);
+
 }
 
 
-void coded_i2s_set_up(I2S_HandleTypeDef *hi2s, uint32_t sample_freq, uint8_t bit_pre_sample){
+void coded_i2s_set_up(I2S_HandleTypeDef *hi2s, DMA_HandleTypeDef* hdma_spi3_tx, uint32_t sample_freq, uint8_t bit_pre_sample){
 	hi2s->Instance = SPI3;
   hi2s->Init.Mode = I2S_MODE_MASTER_TX;
   hi2s->Init.Standard = I2S_STANDARD_PHILIPS;
@@ -100,14 +83,95 @@ void coded_i2s_set_up(I2S_HandleTypeDef *hi2s, uint32_t sample_freq, uint8_t bit
   hi2s->Init.CPOL = I2S_CPOL_LOW;
   hi2s->Init.ClockSource = I2S_CLOCK_PLL;
   hi2s->Init.FullDuplexMode = I2S_FULLDUPLEXMODE_ENABLE;
-	
 	switch(bit_pre_sample){
 		case 16: hi2s->Init.DataFormat = I2S_DATAFORMAT_16B; break;
 		case 24: hi2s->Init.DataFormat = I2S_DATAFORMAT_24B; break;
 	}
-	
+
   if (HAL_I2S_Init(hi2s) != HAL_OK)
   {
     Error_Handler();
   }
+	
+	/*
+	hi2s->hdmatx->XferCpltCallback = i2s_DMA_cplt_callback;
+	hi2s->hdmatx->XferHalfCpltCallback = i2s_DMA_half_cplt_callback;
+	hi2s->hdmatx->XferErrorCallback = i2s_DMA_error_callback;
+	*/
+	/*
+	HAL_DMA_RegisterCallback(hi2s->hdmatx, HAL_DMA_XFER_CPLT_CB_ID, hi2s->hdmatx->XferCpltCallback);
+	HAL_DMA_RegisterCallback(hi2s->hdmatx, HAL_DMA_XFER_HALFCPLT_CB_ID, hi2s->hdmatx->XferHalfCpltCallback);
+	HAL_DMA_RegisterCallback(hi2s->hdmatx, HAL_DMA_XFER_ERROR_CB_ID, hi2s->hdmatx->XferCpltCallback);
+	*/
+	HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+	
+}
+
+void codec_play_music(I2S_HandleTypeDef* hi2s, DMA_HandleTypeDef* hdma_spi3_tx, char* file_name){
+	
+	FIL myFILE;
+	FRESULT res;
+	UINT fnum;
+	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
+	char string[128] = {0};
+	
+	strcat(path, "0:/MUSIC/");
+	strcat(path, file_name);
+
+	char ReadBuffer[2] = {0};
+	uint32_t size = wav_get_data_offest();
+	uint32_t file_size = size;
+	uint16_t data = 0;
+	
+	
+	
+	f_open(&myFILE, path, FA_READ |FA_OPEN_EXISTING);
+	
+	f_lseek(&myFILE, wav_get_data_offest()); // jump to the music data
+	f_read(&myFILE, buffer, AUDIO_BUFFER_SIZE * 4, &fnum);
+
+	
+	music_play_flag = 1;
+	coded_i2s_set_up(hi2s, hdma_spi3_tx, wav_get_sample_rate(), wav_get_bit_per_sample());
+	HAL_I2S_Transmit_DMA(hi2s, &(buffer[AUDIO_HALF_BUFFER_SIZE - buf_pos]), AUDIO_BUFFER_SIZE);
+	while(size < file_size){	
+		if(file_read_flag){
+			HAL_I2S_Transmit_DMA(hi2s, &(buffer[AUDIO_HALF_BUFFER_SIZE - buf_pos]), AUDIO_BUFFER_SIZE);
+			f_read(&myFILE, &(buffer[buf_pos]), AUDIO_BUFFER_SIZE_DOUBLE, &fnum);
+			size += AUDIO_BUFFER_SIZE;
+			//HAL_I2S_Transmit(hi2s, buffer[buffer_flag], AUDIO_BUFFER_SIZE, 1000000);
+			file_read_flag = 0;
+		}
+	}
+	music_play_flag = 0;
+	f_close(&myFILE);
+	
+}
+
+
+
+void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s){
+	if(music_play_flag){
+		buf_pos = 0;
+	}
+	else
+		tx_dma_done = 0;
+	
+	file_read_flag = 1;
+	
+}
+
+void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s){
+	if(music_play_flag){
+		buf_pos = AUDIO_HALF_BUFFER_SIZE;
+	}
+	else
+		tx_dma_done = 0;
+	
+	file_read_flag = 1;
+}
+
+void i2s_DMA_error_callback(DMA_HandleTypeDef *hdma){
+		HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,0);
 }

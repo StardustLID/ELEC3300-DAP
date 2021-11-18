@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../FATFS/Target;  ../FATFS/App;  ../USB_DEVICE/App;  ../USB_DEVICE/Target;  ../Core/Inc;  ../Drivers/STM32F4xx_HAL_Driver/Inc;  ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;  ../Middlewares/Third_Party/FatFs/src;  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;  ../Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Inc;  ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;  ../Drivers/CMSIS/Include;  ../Middlewares/Third_Party/ARM_CMSIS/CMSIS/DSP/Include;  ../MP3/real;  ../MP3/pub</IncludePath>
+              <IncludePath>../FATFS/Target;   ../FATFS/App;   ../USB_DEVICE/App;   ../USB_DEVICE/Target;   ../Core/Inc;   ../Drivers/STM32F4xx_HAL_Driver/Inc;   ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;   ../Middlewares/Third_Party/FatFs/src;   ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;   ../Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Inc;   ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;   ../Drivers/CMSIS/Include;   ../Middlewares/Third_Party/ARM_CMSIS/CMSIS/DSP/Include;   ../MP3/real;   ../MP3/pub</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>

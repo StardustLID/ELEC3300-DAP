@@ -52,6 +52,7 @@ typedef struct wav_tag_header{
 }wav_tag_header;
 
 
+
 #define WAV_INFO_ID_ARTIST		"IART" // The artist of the original subject of the file
 #define WAV_INFO_ID_TITLE			"INAM" // Title of the subject of the file (name)
 #define WAV_INFO_ID_ALBUM			"IPRD" // Name of the title the subject was originally intended for
@@ -64,5 +65,8 @@ typedef struct wav_tag_header{
 #define WAV_ID_END_OF_LIST		"INFO"
 
 void wav_read_header(char* file_name);
-void wav_play_music(I2S_HandleTypeDef* hi2s,char* file_name);
+uint32_t wav_get_file_size(void);
+uint32_t wav_get_sample_rate(void);
+uint16_t wav_get_bit_per_sample(void);
+uint32_t wav_get_data_offest(void);
 #endif

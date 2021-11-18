@@ -132,7 +132,7 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
-	codec_init(&hi2c1);
+	codec_init(&hi2c1, &hi2s3, &hdma_spi3_tx);
 	
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
@@ -142,10 +142,6 @@ int main(void)
 	FRESULT res;
 	res = f_mount(&myFATFS,SDPath,1);
 
-	static uint32_t buf0 = {0};
-	static uint32_t buf1 = {0};
-	
-	//HAL_DMAEx_MultiBufferStart_IT(&hdma_spi3_tx, buf0, (uint32_t)*(hi2s3.pTxBuffPtr), buf1,16);
 	
 	if (res == FR_OK)
 	{
@@ -153,7 +149,8 @@ int main(void)
 		wav_read_header("Sample-wav-file.wav");
 	}
 
-	wav_play_music(&hi2s3, "Sample-wav-file.wav");
+	codec_play_music(&hi2s3, &hdma_spi3_tx,"Sample-wav-file.wav");
+	//wav_play_music(&hi2s3, "Sample-wav-file.wav");
 
 	
   /* USER CODE END 2 */
@@ -301,6 +298,7 @@ static void MX_I2S3_Init(void)
   /* USER CODE BEGIN I2S3_Init 1 */
 
   /* USER CODE END I2S3_Init 1 */
+	/*
   hi2s3.Instance = SPI3;
   hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
   hi2s3.Init.Standard = I2S_STANDARD_PHILIPS;
@@ -314,6 +312,7 @@ static void MX_I2S3_Init(void)
   {
     Error_Handler();
   }
+	*/
   /* USER CODE BEGIN I2S3_Init 2 */
 
   /* USER CODE END I2S3_Init 2 */
@@ -513,8 +512,10 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Stream5_IRQn interrupt configuration */
+	/*
   HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+	*/
   /* DMA2_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
