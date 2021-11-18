@@ -18,7 +18,7 @@
 #define      LCD_BK_PORT               GPIOD
 #define      LCD_BK_PIN                GPIO_PIN_12
 
-#define      DEBUG_DELAY()                
+#define      DEBUG_DELAY()             HAL_Delay(1);
 
 #define      LCD_Default_Max_COLUMN	240     
 #define      LCD_Default_Max_PAGE	320     

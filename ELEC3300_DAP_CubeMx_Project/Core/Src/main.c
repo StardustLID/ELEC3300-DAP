@@ -30,6 +30,7 @@
 #include "file_sys_func.h"
 #include "wav_decoder.h"
 #include "codec.h"
+#include "volume_bar.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -69,6 +70,7 @@ SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
 uint32_t encoder_value = 0;
+uint8_t volume = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -137,7 +139,6 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
-  HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 
   // comment / uncomment below to test Stardust menu
   MENU_Welcome();
@@ -171,26 +172,46 @@ int main(void)
 	// LCD_DrawString(0,300,string);
 	// wav_play_music(&hi2s3, "Sample-wav-file.wav");
 
-  uint8_t enc_string[1024] = {0};
-	
+	VOL_CreateVolBar();
+  HAL_Delay(200);
+  HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    uint32_t enc_prev = encoder_value;
 		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
-		sprintf(enc_string, "encoder value:%d          ",encoder_value);
+    
+    char enc_string[20];
+		sprintf(enc_string, "encoder value:%d     ",encoder_value);
+
+    if (encoder_value > enc_prev) {
+      if (volume < 100) VOL_UpdateVolBar(volume, true);
+    } else if (encoder_value < enc_prev) {
+      if (volume > 0) VOL_UpdateVolBar(volume, false);
+    }
+    
+    if (encoder_value > enc_prev) {
+      if (volume < 100) volume++;
+    } else if (encoder_value < enc_prev) {
+      if (volume > 0) volume--;
+    }
+
+    char vol_str[4];
+    sprintf(vol_str, "%d", volume);
+		LCD_DrawString(0,280, vol_str);
 		LCD_DrawString(0,300, enc_string);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		// uint32_t this_tick = HAL_GetTick();
-		// static uint32_t last_led_tick = 0;
-		// if(this_tick - last_led_tick >= 300){
-		// 	HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
-		// 	last_led_tick = this_tick;
-		// }
+		uint32_t this_tick = HAL_GetTick();
+		static uint32_t last_led_tick = 0;
+		if(this_tick - last_led_tick >= 300){
+			HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
+			last_led_tick = this_tick;
+		}
   }
   /* USER CODE END 3 */
 }
