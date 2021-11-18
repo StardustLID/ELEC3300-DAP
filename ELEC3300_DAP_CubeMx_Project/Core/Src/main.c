@@ -68,7 +68,7 @@ UART_HandleTypeDef huart2;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
-
+uint32_t encoder_value = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -137,39 +137,41 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
+  HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 
   // comment / uncomment below to test Stardust menu
   MENU_Welcome();
 
-	while( ! XPT2046_Touch_Calibrate () );
+	// while( ! XPT2046_Touch_Calibrate () );
 
-	LCD_GramScan ( 1 );
+	// LCD_GramScan ( 1 );
 	
-  MENU_SetSongTimer(&htim6);
-  MENU_Main();
-  /*******************************/
+  // MENU_SetSongTimer(&htim6);
+  // MENU_Main();
+  // /*******************************/
 	
-	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
-	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
-	HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
+	// HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
+	// HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
+	// HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
 	
-	FATFS myFATFS;
-	FRESULT res;
-	res = f_mount(&myFATFS,SDPath,1);
+	// FATFS myFATFS;
+	// FRESULT res;
+	// res = f_mount(&myFATFS,SDPath,1);
 
-	if (res == FR_OK)
-	{
-		scan_file("0:/MUSIC");
-		wav_read_header("Sample-wav-file.wav");
-	}
+	// if (res == FR_OK)
+	// {
+	// 	scan_file("0:/MUSIC");
+	// 	wav_read_header("Sample-wav-file.wav");
+	// }
 	
-	uint8_t data[2] = {0};
-	char string[50] = {0};
-	HAL_I2C_Mem_Read(&hi2c1,WM8918_DEVICE_ID, 0x00, 2, data,2 ,100);
-	sprintf(string, "data: %x, %x", data[0], data[1]);
-	LCD_DrawString(0,300,string);
-	wav_play_music(&hi2s3, "Sample-wav-file.wav");
+	// uint8_t data[2] = {0};
+	// char string[50] = {0};
+	// HAL_I2C_Mem_Read(&hi2c1,WM8918_DEVICE_ID, 0x00, 2, data,2 ,100);
+	// sprintf(string, "data: %x, %x", data[0], data[1]);
+	// LCD_DrawString(0,300,string);
+	// wav_play_music(&hi2s3, "Sample-wav-file.wav");
 
+  uint8_t enc_string[1024] = {0};
 	
   /* USER CODE END 2 */
 
@@ -177,15 +179,18 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
+		sprintf(enc_string, "encoder value:%d          ",encoder_value);
+		LCD_DrawString(0,300, enc_string);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		uint32_t this_tick = HAL_GetTick();
-		static uint32_t last_led_tick = 0;
-		if(this_tick - last_led_tick >= 300){
-			HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
-			last_led_tick = this_tick;
-		}
+		// uint32_t this_tick = HAL_GetTick();
+		// static uint32_t last_led_tick = 0;
+		// if(this_tick - last_led_tick >= 300){
+		// 	HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
+		// 	last_led_tick = this_tick;
+		// }
   }
   /* USER CODE END 3 */
 }
