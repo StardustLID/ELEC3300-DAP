@@ -25,10 +25,12 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "lcdtp.h"
+#include "xpt2046.h"
 #include "menu.h"
 #include "file_sys_func.h"
 #include "wav_decoder.h"
 #include "codec.h"
+#include "volume_bar.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,7 +69,8 @@ UART_HandleTypeDef huart2;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
-
+uint32_t encoder_value = 0;
+uint8_t volume = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -126,7 +129,7 @@ int main(void)
   MX_I2C2_Init();
   MX_I2S3_Init();
   MX_SDIO_SD_Init();
-  MX_SPI1_Init();
+  //MX_SPI1_Init();
   MX_TIM5_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
@@ -139,7 +142,8 @@ int main(void)
   codec_init(&hi2c1);
 
   // comment / uncomment below to test Stardust menu
-  // MENU_Welcome();
+  MENU_Welcome();
+  LCD_Clear(0, 0, 240, 320, DARK);
 
 	// while( ! XPT2046_Touch_Calibrate () );
 
@@ -147,11 +151,7 @@ int main(void)
 	
   // MENU_SetSongTimer(&htim6);
   // MENU_Main();
-  /*******************************/
-	
-	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
-	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
-	HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
+  // /*******************************/
 	
 	FATFS myFATFS;
 	FRESULT res;
@@ -170,12 +170,41 @@ int main(void)
 	wav_play_music(&hi2s3, "Sample-wav-file.wav");
 
 	
+	// uint8_t data[2] = {0};
+	// char string[50] = {0};
+	// HAL_I2C_Mem_Read(&hi2c1,WM8918_DEVICE_ID, 0x00, 2, data,2 ,100);
+	// sprintf(string, "data: %x, %x", data[0], data[1]);
+	// LCD_DrawString(0,300,string);
+	// wav_play_music(&hi2s3, "Sample-wav-file.wav");
+
+	VOL_CreateVolBar();
+  HAL_Delay(200);
+  HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    uint32_t enc_prev = encoder_value;
+		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
+    
+    char enc_string[20];
+		sprintf(enc_string, "enc val: %d", encoder_value);
+
+    if (encoder_value > enc_prev) {
+      if (volume < 100) {
+        VOL_UpdateVolBar(volume, true);
+        volume++;
+      }
+    } else if (encoder_value < enc_prev) {
+      if (volume > 0) {
+        VOL_UpdateVolBar(volume, false);
+        volume--;
+      }
+    }
+
+		LCD_DrawString(0,300, enc_string);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -594,8 +623,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, LED0_Pin|LED1_Pin|LED2_Pin|Buzzer_Pin
-                          |GPIO_PIN_1, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, LED0_Pin|LED1_Pin|LED2_Pin|Buzzer_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
@@ -657,13 +685,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Jack_detect_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PE1 */
-  GPIO_InitStruct.Pin = GPIO_PIN_1;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
-  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
 }
 

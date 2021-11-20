@@ -9,16 +9,16 @@
 #define      FSMC_Bank1_NORSRAMx       FSMC_Bank1_NORSRAM1
 
 #define      LCD_RST_APBxClock_FUN     RCC_APB2PeriphClockCmd
-#define      LCD_RST_CLK               RCC_APB2Periph_GPIOE   
-#define      LCD_RST_PORT              GPIOE
-#define      LCD_RST_PIN               GPIO_PIN_1
+#define      LCD_RST_CLK               RCC_APB2Periph_GPIOD
+#define      LCD_RST_PORT              GPIOD
+#define      LCD_RST_PIN               GPIO_PIN_13
 
 #define      LCD_BK_APBxClock_FUN      RCC_APB2PeriphClockCmd
-#define      LCD_BK_CLK                RCC_APB2Periph_GPIOD    
+#define      LCD_BK_CLK                RCC_APB2Periph_GPIOD
 #define      LCD_BK_PORT               GPIOD
 #define      LCD_BK_PIN                GPIO_PIN_12
 
-#define      DEBUG_DELAY()                
+#define      DEBUG_DELAY()             HAL_Delay(3);
 
 #define      LCD_Default_Max_COLUMN	240     
 #define      LCD_Default_Max_PAGE	320     

@@ -16,6 +16,7 @@ void LCD_INIT ( void )
 	LCD_Rst();
 	LCD_REG_Config();
 	LCD_Clear (0, 0, 240, 320, BACKGROUND);
+	HAL_Delay(100); // F4 too fast
 }
 
 

@@ -53,11 +53,11 @@ static void XPT2046_WriteCMD ( uint8_t ucCmd )
 	{
 		( ( ucCmd >> ( 7 - i ) ) & 0x01 ) ? macXPT2046_MOSI_1() : macXPT2046_MOSI_0();
 		
-	  XPT2046_DelayUS ( 5 );
+	  XPT2046_DelayUS(macXPT2046_WRITE_DELAY);
 		
 		macXPT2046_CLK_HIGH();
 
-	  XPT2046_DelayUS ( 5 );
+	  XPT2046_DelayUS(macXPT2046_WRITE_DELAY);
 
 		macXPT2046_CLK_LOW();
 	}
@@ -110,7 +110,7 @@ static void XPT2046_ReadAdc_XY ( int16_t * sX_Ad, int16_t * sY_Ad )
 	
 	sX_Ad_Temp = XPT2046_ReadAdc ( macXPT2046_CHANNEL_X );
 
-	XPT2046_DelayUS ( 1 ); 
+	XPT2046_DelayUS(macXPT2046_READ_DELAY); 
 
 	sY_Ad_Temp = XPT2046_ReadAdc ( macXPT2046_CHANNEL_Y ); 
 	

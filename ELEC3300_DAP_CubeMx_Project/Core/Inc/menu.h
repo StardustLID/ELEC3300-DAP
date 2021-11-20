@@ -5,14 +5,10 @@
 
 #include "stm32f4xx_hal.h"
 #include "lcdtp.h"
+#include "point.h"
 
 #define SONG_NAME_USP 240
 #define BTN_HEIGHT 30
-
-typedef struct {
-	const uint16_t x;
-	const uint16_t y;
-} Point;
 
 typedef struct {
 	const Point pos;
