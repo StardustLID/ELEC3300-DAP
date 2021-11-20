@@ -24,7 +24,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lcd.h"
+#include "lcdtp.h"
+#include "menu.h"
 #include "file_sys_func.h"
 #include "wav_decoder.h"
 #include "codec.h"
@@ -58,6 +59,7 @@ DMA_HandleTypeDef hdma_sdio_tx;
 SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim5;
+TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
@@ -81,6 +83,7 @@ static void MX_TIM5_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_DMA_Init(void);
+static void MX_TIM6_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -130,14 +133,26 @@ int main(void)
   MX_FATFS_Init();
   MX_DMA_Init();
   MX_USB_DEVICE_Init();
+  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
-	codec_init(&hi2c1);
+  codec_init(&hi2c1);
+
+  // comment / uncomment below to test Stardust menu
+  // MENU_Welcome();
+
+	// while( ! XPT2046_Touch_Calibrate () );
+
+	// LCD_GramScan ( 1 );
+	
+  // MENU_SetSongTimer(&htim6);
+  // MENU_Main();
+  /*******************************/
 	
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
 	HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
-	//LCD_Clear(0, 0, 240, 320, BACKGROUND);
+	
 	FATFS myFATFS;
 	FRESULT res;
 	res = f_mount(&myFATFS,SDPath,1);
@@ -152,7 +167,6 @@ int main(void)
 		scan_file("0:/MUSIC");
 		wav_read_header("Sample-wav-file.wav");
 	}
-
 	wav_play_music(&hi2s3, "Sample-wav-file.wav");
 
 	
@@ -436,6 +450,44 @@ static void MX_TIM5_Init(void)
 }
 
 /**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 8400-1;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 10000-1;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -542,7 +594,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, LED0_Pin|LED1_Pin|LED2_Pin|Buzzer_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, LED0_Pin|LED1_Pin|LED2_Pin|Buzzer_Pin
+                          |GPIO_PIN_1, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SPI1_CS_GPIO_Port, SPI1_CS_Pin, GPIO_PIN_RESET);
@@ -551,7 +604,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(EEPROM_WP_GPIO_Port, EEPROM_WP_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, LCD_BLK_Pin|LCD_RST_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LCD_BLK_GPIO_Port, LCD_BLK_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : LED0_Pin LED1_Pin LED2_Pin Buzzer_Pin */
   GPIO_InitStruct.Pin = LED0_Pin|LED1_Pin|LED2_Pin|Buzzer_Pin;
@@ -586,12 +639,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(EEPROM_WP_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LCD_BLK_Pin LCD_RST_Pin */
-  GPIO_InitStruct.Pin = LCD_BLK_Pin|LCD_RST_Pin;
+  /*Configure GPIO pin : LCD_BLK_Pin */
+  GPIO_InitStruct.Pin = LCD_BLK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(LCD_BLK_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LCD__PREIRQ_Pin */
   GPIO_InitStruct.Pin = LCD__PREIRQ_Pin;
@@ -604,6 +657,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Jack_detect_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PE1 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
 }
 

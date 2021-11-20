@@ -1,7 +1,7 @@
 #include "main.h"
 #include "wav_decoder.h"
 #include "codec.h"
-#include "lcd.h"
+#include "lcdtp.h"
 
 void codec_init(I2C_HandleTypeDef *hi2c){
 	uint8_t buf[2] = {0};// 0: device address 1:device address 2:reg_address 3:reg_address

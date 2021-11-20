@@ -10,8 +10,7 @@
       <TargetName>ELEC3300_DAP_CubeMx_Project</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060528::V5.06 update 5 (build 528)::ARMCC</pCCUsed>
-      <uAC6>0</uAC6>
+      <pCCUsed>5060422::V5.06 update 4 (build 422)::ARMCC</pCCUsed>
       <TargetOption>
         <TargetCommonOption>
           <Device>STM32F407VETx</Device>
@@ -411,11 +410,6 @@
               <FilePath>..\Core\Src\file_sys_func.c</FilePath>
             </File>
             <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\lcd.c</FilePath>
-            </File>
-            <File>
               <FileName>MP3_decoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\MP3_decoder.c</FilePath>
@@ -429,6 +423,21 @@
               <FileName>codec.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\codec.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcdtp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\lcdtp.c</FilePath>
+            </File>
+            <File>
+              <FileName>menu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\menu.c</FilePath>
+            </File>
+            <File>
+              <FileName>xpt2046.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\xpt2046.c</FilePath>
             </File>
           </Files>
         </Group>
