@@ -129,7 +129,7 @@ int main(void)
   MX_I2C2_Init();
   MX_I2S3_Init();
   MX_SDIO_SD_Init();
-  MX_SPI1_Init();
+  //MX_SPI1_Init();
   MX_TIM5_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
@@ -142,6 +142,7 @@ int main(void)
 
   // comment / uncomment below to test Stardust menu
   MENU_Welcome();
+  LCD_Clear(0, 0, 240, 320, DARK);
 
 	// while( ! XPT2046_Touch_Calibrate () );
 
@@ -185,23 +186,20 @@ int main(void)
 		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
     
     char enc_string[20];
-		sprintf(enc_string, "encoder value:%d     ",encoder_value);
+		sprintf(enc_string, "enc val: %d", encoder_value);
 
     if (encoder_value > enc_prev) {
-      if (volume < 100) VOL_UpdateVolBar(volume, true);
+      if (volume < 100) {
+        VOL_UpdateVolBar(volume, true);
+        volume++;
+      }
     } else if (encoder_value < enc_prev) {
-      if (volume > 0) VOL_UpdateVolBar(volume, false);
-    }
-    
-    if (encoder_value > enc_prev) {
-      if (volume < 100) volume++;
-    } else if (encoder_value < enc_prev) {
-      if (volume > 0) volume--;
+      if (volume > 0) {
+        VOL_UpdateVolBar(volume, false);
+        volume--;
+      }
     }
 
-    char vol_str[4];
-    sprintf(vol_str, "%d", volume);
-		LCD_DrawString(0,280, vol_str);
 		LCD_DrawString(0,300, enc_string);
     /* USER CODE END WHILE */
 

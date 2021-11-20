@@ -7,7 +7,12 @@
 #include "lcdtp.h"
 #include "point.h"
 
+#define VOL_BAR_X0 7
+#define VOL_BAR_Y0 59
+#define VOL_BAR_UPDATE_X0 8 // VOL_BAR_X0 + 1
+#define VOL_BAR_UPDATE_X1 15 // VOL_BAR_X0 + WIDTH_EN_CHAR - 3
 #define LEVEL_HEIGHT 2
+#define UPDATE_VOL_BAR_DELAY 7
 
 typedef struct {
 	const Point pos;
@@ -17,8 +22,8 @@ typedef struct {
 	uint8_t volume;
 } VolumeBar;
 
-static VolumeBar volumeBar = {
-	.pos = {7, 59},
+static const VolumeBar volumeBar = {
+	.pos = {VOL_BAR_X0, VOL_BAR_Y0},
     .height = 202, // 2 px per interval, 1 px for box
     .width = WIDTH_EN_CHAR + 2,
 	.usColor = CYAN
@@ -35,8 +40,8 @@ void VOL_CreateVolBar(void);
 void VOL_UpdateVolBar(uint8_t initVol, bool isIncrease);
 
 /**
- * render the change in volume text
+ * private: render the change in volume text
  */
-// void VOL_UpdateVolText(void);
+static void _updateVolText(uint8_t newVol);
 
 #endif

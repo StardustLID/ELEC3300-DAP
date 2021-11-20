@@ -439,6 +439,11 @@
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>volume_bar.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\volume_bar.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
