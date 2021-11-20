@@ -19,8 +19,6 @@ typedef struct mp3_tag_frame_header{
 	uint16_t flag;
 }mp3_tag_frame_header;
 
-inline void MP3_ID3_2v3_size_decode(mp3_tag_header* tag_header, uint8_t* raw_size);
-
 #define MP3_FRAME_ID_ALBUM_TITLE			"TALB"
 #define MP3_FRAME_ID_SONG_TITLE				"TIT2"
 #define MP3_FRAME_ID_LYRICIST					"TEXT"
@@ -29,5 +27,7 @@ inline void MP3_ID3_2v3_size_decode(mp3_tag_header* tag_header, uint8_t* raw_siz
 #define MP3_FRAME_ID_UNSYNC_LYRICIST	"SYLT"
 
 
+void mp3_read_header(char* file_name);
+void mp3_play_music(const uint8_t* file_name);
 
 #endif

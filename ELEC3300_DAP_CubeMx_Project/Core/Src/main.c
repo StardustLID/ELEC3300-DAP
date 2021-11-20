@@ -148,6 +148,7 @@ int main(void)
 		scan_file("0:/MUSIC");
 		wav_read_header("Sample-wav-file.wav");
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
+		mp3_read_header("Kalimab.mp3");
 		
 		codec_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
 	//codec_play_music(&hi2s3, &hdma_spi3_tx,"Ensoniq-ZR-76-01-Dope-77.wav");

@@ -210,9 +210,7 @@ void codec_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c, char* fi
 	strcat(path, file_name);
 
 	char ReadBuffer[2] = {0};
-	
-	uint16_t data = 0;
-	
+		
 	size = wav_get_data_offest();
 	file_size = wav_get_file_size();
 	
@@ -237,6 +235,7 @@ void codec_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c, char* fi
 		}
 	}
 	HAL_I2S_DMAStop(hi2s);
+	f_close(&myFILE);
 }
 
 void codec_volume_update(uint16_t volume, I2C_HandleTypeDef *hi2c){

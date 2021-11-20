@@ -10,9 +10,6 @@
 wav_tag_header wav_tag = {0};
 
 void wav_read_header(char* file_name){
-	FIL myFILE;
-	FRESULT res;
-	UINT fnum;
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
 	char string[1024] = {0};
 	
