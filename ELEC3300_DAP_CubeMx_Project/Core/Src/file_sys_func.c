@@ -3,8 +3,12 @@
 #include "lcd.h"
 #include <string.h>
 #include "file_sys_func.h"
+#include "codec.h"
 
 char filelist[NUM_OF_SCAN_FILE_MAX][_MAX_LFN] = {0};
+FIL myFILE;
+FRESULT res;
+UINT fnum;
 
 FRESULT scan_file(const TCHAR* path){
 	DIR dir;
@@ -55,5 +59,12 @@ void find_file_type(char* file_name, char* output_file_type){
 		ptr++;
 	}
 }
-
-//f_lseek(&myFILE, f_tell(&myFILE) - 4); f_tell return current read/write pointer value
+file_ending file_read_for_wav(void* buff,	UINT buf_size, uint32_t* read_size, const uint32_t file_size){
+	f_read(&myFILE, buff, buf_size, &fnum);
+	*read_size += AUDIO_BUFFER_SIZE;
+	HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
+	if(*read_size >= file_size){
+		f_close(&myFILE);
+	}
+	
+}

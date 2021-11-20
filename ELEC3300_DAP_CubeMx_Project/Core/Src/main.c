@@ -148,12 +148,16 @@ int main(void)
 		scan_file("0:/MUSIC");
 		wav_read_header("Sample-wav-file.wav");
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
-    
-	}
-
-	codec_play_music(&hi2s3, &hdma_spi3_tx,"Sample-wav-file.wav");
+		
+		codec_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
 	//codec_play_music(&hi2s3, &hdma_spi3_tx,"Ensoniq-ZR-76-01-Dope-77.wav");
 	//wav_play_music(&hi2s3, "Sample-wav-file.wav");
+    
+	}
+	else{
+		LCD_DrawString(0,0,"Cannot mount FATFS");
+	}
+	
 
 	
   /* USER CODE END 2 */
@@ -301,7 +305,6 @@ static void MX_I2S3_Init(void)
   /* USER CODE BEGIN I2S3_Init 1 */
 
   /* USER CODE END I2S3_Init 1 */
-	
   hi2s3.Instance = SPI3;
   hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
   hi2s3.Init.Standard = I2S_STANDARD_PHILIPS;
@@ -315,7 +318,6 @@ static void MX_I2S3_Init(void)
   {
     Error_Handler();
   }
-	
   /* USER CODE BEGIN I2S3_Init 2 */
 
   /* USER CODE END I2S3_Init 2 */
