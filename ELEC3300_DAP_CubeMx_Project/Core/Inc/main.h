@@ -78,6 +78,8 @@ void Error_Handler(void);
 #define EEPROM_WP_GPIO_Port GPIOB
 #define LCD_BLK_Pin GPIO_PIN_12
 #define LCD_BLK_GPIO_Port GPIOD
+#define LCD_RST_Pin GPIO_PIN_13
+#define LCD_RST_GPIO_Port GPIOD
 #define LCD__PREIRQ_Pin GPIO_PIN_6
 #define LCD__PREIRQ_GPIO_Port GPIOC
 #define Jack_detect_Pin GPIO_PIN_6

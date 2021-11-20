@@ -4,6 +4,7 @@
 #include "lcdtp.h"
 #include <string.h>
 #include "wav_decoder.h"
+#include "codec.h"
 #include "file_sys_func.h"
 
 wav_tag_header wav_tag = {0};
@@ -173,6 +174,8 @@ void wav_play_music(I2S_HandleTypeDef* hi2s,char* file_name){
 	uint32_t size = wav_tag.data_chunk.data_offest;
 	uint16_t data = 0;
 	
+	coded_i2s_set_up(hi2s, wav_tag.fmt_chunk.sample_rate, wav_tag.fmt_chunk.bit_per_sample);
+	
 	f_open(&myFILE, path, FA_READ |FA_OPEN_EXISTING);
 	
 	f_lseek(&myFILE, wav_tag.data_chunk.data_offest); // jump to the music data
@@ -180,8 +183,9 @@ void wav_play_music(I2S_HandleTypeDef* hi2s,char* file_name){
 	while(size < wav_tag.file_size){
 		f_read(&myFILE, ReadBuffer, 2, &fnum); // read the sub-chunk ID, size
 		data = ReadBuffer[0] << 8 | ReadBuffer[1];
-		sprintf(string, "data: %x ", data);
-		LCD_DrawString(0,300,string);
+		HAL_I2S_Transmit(hi2s,&data,1,50);
+		//sprintf(string, "data: %x ", data);
+		//LCD_DrawString(0,300,string);
 		size += 2;
 	}
 	
