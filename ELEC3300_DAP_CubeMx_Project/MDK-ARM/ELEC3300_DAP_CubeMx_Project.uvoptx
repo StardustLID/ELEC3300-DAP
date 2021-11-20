@@ -320,8 +320,6 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Core\Src\lcdtp.c</PathWithFileName>
-      <FilenameWithoutPath>lcdtp.c</FilenameWithoutPath>
       <PathWithFileName>..\Core\Src\MP3_decoder.c</PathWithFileName>
       <FilenameWithoutPath>MP3_decoder.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
@@ -334,8 +332,6 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Core\Src\menu.c</PathWithFileName>
-      <FilenameWithoutPath>menu.c</FilenameWithoutPath>
       <PathWithFileName>..\Core\Src\wav_decoder.c</PathWithFileName>
       <FilenameWithoutPath>wav_decoder.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
@@ -348,8 +344,6 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Core\Src\xpt2046.c</PathWithFileName>
-      <FilenameWithoutPath>xpt2046.c</FilenameWithoutPath>
       <PathWithFileName>..\Core\Src\codec.c</PathWithFileName>
       <FilenameWithoutPath>codec.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
@@ -362,8 +356,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../Core/Src/main.c</PathWithFileName>
-      <FilenameWithoutPath>main.c</FilenameWithoutPath>
+      <PathWithFileName>..\Core\Src\lcdtp.c</PathWithFileName>
+      <FilenameWithoutPath>lcdtp.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -374,8 +368,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../Core/Src/stm32f4xx_it.c</PathWithFileName>
-      <FilenameWithoutPath>stm32f4xx_it.c</FilenameWithoutPath>
+      <PathWithFileName>..\Core\Src\menu.c</PathWithFileName>
+      <FilenameWithoutPath>menu.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -386,8 +380,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../Core/Src/stm32f4xx_hal_msp.c</PathWithFileName>
-      <FilenameWithoutPath>stm32f4xx_hal_msp.c</FilenameWithoutPath>
+      <PathWithFileName>..\Core\Src\xpt2046.c</PathWithFileName>
+      <FilenameWithoutPath>xpt2046.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
