@@ -69,6 +69,10 @@ UART_HandleTypeDef huart2;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
+// song menu variables
+uint8_t numSongs = 0;
+char **songName; // dynamic 2D char array
+
 uint32_t encoder_value = 0;
 uint8_t volume = 0;
 /* USER CODE END PV */
@@ -141,8 +145,13 @@ int main(void)
 	LCD_INIT();
   codec_init(&hi2c1);
 
+  // songName = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
+  // for(uint8_t i = 0; i < NUM_OF_SCAN_FILE_MAX; i++) {
+  //   songName[i] = malloc(_MAX_LFN * sizeof(char)); // malloc each row
+  // }
+
   // comment / uncomment below to test Stardust menu
-  MENU_Welcome();
+  // MENU_Welcome();
   LCD_Clear(0, 0, 240, 320, DARK);
 
 	// while( ! XPT2046_Touch_Calibrate () );
@@ -164,11 +173,23 @@ int main(void)
 	
 	if (res == FR_OK)
 	{
-		scan_file("0:/MUSIC");
+		scan_file("0:/MUSIC", &numSongs, songName);
+
+    // testing
+    char numSongs_str[11];
+    sprintf(numSongs_str, "# songs: %d", numSongs);
+    LCD_DrawString(0, 0, numSongs_str);
+
+    for (uint8_t i = 0; i < numSongs; i++) {
+      LCD_DrawString(0, 16*(i+1), songName[i]);
+    }
+    // end testing
+
 		wav_read_header("Sample-wav-file.wav");
 	}
 	wav_play_music(&hi2s3, "Sample-wav-file.wav");
 
+  while (1) {} // for testing only
 	
 	// uint8_t data[2] = {0};
 	// char string[50] = {0};

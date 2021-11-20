@@ -1,40 +1,54 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "main.h"
+#include "stm32f4xx_hal.h"
 #include "fatfs.h"
 #include "lcdtp.h"
 #include "file_sys_func.h"
 
 char filelist[NUM_OF_SCAN_FILE_MAX][_MAX_LFN] = {0};
 
-FRESULT scan_file(const TCHAR* path){
+// assumption: all song files are stored in `path`
+FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** songName){
 	DIR dir;
 	FILINFO fno;
 	FRESULT res;
 	
+	// open directory
 	res = f_opendir(&dir, path);
 	if(res == FR_OK){
 		char string[256] = {0};
-		int num_of_file = 0;
+		uint8_t num_of_files = 0;
+		
+		// scan for files
 		while(1){
 			res = f_readdir(&dir,&fno);
 			if(*(fno.fname) == '.') continue;
 			if(fno.fname[0] == 0 || res != FR_OK){
 				break;
 			}
-			strcpy(filelist[num_of_file], fno.fname);
-			sprintf(string, "name: %s", filelist[num_of_file]);
-			LCD_DrawString(0,num_of_file*20,string);
-			
+			// strcpy(filelist[num_of_files], fno.fname);
+			// sprintf(string, "name: %s", filelist[num_of_files]);
+			// LCD_DrawString(0,num_of_files*20,string);
+
+			// char* temp = malloc(_MAX_LFN * sizeof(char));
+			strcpy(string, fno.fname);
+			LCD_DrawString(0, 16, string);
+			songName[num_of_files] = string;
+			LCD_DrawString(0, 32, songName[num_of_files]);
+			HAL_Delay(500);
 			char file_type[10] = {0};
-			find_file_type(filelist[num_of_file], file_type);
+			find_file_type(filelist[num_of_files], file_type);
 			sprintf(string, "file type: %s", file_type);
-			LCD_DrawString(0,num_of_file*20 + 60,string);
+			// LCD_DrawString(0,num_of_files*20 + 60,string);
 			
-			num_of_file++;
+			num_of_files++;
 		}
+		
+		// update file info to main
+		*numSongs = num_of_files;
 	}
+
 	return res;
 }
 
