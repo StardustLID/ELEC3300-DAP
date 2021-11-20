@@ -148,8 +148,8 @@ void wav_read_header(char* file_name){
 	LCD_DrawString(0,260,string);
 	sprintf(string, "bit_per_sample: %d", wav_tag.fmt_chunk.bit_per_sample);
 	LCD_DrawString(0,280,string);
-	sprintf(string, "PCM: %d", wav_tag.fmt_chunk.codec_fmt);
-	LCD_DrawString(0,300,string);
+	//sprintf(string, "PCM: %d", wav_tag.fmt_chunk.codec_fmt);
+	//LCD_DrawString(0,300,string);
 	
 	if(strcmp(ReadBuffer, WAV_ID_DATA) == 0){
 		f_read(&myFILE, ReadBuffer, 4, &fnum);

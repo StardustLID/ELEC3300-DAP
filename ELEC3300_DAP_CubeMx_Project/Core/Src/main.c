@@ -146,13 +146,13 @@ int main(void)
 	if (res == FR_OK)
 	{
 		scan_file("0:/MUSIC");
-		// wav_read_header("Sample-wav-file.wav");
-    wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
+		wav_read_header("Sample-wav-file.wav");
+    //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
     
 	}
 
-	// codec_play_music(&hi2s3, &hdma_spi3_tx,"Sample-wav-file.wav");
-	codec_play_music(&hi2s3, &hdma_spi3_tx,"Ensoniq-ZR-76-01-Dope-77.wav");
+	codec_play_music(&hi2s3, &hdma_spi3_tx,"Sample-wav-file.wav");
+	//codec_play_music(&hi2s3, &hdma_spi3_tx,"Ensoniq-ZR-76-01-Dope-77.wav");
 	//wav_play_music(&hi2s3, "Sample-wav-file.wav");
 
 	
@@ -301,7 +301,7 @@ static void MX_I2S3_Init(void)
   /* USER CODE BEGIN I2S3_Init 1 */
 
   /* USER CODE END I2S3_Init 1 */
-	/*
+	
   hi2s3.Instance = SPI3;
   hi2s3.Init.Mode = I2S_MODE_MASTER_TX;
   hi2s3.Init.Standard = I2S_STANDARD_PHILIPS;
@@ -315,7 +315,7 @@ static void MX_I2S3_Init(void)
   {
     Error_Handler();
   }
-	*/
+	
   /* USER CODE BEGIN I2S3_Init 2 */
 
   /* USER CODE END I2S3_Init 2 */
@@ -515,8 +515,8 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Stream5_IRQn interrupt configuration */
-  //HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
-  //HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
+  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
   /* DMA2_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
