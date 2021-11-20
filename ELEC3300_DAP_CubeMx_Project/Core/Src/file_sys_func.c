@@ -1,7 +1,9 @@
+#include <stdio.h>
+#include <string.h>
+
 #include "main.h"
 #include "fatfs.h"
 #include "lcdtp.h"
-#include <string.h>
 #include "file_sys_func.h"
 
 char filelist[NUM_OF_SCAN_FILE_MAX][_MAX_LFN] = {0};

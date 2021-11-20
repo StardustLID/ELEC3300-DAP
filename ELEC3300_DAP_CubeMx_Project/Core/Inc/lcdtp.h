@@ -78,4 +78,3 @@ void LCD_DrawChar_Color ( uint16_t usC, uint16_t usP, const char cChar, uint16_t
 void LCD_DrawString_Color ( uint16_t usC, uint16_t usP, const char * pStr, uint16_t usColor_Background, uint16_t usColor_Foreground );
 void LCD_GramScan ( uint8_t ucOption );
 #endif 
-

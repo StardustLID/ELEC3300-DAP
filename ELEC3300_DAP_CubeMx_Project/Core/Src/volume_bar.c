@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 
 #include "volume_bar.h"
