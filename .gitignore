@@ -5,7 +5,10 @@
 /History
 
 // STM32 and Keil
-**/MDK-ARM
-F1-DAP.uvguix.stardust
-!*.uvoptx
-!*.uvprojx
+ELEC3300_DAP_CubeMx_Project/MDK-ARM/DebugConfig
+ELEC3300_DAP_CubeMx_Project/MDK-ARM/ELEC3300_DAP_CubeMx_Project
+ELEC3300_DAP_CubeMx_Project/MDK-ARM/RTE
+ELEC3300_DAP_CubeMx_Project/MDK-ARM/ELEC3300_DAP_CubeMx_Project.uvguix.stardust
+ELEC3300_DAP_CubeMx_Project/MDK-ARM/EventRecorderStub.scvd
+ELEC3300_DAP_CubeMx_Project/MDK-ARM/startup_stm32f407xx.lst
+ELEC3300_DAP_CubeMx_Project/MDK-ARM/startup_stm32f407xx.s
