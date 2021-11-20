@@ -1,8 +1,10 @@
+#include <stdio.h>
+#include <string.h>
+
 #include "mp3common.h"
 #include "main.h"
 #include "fatfs.h"
 #include "lcdtp.h"
-#include <string.h>
 #include "wav_decoder.h"
 #include "codec.h"
 #include "file_sys_func.h"
@@ -11,7 +13,7 @@ wav_tag_header wav_tag = {0};
 
 void wav_read_header(char* file_name){
 	FIL myFILE;
-	FRESULT res;
+	// FRESULT res;
 	UINT fnum;
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
 	char string[1024] = {0};
@@ -162,10 +164,10 @@ void wav_read_header(char* file_name){
 
 void wav_play_music(I2S_HandleTypeDef* hi2s,char* file_name){
 	FIL myFILE;
-	FRESULT res;
+	// FRESULT res;
 	UINT fnum;
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
-	char string[128] = {0};
+	// char string[128] = {0};
 	
 	strcat(path, "0:/MUSIC/");
 	strcat(path, file_name);
