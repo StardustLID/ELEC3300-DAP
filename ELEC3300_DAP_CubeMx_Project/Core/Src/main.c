@@ -139,6 +139,7 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
+  codec_init(&hi2c1);
 
   // comment / uncomment below to test Stardust menu
   MENU_Welcome();
@@ -152,19 +153,22 @@ int main(void)
   // MENU_Main();
   // /*******************************/
 	
-	// HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
-	// HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
-	// HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
-	
-	// FATFS myFATFS;
-	// FRESULT res;
-	// res = f_mount(&myFATFS,SDPath,1);
+	FATFS myFATFS;
+	FRESULT res;
+	res = f_mount(&myFATFS,SDPath,1);
 
-	// if (res == FR_OK)
-	// {
-	// 	scan_file("0:/MUSIC");
-	// 	wav_read_header("Sample-wav-file.wav");
-	// }
+	static uint32_t buf0 = {0};
+	static uint32_t buf1 = {0};
+	
+	//HAL_DMAEx_MultiBufferStart_IT(&hdma_spi3_tx, buf0, (uint32_t)*(hi2s3.pTxBuffPtr), buf1,16);
+	
+	if (res == FR_OK)
+	{
+		scan_file("0:/MUSIC");
+		wav_read_header("Sample-wav-file.wav");
+	}
+	wav_play_music(&hi2s3, "Sample-wav-file.wav");
+
 	
 	// uint8_t data[2] = {0};
 	// char string[50] = {0};
