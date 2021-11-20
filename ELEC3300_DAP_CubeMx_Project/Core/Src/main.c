@@ -146,10 +146,13 @@ int main(void)
 	if (res == FR_OK)
 	{
 		scan_file("0:/MUSIC");
-		wav_read_header("Sample-wav-file.wav");
+		// wav_read_header("Sample-wav-file.wav");
+    wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
+    
 	}
 
-	codec_play_music(&hi2s3, &hdma_spi3_tx,"Sample-wav-file.wav");
+	// codec_play_music(&hi2s3, &hdma_spi3_tx,"Sample-wav-file.wav");
+	codec_play_music(&hi2s3, &hdma_spi3_tx,"Ensoniq-ZR-76-01-Dope-77.wav");
 	//wav_play_music(&hi2s3, "Sample-wav-file.wav");
 
 	
@@ -304,7 +307,7 @@ static void MX_I2S3_Init(void)
   hi2s3.Init.Standard = I2S_STANDARD_PHILIPS;
   hi2s3.Init.DataFormat = I2S_DATAFORMAT_16B;
   hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;
-  hi2s3.Init.AudioFreq = I2S_AUDIOFREQ_96K;
+  hi2s3.Init.AudioFreq = I2S_AUDIOFREQ_44K;
   hi2s3.Init.CPOL = I2S_CPOL_LOW;
   hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
   hi2s3.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_ENABLE;
@@ -512,10 +515,8 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Stream5_IRQn interrupt configuration */
-	/*
-  HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
-	*/
+  //HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+  //HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
   /* DMA2_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream3_IRQn);
