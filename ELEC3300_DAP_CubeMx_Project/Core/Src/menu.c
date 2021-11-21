@@ -42,25 +42,39 @@ void MENU_Main() {
 	}
 }
 
-uint8_t MENU_SelectSong() {
-	// TODO: songIndex is dummy input. Actually it depends on the file read from FAT32
-	uint8_t songIndex = 0;
-	// display the current song only, better UI if time allows
-	_refreshSong(songIndex);
+uint8_t MENU_SelectSong(const uint8_t numSongs, char**songName) {
+	LCD_Clear(0, 0, 240, 320, DARK);
+
+	LCD_DrawString(0, 0, "Select song:");
+	Button** btn_songs = malloc(numSongs * sizeof(Button));
+
+	for (uint8_t i = 0; i < numSongs; i++) {
+		btn_songs[i] = {
+			.pos = {0, 2*(i+1)},
+			.height = HEIGHT_EN_CHAR,
+			.width = strlen(songName[i]),
+			.text = songName[i],
+			.usColor_Btn = CYAN,
+			.usColor_Text = DARK
+		}
+		_renderButton(btn_songs[i]);
+	}
 
 	// poll for button input
 	while (1) {
-		// if (nextSong()) {
-		// 	_refreshSong(++songIndex);
-		// }
-		// if (chooseSong()) {
-		// 	return songIndex;
-		// }
+		if (ucXPT2046_TouchFlag == 1) {
+			strType_XPT2046_Coordinate tempCoor = getTouchedPoint();
+			const Point touchPt = {tempCoor.x, tempCoor.y};
+			for (uint8_t i = 0; i < numSongs; i++) {
+				if (_btnTouched(&touchPt, btn_songs[i])) LCD_DrawString(0, 0, "selected"); // dummy
+				ucXPT2046_TouchFlag = 0;
+				return;
+			}
+		}
 	}
 }
 
 void MENU_PlaySong() {
-	// TODO: replace with icons (format tbc, with DMA)
 	LCD_Clear(0, 0, 240, 320, DARK);
 	LCD_DrawString_Color(40, 80, "Now Playing: Dummy Song", DARK, CYAN);
 	_renderButton(&btn_backward);
