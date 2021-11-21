@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "menu.h"
@@ -9,7 +10,7 @@
 
 static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usColor_Btn, uint16_t usColor_Text);
 static void _renderButton(const Button *btn);
-static void _refreshSong(uint8_t songIndex);
+// static void _refreshSong(uint8_t songIndex);
 static void _clearLine(uint16_t usP);
 static inline bool _btnTouched(const Point *touchPt, const Button *btn);
 
@@ -42,23 +43,23 @@ void MENU_Main() {
 	}
 }
 
-uint8_t MENU_SelectSong(const uint8_t numSongs, char**songName) {
+uint8_t MENU_SelectSong(uint8_t numSongs, char** songName) {
 	LCD_Clear(0, 0, 240, 320, DARK);
 
 	LCD_DrawString(0, 0, "Select song:");
-	Button** btn_songs = malloc(numSongs * sizeof(Button));
+	// Button** btn_songs = malloc(numSongs * sizeof(Button));
 
-	for (uint8_t i = 0; i < numSongs; i++) {
-		btn_songs[i] = {
-			.pos = {0, 2*(i+1)},
-			.height = HEIGHT_EN_CHAR,
-			.width = strlen(songName[i]),
-			.text = songName[i],
-			.usColor_Btn = CYAN,
-			.usColor_Text = DARK
-		}
-		_renderButton(btn_songs[i]);
-	}
+	// for (uint8_t i = 0; i < numSongs; i++) {
+	// 	btn_songs[i] = {
+	// 		.pos = {0, 2*(i+1)},
+	// 		.height = HEIGHT_EN_CHAR,
+	// 		.width = strlen(songName[i]),
+	// 		.text = songName[i],
+	// 		.usColor_Btn = CYAN,
+	// 		.usColor_Text = DARK
+	// 	}
+	// 	_renderButton(btn_songs[i]);
+	// }
 
 	// poll for button input
 	while (1) {
@@ -66,12 +67,13 @@ uint8_t MENU_SelectSong(const uint8_t numSongs, char**songName) {
 			strType_XPT2046_Coordinate tempCoor = getTouchedPoint();
 			const Point touchPt = {tempCoor.x, tempCoor.y};
 			for (uint8_t i = 0; i < numSongs; i++) {
-				if (_btnTouched(&touchPt, btn_songs[i])) LCD_DrawString(0, 0, "selected"); // dummy
+				// if (_btnTouched(&touchPt, btn_songs[i])) LCD_DrawString(0, 0, "selected"); // dummy
 				ucXPT2046_TouchFlag = 0;
-				return;
+				return 0;
 			}
 		}
 	}
+	return 0;
 }
 
 void MENU_PlaySong() {
@@ -129,13 +131,13 @@ static void _renderButton(const Button *btn) {
 	_createButton(btn->pos.x, btn->pos.y, btn->text, btn->usColor_Btn, btn->usColor_Text);
 }
 
-static void _refreshSong(uint8_t songIndex) {
-	_clearLine(SONG_NAME_USP);
-	char songName[15];
-	sprintf(songName, "dummy song %d", songIndex);
-	// LCD_DrawString(0, SONG_NAME_USP, songName);
-	_createButton(0, SONG_NAME_USP, songName, MAGENTA, YELLOW);
-}
+// static void _refreshSong(uint8_t songIndex) {
+// 	_clearLine(SONG_NAME_USP);
+// 	char songName[15];
+// 	sprintf(songName, "dummy song %d", songIndex);
+// 	// LCD_DrawString(0, SONG_NAME_USP, songName);
+// 	_createButton(0, SONG_NAME_USP, songName, MAGENTA, YELLOW);
+// }
 
 static void _clearLine(uint16_t usP) {
 	LCD_Clear(0, usP, 240, HEIGHT_EN_CHAR, WHITE);

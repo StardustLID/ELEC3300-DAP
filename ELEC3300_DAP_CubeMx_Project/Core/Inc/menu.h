@@ -78,7 +78,7 @@ void MENU_Main(void);
  * @note the menu when a song is being selected
  * @return index of the chosen song
  */
-uint8_t MENU_SelectSong(void);
+uint8_t MENU_SelectSong(uint8_t numSongs, char** songName);
 
 /**
  * @note the menu when a song is being played
