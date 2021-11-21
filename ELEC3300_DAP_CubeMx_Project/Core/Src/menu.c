@@ -9,8 +9,8 @@
 
 static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usColor_Btn, uint16_t usColor_Text);
 static void _renderButton(const Button *btn);
-static void _refreshSong(uint8_t songIndex);
-static void _clearLine(uint16_t usP);
+// static void _refreshSong(uint8_t songIndex);
+// static void _clearLine(uint16_t usP);
 static inline bool _btnTouched(const Point *touchPt, const Button *btn);
 
 static TIM_HandleTypeDef *songTimer;
@@ -42,25 +42,56 @@ void MENU_Main() {
 	}
 }
 
-uint8_t MENU_SelectSong() {
-	// TODO: songIndex is dummy input. Actually it depends on the file read from FAT32
-	uint8_t songIndex = 0;
-	// display the current song only, better UI if time allows
-	_refreshSong(songIndex);
+uint8_t MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t** fileTypes) {
+	LCD_Clear(0, 0, 240, 320, DARK);
+
+	LCD_DrawString_Color(0, 0, "Song Menu", DARK, CYAN);
+	LCD_DrawString_Color(0, 16, "Select a song:", DARK, CYAN);
+	LCD_DrawString_Color(0, 48, "Song Name", DARK, CYAN);
+	LCD_DrawString_Color(208, 48, "Type", DARK, CYAN);
+
+	// Button** btn_songs = malloc(numSongs * sizeof(Button));
+
+	for (uint8_t i = 0; i < numSongs; i++) {
+	// 	btn_songs[i] = {
+	// 		.pos = {0, 2*(i+1)},
+	// 		.height = HEIGHT_EN_CHAR,
+	// 		.width = strlen(songName[i]),
+	// 		.text = songName[i],
+	// 		.usColor_Btn = CYAN,
+	// 		.usColor_Text = DARK
+	// 	}
+	// 	_renderButton(btn_songs[i]);
+		char songItem[30];
+		sprintf(songItem, "%d. %s", i, fileNames[i]);
+		LCD_DrawString_Color(0, 16*(i+4), songItem, DARK, CYAN);
+		if (*fileTypes[i] == 1) {
+			LCD_DrawString_Color(208, 16*(i+4), ".mp3", DARK, CYAN);
+		} else if (*fileTypes[i] == 2) {
+			LCD_DrawString_Color(208, 16*(i+4), ".wav", DARK, CYAN);
+		} else if (*fileTypes[i] == 3) {
+			LCD_DrawString_Color(200, 16*(i+4), ".flac", DARK, CYAN);
+		} else {
+			LCD_DrawString_Color(208, 16*(i+4), "BUG", DARK, RED);
+		}
+	}
 
 	// poll for button input
-	while (1) {
-		// if (nextSong()) {
-		// 	_refreshSong(++songIndex);
-		// }
-		// if (chooseSong()) {
-		// 	return songIndex;
-		// }
-	}
+	// while (1) {
+	// 	if (ucXPT2046_TouchFlag == 1) {
+	// 		strType_XPT2046_Coordinate tempCoor = getTouchedPoint();
+	// 		const Point touchPt = {tempCoor.x, tempCoor.y};
+	// 		for (uint8_t i = 0; i < numSongs; i++) {
+	// 			// if (_btnTouched(&touchPt, btn_songs[i])) LCD_DrawString(0, 0, "selected"); // dummy
+	// 			ucXPT2046_TouchFlag = 0;
+	// 			return 0;
+	// 		}
+	// 	}
+	// }
+	return 0;
 }
 
 void MENU_PlaySong() {
-	// TODO: replace with icons (format tbc, with DMA)
 	LCD_Clear(0, 0, 240, 320, DARK);
 	LCD_DrawString_Color(40, 80, "Now Playing: Dummy Song", DARK, CYAN);
 	_renderButton(&btn_backward);
@@ -115,17 +146,17 @@ static void _renderButton(const Button *btn) {
 	_createButton(btn->pos.x, btn->pos.y, btn->text, btn->usColor_Btn, btn->usColor_Text);
 }
 
-static void _refreshSong(uint8_t songIndex) {
-	_clearLine(SONG_NAME_USP);
-	char songName[15];
-	sprintf(songName, "dummy song %d", songIndex);
-	// LCD_DrawString(0, SONG_NAME_USP, songName);
-	_createButton(0, SONG_NAME_USP, songName, MAGENTA, YELLOW);
-}
+// static void _refreshSong(uint8_t songIndex) {
+// 	_clearLine(SONG_NAME_USP);
+// 	char songName[15];
+// 	sprintf(songName, "dummy song %d", songIndex);
+// 	// LCD_DrawString(0, SONG_NAME_USP, songName);
+// 	_createButton(0, SONG_NAME_USP, songName, MAGENTA, YELLOW);
+// }
 
-static void _clearLine(uint16_t usP) {
-	LCD_Clear(0, usP, 240, HEIGHT_EN_CHAR, WHITE);
-}
+// static void _clearLine(uint16_t usP) {
+// 	LCD_Clear(0, usP, 240, HEIGHT_EN_CHAR, WHITE);
+// }
 
 static inline bool _btnTouched(const Point *touchPt, const Button *btn) {
 	return touchPt->x > btn->pos.x && touchPt->x < btn->pos.x + btn->width && touchPt->y > btn->pos.y && touchPt->y < btn->pos.y + btn->height;

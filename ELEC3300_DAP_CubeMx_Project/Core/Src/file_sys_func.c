@@ -1,40 +1,54 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "main.h"
-#include "fatfs.h"
+#include "stm32f4xx_hal.h"
 #include "lcdtp.h"
 #include "file_sys_func.h"
 
-char filelist[NUM_OF_SCAN_FILE_MAX][_MAX_LFN] = {0};
+// char filelist[NUM_OF_SCAN_FILE_MAX][_MAX_LFN] = {0};
 
-FRESULT scan_file(const TCHAR* path){
+// assumption: all song files are stored in `path`
+FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** fileNames, uint8_t** fileTypes) {
 	DIR dir;
 	FILINFO fno;
 	FRESULT res;
 	
+	// open directory
 	res = f_opendir(&dir, path);
 	if(res == FR_OK){
-		char string[256] = {0};
-		int num_of_file = 0;
-		while(1){
+		uint8_t numFiles = 0;
+		
+		// scan for files
+		while (1) {
 			res = f_readdir(&dir,&fno);
 			if(*(fno.fname) == '.') continue;
 			if(fno.fname[0] == 0 || res != FR_OK){
 				break;
 			}
-			strcpy(filelist[num_of_file], fno.fname);
-			sprintf(string, "name: %s", filelist[num_of_file]);
-			LCD_DrawString(0,num_of_file*20,string);
+
+			// file names
+			fileNames[numFiles] = malloc(strlen(fno.fname) + 1);
+			strcpy(fileNames[numFiles], fno.fname);
+
+			// file types / extensions
+			char fileType_buffer[10] = {0};
+			find_file_type(fileNames[numFiles], fileType_buffer);
 			
-			char file_type[10] = {0};
-			find_file_type(filelist[num_of_file], file_type);
-			sprintf(string, "file type: %s", file_type);
-			LCD_DrawString(0,num_of_file*20 + 60,string);
-			
-			num_of_file++;
+			fileTypes[numFiles] = malloc(sizeof(uint8_t));
+			if (strcmp(fileType_buffer, ".mp3")) {
+				*fileTypes[numFiles] = 1;
+			} else if (strcmp(fileType_buffer, ".wav")) {
+				*fileTypes[numFiles] = 2;
+			} else if (strcmp(fileType_buffer, ".flac")) {
+				*fileTypes[numFiles] = 3;
+			}
+
+			numFiles++;
 		}
+		
+		*numSongs = numFiles;
 	}
+
 	return res;
 }
 
