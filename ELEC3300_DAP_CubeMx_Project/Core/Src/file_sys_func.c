@@ -9,7 +9,7 @@
 char filelist[NUM_OF_SCAN_FILE_MAX][_MAX_LFN] = {0};
 
 // assumption: all song files are stored in `path`
-FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** songName){
+FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** fileNames, char** fileTypes) {
 	DIR dir;
 	FILINFO fno;
 	FRESULT res;
@@ -17,45 +17,35 @@ FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** songName){
 	// open directory
 	res = f_opendir(&dir, path);
 	if(res == FR_OK){
-		char string[256] = {0};
-		uint8_t num_of_files = 0;
+		uint8_t numFiles = 0;
 		
 		// scan for files
-		while(1){
+		while (1) {
 			res = f_readdir(&dir,&fno);
 			if(*(fno.fname) == '.') continue;
 			if(fno.fname[0] == 0 || res != FR_OK){
 				break;
 			}
-			// strcpy(filelist[num_of_files], fno.fname);
-			// sprintf(string, "name: %s", filelist[num_of_files]);
-			// LCD_DrawString(0,num_of_files*20,string);
 
-			// char temp[256] = {0};
-			// strcpy(string, fno.fname);
-			// LCD_DrawString(0, 16, string);
-			// &songName[num_of_files] = string;
-			// LCD_DrawString(0, 32, songName[num_of_files]);
-			// HAL_Delay(500);
-			char* temp = malloc(strlen(fno.fname) + 1);
-			strcpy(temp, fno.fname);
-			char hi[5];
-			sprintf(hi, "%d", num_of_files);
-			LCD_DrawString(0, 16, hi);
-			songName[num_of_files] = temp;
-			LCD_DrawString(0, 32, *(songName + num_of_files));
-			HAL_Delay(500);
+			// file names
+			fileNames[numFiles] = malloc(strlen(fno.fname) + 1);
+			strcpy(fileNames[numFiles], fno.fname);
+			// LCD_DrawString(0, 32, fileNames[numFiles]); // debug use
 
-			// char file_type[10] = {0};
-			// find_file_type(filelist[num_of_files], file_type);
-			// sprintf(string, "file type: %s", file_type);
-			// LCD_DrawString(0,num_of_files*20 + 60,string);
-			
-			num_of_files++;
+			// file types / extensions
+			char fileType_buffer[10] = {0};
+			find_file_type(fileNames[numFiles], fileType_buffer);
+			// fileTypes[numFiles] = malloc(strlen(fileType_buffer) + 1);
+			// strcpy(fileTypes[numFiles], fileType_buffer);
+			LCD_DrawString(0, numFiles*20 + 60, fileType_buffer);
+			// LCD_DrawString(0, numFiles*20 + 60, fileTypes[numFiles]); // debug use
+			HAL_Delay(300); // debug use
+
+			numFiles++;
 		}
 		
 		// update file info to main
-		*numSongs = num_of_files;
+		*numSongs = numFiles;
 	}
 
 	return res;

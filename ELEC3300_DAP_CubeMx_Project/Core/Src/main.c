@@ -71,7 +71,8 @@ SRAM_HandleTypeDef hsram1;
 /* USER CODE BEGIN PV */
 // song menu variables
 uint8_t numSongs = 0;
-char **songName; // dynamic 2D char array
+char **fileNames; // dynamic 2D char array
+char **fileTypes;
 
 uint32_t encoder_value = 0;
 uint8_t volume = 0;
@@ -145,10 +146,8 @@ int main(void)
 	LCD_INIT();
   codec_init(&hi2c1);
 
-  songName = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
-  // for(uint8_t i = 0; i < NUM_OF_SCAN_FILE_MAX; i++) {
-  //   songName[i] = malloc(_MAX_LFN * sizeof(char)); // malloc each row
-  // }
+  fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
+  fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
 
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
@@ -173,7 +172,7 @@ int main(void)
 	
 	if (res == FR_OK)
 	{
-		scan_file("0:/MUSIC", &numSongs, songName);
+		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
     LCD_Clear(0, 0, 240, 320, DARK);
     HAL_Delay(500);
 
@@ -184,8 +183,9 @@ int main(void)
     HAL_Delay(100);
 
     for (uint8_t i = 0; i < numSongs; i++) {
-      LCD_DrawString(0, 16*(i+1), songName[i]);
-      HAL_Delay(500);
+      LCD_DrawString(0, 16*(i+1), fileNames[i]);
+      LCD_DrawString(200, 16*(i+1), fileTypes[i]);
+      HAL_Delay(200);
     }
     // end testing
 
