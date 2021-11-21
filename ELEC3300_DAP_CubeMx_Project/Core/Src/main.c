@@ -177,24 +177,14 @@ int main(void)
     HAL_Delay(500);
 
     // testing
-    char numSongs_str[11];
-    sprintf(numSongs_str, "# songs: %d", numSongs);
-    LCD_DrawString(0, 0, numSongs_str);
-    HAL_Delay(100);
-
-    for (uint8_t i = 0; i < numSongs; i++) {
-      LCD_DrawString(0, 16*(i+1), fileNames[i]);
-      LCD_DrawString(200, 16*(i+1), fileTypes[i]);
-      HAL_Delay(200);
-    }
+    MENU_SelectSong(numSongs, fileNames);
+    while (1) {} // for testing only
     // end testing
 
 		wav_read_header("Sample-wav-file.wav");
 	}
 	wav_play_music(&hi2s3, "Sample-wav-file.wav");
 
-  while (1) {} // for testing only
-	
 	// uint8_t data[2] = {0};
 	// char string[50] = {0};
 	// HAL_I2C_Mem_Read(&hi2c1,WM8918_DEVICE_ID, 0x00, 2, data,2 ,100);

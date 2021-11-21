@@ -43,13 +43,17 @@ void MENU_Main() {
 	}
 }
 
-uint8_t MENU_SelectSong(uint8_t numSongs, char** songName) {
+uint8_t MENU_SelectSong(uint8_t numSongs, char** fileNames) {
 	LCD_Clear(0, 0, 240, 320, DARK);
 
-	LCD_DrawString(0, 0, "Select song:");
+	LCD_DrawString_Color(0, 0, "Song Menu", DARK, CYAN);
+	LCD_DrawString_Color(0, 16, "Select a song:", DARK, CYAN);
+	LCD_DrawString_Color(0, 48, "Song Name", DARK, CYAN);
+	LCD_DrawString_Color(208, 48, "Type", DARK, CYAN);
+
 	// Button** btn_songs = malloc(numSongs * sizeof(Button));
 
-	// for (uint8_t i = 0; i < numSongs; i++) {
+	for (uint8_t i = 0; i < numSongs; i++) {
 	// 	btn_songs[i] = {
 	// 		.pos = {0, 2*(i+1)},
 	// 		.height = HEIGHT_EN_CHAR,
@@ -59,20 +63,24 @@ uint8_t MENU_SelectSong(uint8_t numSongs, char** songName) {
 	// 		.usColor_Text = DARK
 	// 	}
 	// 	_renderButton(btn_songs[i]);
-	// }
+		char songItem[30];
+		sprintf(songItem, "%d. %s", i, fileNames[i]);
+		LCD_DrawString_Color(0, 16*(i+4), songItem, DARK, CYAN);
+		HAL_Delay(200);
+	}
 
 	// poll for button input
-	while (1) {
-		if (ucXPT2046_TouchFlag == 1) {
-			strType_XPT2046_Coordinate tempCoor = getTouchedPoint();
-			const Point touchPt = {tempCoor.x, tempCoor.y};
-			for (uint8_t i = 0; i < numSongs; i++) {
-				// if (_btnTouched(&touchPt, btn_songs[i])) LCD_DrawString(0, 0, "selected"); // dummy
-				ucXPT2046_TouchFlag = 0;
-				return 0;
-			}
-		}
-	}
+	// while (1) {
+	// 	if (ucXPT2046_TouchFlag == 1) {
+	// 		strType_XPT2046_Coordinate tempCoor = getTouchedPoint();
+	// 		const Point touchPt = {tempCoor.x, tempCoor.y};
+	// 		for (uint8_t i = 0; i < numSongs; i++) {
+	// 			// if (_btnTouched(&touchPt, btn_songs[i])) LCD_DrawString(0, 0, "selected"); // dummy
+	// 			ucXPT2046_TouchFlag = 0;
+	// 			return 0;
+	// 		}
+	// 	}
+	// }
 	return 0;
 }
 
