@@ -72,7 +72,7 @@ SRAM_HandleTypeDef hsram1;
 // song menu variables
 uint8_t numSongs = 0;
 char **fileNames; // dynamic 2D char array
-char **fileTypes;
+uint8_t **fileTypes; // dynamic 1D enum array. 1 = MP3, 2 = WAV, 3 = FLAC
 
 uint32_t encoder_value = 0;
 uint8_t volume = 0;
@@ -147,7 +147,7 @@ int main(void)
   codec_init(&hi2c1);
 
   fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
-  fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
+  fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t *)); // malloc row ptr
 
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
@@ -164,9 +164,6 @@ int main(void)
 	FATFS myFATFS;
 	FRESULT res;
 	res = f_mount(&myFATFS,SDPath,1);
-
-	static uint32_t buf0 = {0};
-	static uint32_t buf1 = {0};
 	
 	//HAL_DMAEx_MultiBufferStart_IT(&hdma_spi3_tx, buf0, (uint32_t)*(hi2s3.pTxBuffPtr), buf1,16);
 	
@@ -174,10 +171,10 @@ int main(void)
 	{
 		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
     LCD_Clear(0, 0, 240, 320, DARK);
-    HAL_Delay(500);
+    HAL_Delay(200);
 
     // testing
-    MENU_SelectSong(numSongs, fileNames);
+    MENU_SelectSong(numSongs, fileNames, fileTypes);
     while (1) {} // for testing only
     // end testing
 

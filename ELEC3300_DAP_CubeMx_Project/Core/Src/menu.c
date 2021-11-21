@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "menu.h"
@@ -11,7 +10,7 @@
 static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usColor_Btn, uint16_t usColor_Text);
 static void _renderButton(const Button *btn);
 // static void _refreshSong(uint8_t songIndex);
-static void _clearLine(uint16_t usP);
+// static void _clearLine(uint16_t usP);
 static inline bool _btnTouched(const Point *touchPt, const Button *btn);
 
 static TIM_HandleTypeDef *songTimer;
@@ -43,7 +42,7 @@ void MENU_Main() {
 	}
 }
 
-uint8_t MENU_SelectSong(uint8_t numSongs, char** fileNames) {
+uint8_t MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t** fileTypes) {
 	LCD_Clear(0, 0, 240, 320, DARK);
 
 	LCD_DrawString_Color(0, 0, "Song Menu", DARK, CYAN);
@@ -66,7 +65,15 @@ uint8_t MENU_SelectSong(uint8_t numSongs, char** fileNames) {
 		char songItem[30];
 		sprintf(songItem, "%d. %s", i, fileNames[i]);
 		LCD_DrawString_Color(0, 16*(i+4), songItem, DARK, CYAN);
-		HAL_Delay(200);
+		if (*fileTypes[i] == 1) {
+			LCD_DrawString_Color(208, 16*(i+4), ".mp3", DARK, CYAN);
+		} else if (*fileTypes[i] == 2) {
+			LCD_DrawString_Color(208, 16*(i+4), ".wav", DARK, CYAN);
+		} else if (*fileTypes[i] == 3) {
+			LCD_DrawString_Color(200, 16*(i+4), ".flac", DARK, CYAN);
+		} else {
+			LCD_DrawString_Color(208, 16*(i+4), "BUG", DARK, RED);
+		}
 	}
 
 	// poll for button input
@@ -147,9 +154,9 @@ static void _renderButton(const Button *btn) {
 // 	_createButton(0, SONG_NAME_USP, songName, MAGENTA, YELLOW);
 // }
 
-static void _clearLine(uint16_t usP) {
-	LCD_Clear(0, usP, 240, HEIGHT_EN_CHAR, WHITE);
-}
+// static void _clearLine(uint16_t usP) {
+// 	LCD_Clear(0, usP, 240, HEIGHT_EN_CHAR, WHITE);
+// }
 
 static inline bool _btnTouched(const Point *touchPt, const Button *btn) {
 	return touchPt->x > btn->pos.x && touchPt->x < btn->pos.x + btn->width && touchPt->y > btn->pos.y && touchPt->y < btn->pos.y + btn->height;

@@ -2,14 +2,13 @@
 #include <string.h>
 
 #include "stm32f4xx_hal.h"
-#include "fatfs.h"
 #include "lcdtp.h"
 #include "file_sys_func.h"
 
-char filelist[NUM_OF_SCAN_FILE_MAX][_MAX_LFN] = {0};
+// char filelist[NUM_OF_SCAN_FILE_MAX][_MAX_LFN] = {0};
 
 // assumption: all song files are stored in `path`
-FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** fileNames, char** fileTypes) {
+FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** fileNames, uint8_t** fileTypes) {
 	DIR dir;
 	FILINFO fno;
 	FRESULT res;
@@ -30,21 +29,23 @@ FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** fileNames, char**
 			// file names
 			fileNames[numFiles] = malloc(strlen(fno.fname) + 1);
 			strcpy(fileNames[numFiles], fno.fname);
-			// LCD_DrawString(0, 32, fileNames[numFiles]); // debug use
 
 			// file types / extensions
 			char fileType_buffer[10] = {0};
 			find_file_type(fileNames[numFiles], fileType_buffer);
-			// fileTypes[numFiles] = malloc(strlen(fileType_buffer) + 1);
-			// strcpy(fileTypes[numFiles], fileType_buffer);
-			LCD_DrawString(0, numFiles*20 + 60, fileType_buffer);
-			// LCD_DrawString(0, numFiles*20 + 60, fileTypes[numFiles]); // debug use
-			HAL_Delay(300); // debug use
+			
+			fileTypes[numFiles] = malloc(sizeof(uint8_t));
+			if (strcmp(fileType_buffer, ".mp3")) {
+				*fileTypes[numFiles] = 1;
+			} else if (strcmp(fileType_buffer, ".wav")) {
+				*fileTypes[numFiles] = 2;
+			} else if (strcmp(fileType_buffer, ".flac")) {
+				*fileTypes[numFiles] = 3;
+			}
 
 			numFiles++;
 		}
 		
-		// update file info to main
 		*numSongs = numFiles;
 	}
 
