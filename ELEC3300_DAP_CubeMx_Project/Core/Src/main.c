@@ -145,7 +145,7 @@ int main(void)
 	LCD_INIT();
   codec_init(&hi2c1);
 
-  // songName = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
+  songName = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
   // for(uint8_t i = 0; i < NUM_OF_SCAN_FILE_MAX; i++) {
   //   songName[i] = malloc(_MAX_LFN * sizeof(char)); // malloc each row
   // }
@@ -174,14 +174,18 @@ int main(void)
 	if (res == FR_OK)
 	{
 		scan_file("0:/MUSIC", &numSongs, songName);
+    LCD_Clear(0, 0, 240, 320, DARK);
+    HAL_Delay(500);
 
     // testing
     char numSongs_str[11];
     sprintf(numSongs_str, "# songs: %d", numSongs);
     LCD_DrawString(0, 0, numSongs_str);
+    HAL_Delay(100);
 
     for (uint8_t i = 0; i < numSongs; i++) {
       LCD_DrawString(0, 16*(i+1), songName[i]);
+      HAL_Delay(500);
     }
     // end testing
 

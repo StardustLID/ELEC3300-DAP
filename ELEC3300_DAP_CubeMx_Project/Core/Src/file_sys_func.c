@@ -31,15 +31,24 @@ FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** songName){
 			// sprintf(string, "name: %s", filelist[num_of_files]);
 			// LCD_DrawString(0,num_of_files*20,string);
 
-			// char* temp = malloc(_MAX_LFN * sizeof(char));
-			strcpy(string, fno.fname);
-			LCD_DrawString(0, 16, string);
-			songName[num_of_files] = string;
-			LCD_DrawString(0, 32, songName[num_of_files]);
+			// char temp[256] = {0};
+			// strcpy(string, fno.fname);
+			// LCD_DrawString(0, 16, string);
+			// &songName[num_of_files] = string;
+			// LCD_DrawString(0, 32, songName[num_of_files]);
+			// HAL_Delay(500);
+			char* temp = malloc(strlen(fno.fname) + 1);
+			strcpy(temp, fno.fname);
+			char hi[5];
+			sprintf(hi, "%d", num_of_files);
+			LCD_DrawString(0, 16, hi);
+			songName[num_of_files] = temp;
+			LCD_DrawString(0, 32, *(songName + num_of_files));
 			HAL_Delay(500);
-			char file_type[10] = {0};
-			find_file_type(filelist[num_of_files], file_type);
-			sprintf(string, "file type: %s", file_type);
+
+			// char file_type[10] = {0};
+			// find_file_type(filelist[num_of_files], file_type);
+			// sprintf(string, "file type: %s", file_type);
 			// LCD_DrawString(0,num_of_files*20 + 60,string);
 			
 			num_of_files++;
