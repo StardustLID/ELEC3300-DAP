@@ -28,6 +28,7 @@
 #include "file_sys_func.h"
 #include "wav_decoder.h"
 #include "codec.h"
+#include "mp3_decoder.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -142,17 +143,24 @@ int main(void)
 	FRESULT res;
 	res = f_mount(&myFATFS,SDPath,1);
 
-	
+
 	if (res == FR_OK)
 	{
 		scan_file("0:/MUSIC");
+		
+		/*
+		wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
+		wav_play_music(&hi2s3, &hi2c1,"Ensoniq-ZR-76-01-Dope-77.wav");
+		*/
+		/*
 		wav_read_header("Sample-wav-file.wav");
+		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
+		*/
+		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
 		mp3_read_header("Kalimab.mp3");
+		mp3_play_music(&hi2s3, &hi2c1,"Kalimab.mp3");
 		
-		codec_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
-	//codec_play_music(&hi2s3, &hdma_spi3_tx,"Ensoniq-ZR-76-01-Dope-77.wav");
-	//wav_play_music(&hi2s3, "Sample-wav-file.wav");
     
 	}
 	else{

@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../FATFS/Target;     ../FATFS/App;     ../USB_DEVICE/App;     ../USB_DEVICE/Target;     ../Core/Inc;     ../Drivers/STM32F4xx_HAL_Driver/Inc;     ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;     ../Middlewares/Third_Party/FatFs/src;     ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;     ../Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Inc;     ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;     ../Drivers/CMSIS/Include;     ../Middlewares/Third_Party/ARM_CMSIS/CMSIS/DSP/Include;     ../MP3/real;     ../MP3/pub</IncludePath>
+              <IncludePath>../FATFS/Target;../FATFS/App;../USB_DEVICE/App;../USB_DEVICE/Target;../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FatFs/src;../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;../Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Inc;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../Middlewares/Third_Party/ARM_CMSIS/CMSIS/DSP/Include;../MP3/real;../MP3/pub;../MP3</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -817,6 +817,91 @@
               </Aads>
             </GroupArmAds>
           </GroupOption>
+        </Group>
+        <Group>
+          <GroupName>MP3</GroupName>
+          <Files>
+            <File>
+              <FileName>mp3dec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\mp3dec.c</FilePath>
+            </File>
+            <File>
+              <FileName>mp3tabs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\mp3tabs.c</FilePath>
+            </File>
+            <File>
+              <FileName>bitstream.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\bitstream.c</FilePath>
+            </File>
+            <File>
+              <FileName>buffers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\buffers.c</FilePath>
+            </File>
+            <File>
+              <FileName>dct32.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\dct32.c</FilePath>
+            </File>
+            <File>
+              <FileName>dequant.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\dequant.c</FilePath>
+            </File>
+            <File>
+              <FileName>dqchan.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\dqchan.c</FilePath>
+            </File>
+            <File>
+              <FileName>huffman.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\huffman.c</FilePath>
+            </File>
+            <File>
+              <FileName>hufftabs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\hufftabs.c</FilePath>
+            </File>
+            <File>
+              <FileName>imdct.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\imdct.c</FilePath>
+            </File>
+            <File>
+              <FileName>scalfact.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\scalfact.c</FilePath>
+            </File>
+            <File>
+              <FileName>stproc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\stproc.c</FilePath>
+            </File>
+            <File>
+              <FileName>subband.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\subband.c</FilePath>
+            </File>
+            <File>
+              <FileName>trigtabs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MP3\real\trigtabs.c</FilePath>
+            </File>
+            <File>
+              <FileName>asmmisc.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\MP3\real\arm\asmmisc.s</FilePath>
+            </File>
+            <File>
+              <FileName>asmpoly.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\MP3\real\arm\asmpoly.s</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>::CMSIS</GroupName>

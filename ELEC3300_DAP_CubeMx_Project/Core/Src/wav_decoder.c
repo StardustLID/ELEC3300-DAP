@@ -8,6 +8,8 @@
 #include "file_sys_func.h"
 
 wav_tag_header wav_tag = {0};
+uint8_t wav_play_flag = 0;
+uint16_t wav_buf_pos = 0;
 
 void wav_read_header(char* file_name){
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
@@ -159,6 +161,44 @@ void wav_read_header(char* file_name){
 	f_close(&myFILE);
 }
 
+void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file_name) {
+	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
+	char string[128] = {0};
+
+	strcat(path, "0:/MUSIC/");
+	strcat(path, file_name);
+
+	wav_play_flag = 1;
+
+	f_open(&myFILE, path, FA_READ | FA_OPEN_EXISTING);
+
+	if (res != FR_OK) {
+		// cannot open file
+		return;
+	}
+
+	f_lseek(&myFILE, wav_get_data_offest());  // jump to the music data
+	f_read(&myFILE, codec_out_buffer, AUDIO_BUFFER_SIZE, &fnum);
+	f_read(&myFILE, codec_out_buffer + AUDIO_HALF_BUFFER_SIZE, AUDIO_BUFFER_SIZE, &fnum);
+
+	coded_i2s_set_up(hi2s, hi2c, wav_get_sample_rate(), wav_get_bit_per_sample());
+	HAL_I2S_Transmit_DMA(hi2s, codec_out_buffer, AUDIO_BUFFER_SIZE);
+
+	while (!(f_eof(&myFILE))) {
+		if (file_read_flag) {
+			// HAL_I2S_Transmit_DMA(hi2s, &(buffer[AUDIO_HALF_BUFFER_SIZE - wav_buf_pos]), AUDIO_BUFFER_SIZE);
+			f_read(&myFILE, codec_out_buffer + wav_buf_pos, AUDIO_BUFFER_SIZE, &fnum);	// TODO: put it DMA cplt callback, but not working for now
+			// HAL_I2S_Transmit(hi2s, buffer[buffer_flag], AUDIO_BUFFER_SIZE, 1000000);
+			HAL_I2S_Transmit_DMA(hi2s, codec_out_buffer, AUDIO_BUFFER_SIZE);
+			file_read_flag = 0;
+			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+		}
+	}
+	HAL_I2S_DMAStop(hi2s);
+	f_close(&myFILE);
+	wav_play_flag = 0;
+}
+
 uint32_t wav_get_file_size(){
 	return wav_tag.file_size + 8;
 }
@@ -173,4 +213,12 @@ uint16_t wav_get_bit_per_sample(){
 
 uint32_t wav_get_data_offest(){
 	return wav_tag.data_chunk.data_offest;
+}
+
+uint8_t wav_get_play_flag(){
+	return wav_play_flag;
+}
+
+void wav_buf_pos_update(uint16_t pos){
+	wav_buf_pos = pos;
 }
