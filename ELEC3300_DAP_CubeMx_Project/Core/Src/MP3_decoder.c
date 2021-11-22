@@ -19,7 +19,7 @@ static mp3_type mp3_player;
 
 void mp3_read_header(char* file_name){
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
-	char string[1024] = {0};
+	//char string[1024] = {0};
 	
 	strcat(path, "0:/MUSIC/");
 	strcat(path, file_name);
@@ -34,6 +34,8 @@ void mp3_read_header(char* file_name){
 	mp3_tag.flag = ReadBuffer[0];
 	f_read(&myFILE, ReadBuffer, 2, &fnum);
 	mp3_tag.total_tag_size = (ReadBuffer[0] & 0x7F) << 21 | (ReadBuffer[1] & 0x7F) << 14  | (ReadBuffer[2] & 0x7F) << 7 | (ReadBuffer[3] & 0x7F);
+	f_close(&myFILE);	
+	
 }
 
 void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c,const uint8_t* file_name){
@@ -73,7 +75,8 @@ void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c,const uint8
 	bytes_left = fnum;
 
 	/*play music*/
-	while(file_read_flag){
+	mp3_play_flag = 1;
+	while(mp3_play_flag){
 		read_offset = MP3FindSyncWord(read_ptr, bytes_left);
 		if(read_offset < 0){
 			res = f_read(&myFILE, mp3_read_buf, MP3_READ_BUF_SIZE, &fnum);

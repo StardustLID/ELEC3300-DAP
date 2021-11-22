@@ -29,6 +29,7 @@
 #include "wav_decoder.h"
 #include "codec.h"
 #include "mp3_decoder.h"
+#include "eeprom.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -133,6 +134,7 @@ int main(void)
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
+	eeprom_init(&hi2c2);
 	codec_init(&hi2c1, &hi2s3, &hdma_spi3_tx);
 	
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
@@ -142,8 +144,17 @@ int main(void)
 	FATFS myFATFS;
 	FRESULT res;
 	res = f_mount(&myFATFS,SDPath,1);
-
-
+/*
+	char string[15];
+	uint8_t ee_buf = 0x9c;
+	HAL_I2C_Mem_Write(&hi2c2,EEPROM_DEVICE_ADDRESS,0,1,&ee_buf,1,50);
+	ee_buf = 0x0;
+	HAL_Delay(10);
+	HAL_I2C_Mem_Read(&hi2c2,EEPROM_DEVICE_ADDRESS,0,1,&ee_buf,1,50);
+	
+	sprintf(string, "data: %x",ee_buf);
+	LCD_DrawString(0,300,string);
+*/
 	if (res == FR_OK)
 	{
 		scan_file("0:/MUSIC");
@@ -158,10 +169,10 @@ int main(void)
 		*/
 		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
-		mp3_read_header("Kalimab.mp3");
-		mp3_play_music(&hi2s3, &hi2c1,"Kalimab.mp3");
+		mp3_read_header("Kalimba.mp3");
+		mp3_play_music(&hi2s3, &hi2c1,"Kalimba.mp3");
 		
-    
+		
 	}
 	else{
 		LCD_DrawString(0,0,"Cannot mount FATFS");

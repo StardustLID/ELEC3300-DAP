@@ -10,14 +10,14 @@
 uint16_t codec_out_buffer[AUDIO_BUFFER_SIZE];
 
 
-uint32_t size = 0;
-uint32_t file_size = 0;
+uint32_t size;
+uint32_t file_size;
 uint8_t file_read_flag = 0;
 
 void codec_init(I2C_HandleTypeDef *hi2c, I2S_HandleTypeDef *hi2s3, DMA_HandleTypeDef *hdma_spi3_tx) {
 	uint8_t buf[2] = {0};  // 0: device address 1:device address 2:reg_address 3:reg_address
 	// uint8_t readbuf[4] = {0};
-	char string[50] = {0};
+	//char string[50] = {0};
 
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, 0x00, 1, buf, 2, 50);
 
@@ -79,8 +79,8 @@ void codec_init(I2C_HandleTypeDef *hi2c, I2S_HandleTypeDef *hi2s3, DMA_HandleTyp
 	HAL_I2C_Mem_Read(hi2c, WM8918_DEVICE_ID, WM8918_ANALOGUE_OUT_2_LEFT, 1, buf, 2, 50);
 	HAL_Delay(1);
 
-	sprintf(string, "data: %x, %x", buf[0], buf[1]);
-	LCD_DrawString(0, 300, string);
+	//sprintf(string, "data: %x, %x", buf[0], buf[1]);
+	//LCD_DrawString(0, 300, string);
 
 	buf[0] = 0x00;
 	buf[1] = 0x40;

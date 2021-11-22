@@ -32,7 +32,7 @@ FRESULT scan_file(const TCHAR* path){
 			char file_type[10] = {0};
 			find_file_type(filelist[num_of_file], file_type);
 			sprintf(string, "file type: %s", file_type);
-			LCD_DrawString(0,num_of_file*20 + 60,string);
+			LCD_DrawString(0,num_of_file*20 + 150,string);
 			
 			num_of_file++;
 		}
