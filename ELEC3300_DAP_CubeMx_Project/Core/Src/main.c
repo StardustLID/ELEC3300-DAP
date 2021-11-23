@@ -24,12 +24,14 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lcdtp.h"
-#include "xpt2046.h"
-#include "menu.h"
 #include "file_sys_func.h"
 #include "wav_decoder.h"
 #include "codec.h"
+#include "mp3_decoder.h"
+#include "eeprom.h"
+#include "lcdtp.h"
+#include "xpt2046.h"
+#include "menu.h"
 #include "volume_bar.h"
 /* USER CODE END Includes */
 
@@ -134,20 +136,39 @@ int main(void)
   MX_I2C2_Init();
   MX_I2S3_Init();
   MX_SDIO_SD_Init();
-  //MX_SPI1_Init();
+  MX_SPI1_Init();
   MX_TIM5_Init();
+  MX_TIM6_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_FATFS_Init();
   MX_DMA_Init();
   MX_USB_DEVICE_Init();
-  MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
-  codec_init(&hi2c1);
-
-  fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
-  fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t *)); // malloc row ptr
+	eeprom_init(&hi2c2);
+	codec_init(&hi2c1, &hi2s3, &hdma_spi3_tx);
+	
+	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
+	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
+	HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
+	//LCD_Clear(0, 0, 240, 320, BACKGROUND);
+	FATFS myFATFS;
+	FRESULT res;
+	res = f_mount(&myFATFS,SDPath,1);
+/*
+	char string[15];
+	uint8_t ee_buf = 0x9c;
+	HAL_I2C_Mem_Write(&hi2c2,EEPROM_DEVICE_ADDRESS,0,1,&ee_buf,1,50);
+	ee_buf = 0x0;
+	HAL_Delay(10);
+	HAL_I2C_Mem_Read(&hi2c2,EEPROM_DEVICE_ADDRESS,0,1,&ee_buf,1,50);
+	
+	sprintf(string, "data: %x",ee_buf);
+	LCD_DrawString(0,300,string);
+*/
+  // fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
+  // fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t *)); // malloc row ptr
 
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
@@ -160,35 +181,34 @@ int main(void)
   // MENU_SetSongTimer(&htim6);
   // MENU_Main();
   // /*******************************/
-	
-	FATFS myFATFS;
-	FRESULT res;
-	res = f_mount(&myFATFS,SDPath,1);
-	
-	//HAL_DMAEx_MultiBufferStart_IT(&hdma_spi3_tx, buf0, (uint32_t)*(hi2s3.pTxBuffPtr), buf1,16);
-	
+
 	if (res == FR_OK)
 	{
-		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
-    LCD_Clear(0, 0, 240, 320, DARK);
-    HAL_Delay(200);
-
+		// scan_file("0:/MUSIC");
+		// scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
+		
     // testing
-    MENU_SelectSong(numSongs, fileNames, fileTypes);
-    while (1) {} // for testing only
-    // end testing
+    // MENU_SelectSong(numSongs, fileNames, fileTypes);
 
+		/*
+		wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
+		wav_play_music(&hi2s3, &hi2c1,"Ensoniq-ZR-76-01-Dope-77.wav");
+		*/
+		/*
 		wav_read_header("Sample-wav-file.wav");
+		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
+		*/
+		
+    //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
+		//mp3_read_header("Kalimba.mp3");
+		//mp3_play_music(&hi2s3, &hi2c1,"Kalimba.mp3");
+		
+		
 	}
-	wav_play_music(&hi2s3, "Sample-wav-file.wav");
-
-	// uint8_t data[2] = {0};
-	// char string[50] = {0};
-	// HAL_I2C_Mem_Read(&hi2c1,WM8918_DEVICE_ID, 0x00, 2, data,2 ,100);
-	// sprintf(string, "data: %x, %x", data[0], data[1]);
-	// LCD_DrawString(0,300,string);
-	// wav_play_music(&hi2s3, "Sample-wav-file.wav");
-
+	else{
+		LCD_DrawString(0,0,"Cannot mount FATFS");
+	}
+	
 	VOL_CreateVolBar();
   HAL_Delay(200);
   HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
@@ -361,7 +381,7 @@ static void MX_I2S3_Init(void)
   hi2s3.Init.Standard = I2S_STANDARD_PHILIPS;
   hi2s3.Init.DataFormat = I2S_DATAFORMAT_16B;
   hi2s3.Init.MCLKOutput = I2S_MCLKOUTPUT_ENABLE;
-  hi2s3.Init.AudioFreq = I2S_AUDIOFREQ_96K;
+  hi2s3.Init.AudioFreq = I2S_AUDIOFREQ_44K;
   hi2s3.Init.CPOL = I2S_CPOL_LOW;
   hi2s3.Init.ClockSource = I2S_CLOCK_PLL;
   hi2s3.Init.FullDuplexMode = I2S_FULLDUPLEXMODE_ENABLE;

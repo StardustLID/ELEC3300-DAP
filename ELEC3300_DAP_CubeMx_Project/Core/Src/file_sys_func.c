@@ -2,12 +2,19 @@
 #include <string.h>
 
 #include "stm32f4xx_hal.h"
+#include "main.h"
+#include "fatfs.h"
 #include "lcdtp.h"
 #include "file_sys_func.h"
+#include "codec.h"
 
-// char filelist[NUM_OF_SCAN_FILE_MAX][_MAX_LFN] = {0};
+char filelist[NUM_OF_SCAN_FILE_MAX][_MAX_LFN] = {0};
+FIL myFILE;
+FRESULT res;
+UINT fnum;
 
 // assumption: all song files are stored in `path`
+// FRESULT scan_file(const TCHAR* path){
 FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** fileNames, uint8_t** fileTypes) {
 	DIR dir;
 	FILINFO fno;
@@ -72,4 +79,12 @@ void find_file_type(char* file_name, char* output_file_type){
 	}
 }
 
-//f_lseek(&myFILE, f_tell(&myFILE) - 4); f_tell return current read/write pointer value
+file_ending file_read_for_wav(void* buff,	UINT buf_size, uint32_t* read_size, const uint32_t file_size){
+	f_read(&myFILE, buff, buf_size, &fnum);
+	*read_size += AUDIO_BUFFER_SIZE;
+	HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
+	if(*read_size >= file_size){
+		f_close(&myFILE);
+	}
+	
+}

@@ -1,20 +1,17 @@
-#include <stdio.h>
-#include <string.h>
-
 #include "mp3common.h"
 #include "main.h"
 #include "fatfs.h"
 #include "lcdtp.h"
+#include <string.h>
 #include "wav_decoder.h"
 #include "codec.h"
 #include "file_sys_func.h"
 
 wav_tag_header wav_tag = {0};
+uint8_t wav_play_flag = 0;
+uint16_t wav_buf_pos = 0;
 
 void wav_read_header(char* file_name){
-	FIL myFILE;
-	// FRESULT res;
-	UINT fnum;
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
 	char string[1024] = {0};
 	
@@ -150,6 +147,8 @@ void wav_read_header(char* file_name){
 	LCD_DrawString(0,260,string);
 	sprintf(string, "bit_per_sample: %d", wav_tag.fmt_chunk.bit_per_sample);
 	LCD_DrawString(0,280,string);
+	//sprintf(string, "PCM: %d", wav_tag.fmt_chunk.codec_fmt);
+	//LCD_DrawString(0,300,string);
 	
 	if(strcmp(ReadBuffer, WAV_ID_DATA) == 0){
 		f_read(&myFILE, ReadBuffer, 4, &fnum);
@@ -162,34 +161,64 @@ void wav_read_header(char* file_name){
 	f_close(&myFILE);
 }
 
-void wav_play_music(I2S_HandleTypeDef* hi2s,char* file_name){
-	FIL myFILE;
-	// FRESULT res;
-	UINT fnum;
+void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file_name) {
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
-	// char string[128] = {0};
-	
+	char string[128] = {0};
+
 	strcat(path, "0:/MUSIC/");
 	strcat(path, file_name);
 
-	char ReadBuffer[2] = {0};
-	uint32_t size = wav_tag.data_chunk.data_offest;
-	uint16_t data = 0;
-	
-	coded_i2s_set_up(hi2s, wav_tag.fmt_chunk.sample_rate, wav_tag.fmt_chunk.bit_per_sample);
-	
-	f_open(&myFILE, path, FA_READ |FA_OPEN_EXISTING);
-	
-	f_lseek(&myFILE, wav_tag.data_chunk.data_offest); // jump to the music data
-	
-	while(size < wav_tag.file_size){
-		f_read(&myFILE, ReadBuffer, 2, &fnum); // read the sub-chunk ID, size
-		data = ReadBuffer[0] << 8 | ReadBuffer[1];
-		HAL_I2S_Transmit(hi2s,&data,1,50);
-		//sprintf(string, "data: %x ", data);
-		//LCD_DrawString(0,300,string);
-		size += 2;
+	wav_play_flag = 1;
+
+	f_open(&myFILE, path, FA_READ | FA_OPEN_EXISTING);
+
+	if (res != FR_OK) {
+		// cannot open file
+		return;
 	}
-	
+
+	f_lseek(&myFILE, wav_get_data_offest());  // jump to the music data
+	f_read(&myFILE, codec_out_buffer, AUDIO_BUFFER_SIZE, &fnum);
+	f_read(&myFILE, codec_out_buffer + AUDIO_HALF_BUFFER_SIZE, AUDIO_BUFFER_SIZE, &fnum);
+
+	coded_i2s_set_up(hi2s, hi2c, wav_get_sample_rate(), wav_get_bit_per_sample());
+	HAL_I2S_Transmit_DMA(hi2s, codec_out_buffer, AUDIO_BUFFER_SIZE);
+
+	while (!(f_eof(&myFILE))) {
+		if (file_read_flag) {
+			// HAL_I2S_Transmit_DMA(hi2s, &(buffer[AUDIO_HALF_BUFFER_SIZE - wav_buf_pos]), AUDIO_BUFFER_SIZE);
+			f_read(&myFILE, codec_out_buffer + wav_buf_pos, AUDIO_BUFFER_SIZE, &fnum);	// TODO: put it DMA cplt callback, but not working for now
+			// HAL_I2S_Transmit(hi2s, buffer[buffer_flag], AUDIO_BUFFER_SIZE, 1000000);
+			HAL_I2S_Transmit_DMA(hi2s, codec_out_buffer, AUDIO_BUFFER_SIZE);
+			file_read_flag = 0;
+			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+		}
+	}
+	HAL_I2S_DMAStop(hi2s);
 	f_close(&myFILE);
+	wav_play_flag = 0;
+}
+
+uint32_t wav_get_file_size(){
+	return wav_tag.file_size + 8;
+}
+
+uint32_t wav_get_sample_rate(){
+	return wav_tag.fmt_chunk.sample_rate;
+}
+
+uint16_t wav_get_bit_per_sample(){
+	return wav_tag.fmt_chunk.bit_per_sample;
+}
+
+uint32_t wav_get_data_offest(){
+	return wav_tag.data_chunk.data_offest;
+}
+
+uint8_t wav_get_play_flag(){
+	return wav_play_flag;
+}
+
+void wav_buf_pos_update(uint16_t pos){
+	wav_buf_pos = pos;
 }
