@@ -411,11 +411,6 @@
               <FilePath>..\Core\Src\file_sys_func.c</FilePath>
             </File>
             <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\lcd.c</FilePath>
-            </File>
-            <File>
               <FileName>MP3_decoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\MP3_decoder.c</FilePath>
@@ -434,6 +429,26 @@
               <FileName>eeprom.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\eeprom.c</FilePath>
+            </File>
+            <File>
+              <FileName>xpt2046.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\xpt2046.c</FilePath>
+            </File>
+            <File>
+              <FileName>volume_bar.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\volume_bar.c</FilePath>
+            </File>
+            <File>
+              <FileName>menu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\menu.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcdtp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\lcdtp.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -1,6 +1,6 @@
 #include "eeprom.h"
 #include "main.h"
-#include "lcd.h"
+#include "lcdtp.h"
 #include <string.h>
 
 eeprom_struct eeprom;

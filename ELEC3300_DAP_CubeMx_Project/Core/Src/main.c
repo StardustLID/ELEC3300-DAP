@@ -167,8 +167,8 @@ int main(void)
 	sprintf(string, "data: %x",ee_buf);
 	LCD_DrawString(0,300,string);
 */
-  fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
-  fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t *)); // malloc row ptr
+  // fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
+  // fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t *)); // malloc row ptr
 
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
@@ -185,7 +185,7 @@ int main(void)
 	if (res == FR_OK)
 	{
 		// scan_file("0:/MUSIC");
-		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
+		// scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
 		
     // testing
     // MENU_SelectSong(numSongs, fileNames, fileTypes);
@@ -200,8 +200,8 @@ int main(void)
 		*/
 		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
-		mp3_read_header("Kalimba.mp3");
-		mp3_play_music(&hi2s3, &hi2c1,"Kalimba.mp3");
+		//mp3_read_header("Kalimba.mp3");
+		//mp3_play_music(&hi2s3, &hi2c1,"Kalimba.mp3");
 		
 		
 	}

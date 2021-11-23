@@ -2,7 +2,7 @@
 #include <string.h>
 #include "fatfs.h"
 #include "file_sys_func.h"
-#include "lcd.h"
+#include "lcdtp.h"
 #include "main.h"
 #include "wav_decoder.h"
 #include "mp3_decoder.h"
