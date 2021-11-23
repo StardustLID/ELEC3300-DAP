@@ -25,9 +25,11 @@ void wav_read_header(char* file_name){
 	f_lseek(&myFILE, 4); // skip "RIFF"
 	f_read(&myFILE, ReadBuffer, 4, &fnum);
 	wav_tag.file_size = (ReadBuffer[0] & 0xff) | (ReadBuffer[1] & 0xff) << 8 |  (ReadBuffer[2] & 0xff) << 16 | (ReadBuffer[3] & 0xff) << 24;
+	
 	f_lseek(&myFILE, f_tell(&myFILE)+8 ); // skip "WAVE", "fmt "
 	f_read(&myFILE, ReadBuffer, 4, &fnum);
 	wav_tag.fmt_chunk.size = (ReadBuffer[0] & 0xff) | (ReadBuffer[1] & 0xff) << 8 |  (ReadBuffer[2] & 0xff) << 16 | (ReadBuffer[3] & 0xff) << 24;
+	
 	f_read(&myFILE, ReadBuffer, wav_tag.fmt_chunk.size, &fnum);
 	wav_tag.fmt_chunk.codec_fmt = (ReadBuffer[0] & 0xff);
 	wav_tag.fmt_chunk.sound_ch = (ReadBuffer[2] & 0xff);
@@ -56,79 +58,109 @@ void wav_read_header(char* file_name){
 	LCD_DrawString(0,230,string);
 	*/
 	
-	f_read(&myFILE, ReadBuffer, 4, &fnum);
-	*(ReadBuffer + 4) = '\0';
-	if(strcmp(ReadBuffer, WAV_ID_FACT) == 0){
+	while(!f_eof(&myFILE)){
 		f_read(&myFILE, ReadBuffer, 4, &fnum);
-		wav_tag.fact_chunk.size = (ReadBuffer[0] & 0xff) | (ReadBuffer[1] & 0xff) << 8 |  (ReadBuffer[2] & 0xff) << 16 | (ReadBuffer[3] & 0xff) << 24;
-		f_lseek(&myFILE, f_tell(&myFILE) + wav_tag.fact_chunk.size);//skip whole fact chunk
-		
-		if(wav_tag.fact_chunk.size % 2){
-			//if wav_tag.fact_chunk.size is odd number, file will pad 1byte '0'
-			f_lseek(&myFILE, f_tell(&myFILE)+1); // skip the 1 byte '0'
-		}
-		
-		f_read(&myFILE, ReadBuffer, 4, &fnum); // read next ID
 		*(ReadBuffer + 4) = '\0';
-	}
-	
-	if(strcmp(ReadBuffer, WAV_ID_LIST) == 0){
-		f_read(&myFILE, ReadBuffer, 4, &fnum);
-		wav_tag.list_chunk.size = (ReadBuffer[0] & 0xff) | (ReadBuffer[1] & 0xff) << 8 |  (ReadBuffer[2] & 0xff) << 16 | (ReadBuffer[3] & 0xff) << 24;
 		
-		char ID[5] = {0};
-		uint32_t size = 0;
-		int32_t num_data = 4;
-		if(wav_tag.list_chunk.size % 2){
-			num_data = 3;
-		}
-		f_lseek(&myFILE, f_tell(&myFILE)+4); // skip "INFO"
-		while(num_data != wav_tag.list_chunk.size){ // while condition can be strcmp(buf, "INFO") or the sub-chunk size
-			f_read(&myFILE, ReadBuffer, 8, &fnum); // read the sub-chunk ID, size
-			strncpy(ID, ReadBuffer, 4);
-			size = (ReadBuffer[4] & 0xff) | (ReadBuffer[5] & 0xff) << 8 |  (ReadBuffer[6] & 0xff) << 16 | (ReadBuffer[7] & 0xff) << 24;
-			num_data += (size + 8);
-			// do if-else to check what is the type of sub-chunk
-			// read the size
-			// if sub_chunk's size is odd number, file will pad 1 byte '0', move the read pointer by 1
-
-			// if not is the thing listed on .h define, skip it
-			if(strcmp(ID, WAV_INFO_ID_ARTIST) == 0){
-				f_read(&myFILE, ReadBuffer, size, &fnum); 
-				strncpy(wav_tag.list_chunk.artist, ReadBuffer, size);
-			}
-			else if(strcmp(ID, WAV_INFO_ID_TITLE) == 0){
-				f_read(&myFILE, ReadBuffer, size, &fnum); 
-				strncpy(wav_tag.list_chunk.title, ReadBuffer, size);
-			}
-			else if(strcmp(ID, WAV_INFO_ID_ALBUM) == 0){
-				f_read(&myFILE, ReadBuffer, size, &fnum); 
-				strncpy(wav_tag.list_chunk.album, ReadBuffer, size);
-			}
-			else if(strcmp(ID, WAV_INFO_ID_DATE) == 0){
-				f_read(&myFILE, ReadBuffer, size, &fnum); 
-				strncpy(wav_tag.list_chunk.Date, ReadBuffer, size);
-			}
-			else if(strcmp(ID, WAV_INFO_ID_GENRE) == 0){
-				f_read(&myFILE, ReadBuffer, size, &fnum); 
-				strncpy(wav_tag.list_chunk.genre, ReadBuffer, size);
-			}
-			else{
-				f_lseek(&myFILE, f_tell(&myFILE)+size);
-			}
-			
-			if(size % 2){
-				//if size is odd number, file will pad 1byte '0'
+		if(strcmp(ReadBuffer, WAV_ID_DATA) == 0){
+			f_read(&myFILE, ReadBuffer, 4, &fnum);
+			wav_tag.data_chunk.size = (ReadBuffer[0] & 0xff) | (ReadBuffer[1] & 0xff) << 8 |  (ReadBuffer[2] & 0xff) << 16 | (ReadBuffer[3] & 0xff) << 24;
+			wav_tag.data_chunk.data_offest = f_tell(&myFILE); // the read pointer now is pointed to the audio data
+			if(wav_tag.data_chunk.size % 2){
+				//if wav_tag.data_chunk.size is odd number, file will pad 1byte '0'
 				f_lseek(&myFILE, f_tell(&myFILE)+1); // skip the 1 byte '0'
-				num_data++;
 			}
-		}//while
+		}
 		
+		else if(strcmp(ReadBuffer, WAV_ID_FACT) == 0){
+			f_read(&myFILE, ReadBuffer, 4, &fnum);
+			wav_tag.fact_chunk.size = (ReadBuffer[0] & 0xff) | (ReadBuffer[1] & 0xff) << 8 |  (ReadBuffer[2] & 0xff) << 16 | (ReadBuffer[3] & 0xff) << 24;
+			f_lseek(&myFILE, f_tell(&myFILE) + wav_tag.fact_chunk.size);//skip whole fact chunk
+			
+			if(wav_tag.fact_chunk.size % 2){
+				//if wav_tag.fact_chunk.size is odd number, file will pad 1byte '0'
+				f_lseek(&myFILE, f_tell(&myFILE)+1); // skip the 1 byte '0'
+			}
+		}
 		
-		f_read(&myFILE, ReadBuffer, 4, &fnum); // read next ID
-		*(ReadBuffer + 4) = '\0';
+		else if(strcmp(ReadBuffer, WAV_ID_LIST) == 0){
+			f_read(&myFILE, ReadBuffer, 4, &fnum);
+			wav_tag.list_chunk.size = (ReadBuffer[0] & 0xff) | (ReadBuffer[1] & 0xff) << 8 |  (ReadBuffer[2] & 0xff) << 16 | (ReadBuffer[3] & 0xff) << 24;
+			
+			char ID[5] = {0};
+			uint32_t size = 0;
+			int32_t num_data = 4;
+			if(wav_tag.list_chunk.size % 2){
+				num_data = 3;
+			}
+			f_lseek(&myFILE, f_tell(&myFILE)+4); // skip "INFO"
+			while(num_data != wav_tag.list_chunk.size){ // while condition can be strcmp(buf, "INFO") or the sub-chunk size
+				f_read(&myFILE, ReadBuffer, 8, &fnum); // read the sub-chunk ID, size
+				strncpy(ID, ReadBuffer, 4);
+				size = (ReadBuffer[4] & 0xff) | (ReadBuffer[5] & 0xff) << 8 |  (ReadBuffer[6] & 0xff) << 16 | (ReadBuffer[7] & 0xff) << 24;
+				num_data += (size + 8);
+				// do if-else to check what is the type of sub-chunk
+				// read the size
+				// if sub_chunk's size is odd number, file will pad 1 byte '0', move the read pointer by 1
+
+				// if not is the thing listed on .h define, skip it
+				if(strcmp(ID, WAV_INFO_ID_ARTIST) == 0){
+					f_read(&myFILE, ReadBuffer, size, &fnum); 
+					strncpy(wav_tag.list_chunk.artist, ReadBuffer, size);
+				}
+				else if(strcmp(ID, WAV_INFO_ID_TITLE) == 0){
+					f_read(&myFILE, ReadBuffer, size, &fnum); 
+					strncpy(wav_tag.list_chunk.title, ReadBuffer, size);
+				}
+				else if(strcmp(ID, WAV_INFO_ID_ALBUM) == 0){
+					f_read(&myFILE, ReadBuffer, size, &fnum); 
+					strncpy(wav_tag.list_chunk.album, ReadBuffer, size);
+				}
+				else if(strcmp(ID, WAV_INFO_ID_DATE) == 0){
+					f_read(&myFILE, ReadBuffer, size, &fnum); 
+					strncpy(wav_tag.list_chunk.Date, ReadBuffer, size);
+				}
+				else if(strcmp(ID, WAV_INFO_ID_GENRE) == 0){
+					f_read(&myFILE, ReadBuffer, size, &fnum); 
+					strncpy(wav_tag.list_chunk.genre, ReadBuffer, size);
+				}
+				else{
+					f_lseek(&myFILE, f_tell(&myFILE)+size);
+				}
+				
+				if(size % 2){
+					//if size is odd number, file will pad 1byte '0'
+					f_lseek(&myFILE, f_tell(&myFILE)+1); // skip the 1 byte '0'
+					num_data++;
+				}
+			}//while
+		}
+		
+		else if(strcpy(ReadBuffer, WAV_ID_END_OF_LIST) == 0){
+			f_read(&myFILE, ReadBuffer, 4, &fnum);
+			wav_tag.wav_pic.size = (ReadBuffer[0] & 0xff) | (ReadBuffer[1] & 0xff) << 8 |  (ReadBuffer[2] & 0xff) << 16 | (ReadBuffer[3] & 0xff) << 24;
+			f_read(&myFILE, ReadBuffer, 1, &fnum);
+			wav_tag.wav_pic.encode_code = ReadBuffer[0];
+			f_lseek(&myFILE, f_tell(&myFILE) + 2);
+			wav_tag.wav_pic.data_size = wav_tag.wav_pic.size - 3;
+			while(ReadBuffer[0] != '0'){
+				f_read(&myFILE, ReadBuffer, 1, &fnum);
+				wav_tag.wav_pic.data_size--;
+			}
+			wav_tag.wav_pic.data = malloc(wav_tag.wav_pic.data_size);
+			if(wav_tag.wav_pic.data != 0){
+				f_read(&myFILE, wav_tag.wav_pic.data, wav_tag.wav_pic.data_size, &fnum);
+			}
+		}
+		else{
+			f_read(&myFILE, ReadBuffer, 4, &fnum);
+			uint32_t size = (ReadBuffer[0] & 0xff) | (ReadBuffer[1] & 0xff) << 8 |  (ReadBuffer[2] & 0xff) << 16 | (ReadBuffer[3] & 0xff) << 24;
+			if(size % 2) size += 1;
+			f_lseek(&myFILE, f_tell(&myFILE) + size);
+		}
+		
 	}
-	
+
 	sprintf(string, "artist: %s", wav_tag.list_chunk.artist);
 	LCD_DrawString(0,120,string);
 	sprintf(string, "title: %s", wav_tag.list_chunk.title);
@@ -150,13 +182,7 @@ void wav_read_header(char* file_name){
 	//sprintf(string, "PCM: %d", wav_tag.fmt_chunk.codec_fmt);
 	//LCD_DrawString(0,300,string);
 	
-	if(strcmp(ReadBuffer, WAV_ID_DATA) == 0){
-		f_read(&myFILE, ReadBuffer, 4, &fnum);
-		wav_tag.data_chunk.size = (ReadBuffer[0] & 0xff) | (ReadBuffer[1] & 0xff) << 8 |  (ReadBuffer[2] & 0xff) << 16 | (ReadBuffer[3] & 0xff) << 24;
-		wav_tag.data_chunk.data_offest = f_tell(&myFILE);
-		// the read pointer now is pointed to the audio data
-		// ** play the file ** //
-	}
+	
 	
 	f_close(&myFILE);
 }

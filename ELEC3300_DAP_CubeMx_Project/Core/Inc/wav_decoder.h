@@ -36,6 +36,13 @@ typedef struct wav_data_chunk{
 	uint32_t data_offest;
 }wav_data_chunk;
 
+typedef struct wav_pic_struct{
+	uint32_t size; // not include 'size' and 'APIC'
+	uint8_t encode_code;
+	uint8_t* data;
+	uint32_t data_size;
+}wav_pic_struct;
+
 typedef struct wav_tag_header{
 	// 4 byte: "RIFF"
 	uint32_t file_size; // == wav file size - 8, 4 byte, example: from SD :"0x F4 FE 83 01", Real: 0x 01 83 FE F4
@@ -49,6 +56,7 @@ typedef struct wav_tag_header{
 	// 4 byte: "INFO"
 	// 4 byte: "data"
 	wav_data_chunk data_chunk;
+	wav_pic_struct wav_pic;
 }wav_tag_header;
 
 
@@ -57,6 +65,8 @@ typedef struct wav_tag_header{
 #define WAV_INFO_ID_ALBUM			"IPRD" // Name of the title the subject was originally intended for
 #define WAV_INFO_ID_DATE			"ICRD" // The date the subject of the file was created (creation date)
 #define WAV_INFO_ID_GENRE			"IGNR" // The genre of the subject
+
+#define WAV_PIC_DATA					"APIC"
 
 #define WAV_ID_DATA						"data"
 #define WAV_ID_FACT						"fact"

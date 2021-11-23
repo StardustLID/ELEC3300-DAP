@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "fatfs.h"
+#include "libjpeg.h"
 #include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -138,12 +139,13 @@ int main(void)
   MX_SDIO_SD_Init();
   MX_SPI1_Init();
   MX_TIM5_Init();
-  MX_TIM6_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_FATFS_Init();
   MX_DMA_Init();
   MX_USB_DEVICE_Init();
+  MX_TIM6_Init();
+  MX_LIBJPEG_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
 	eeprom_init(&hi2c2);
@@ -195,10 +197,10 @@ int main(void)
 		wav_play_music(&hi2s3, &hi2c1,"Ensoniq-ZR-76-01-Dope-77.wav");
 		*/
 		
-		/*
+		
 		wav_read_header("Sample-wav-file.wav");
 		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
-		*/
+		
 		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
 		//mp3_read_header("Kalimba.mp3");
@@ -209,7 +211,7 @@ int main(void)
 	else{
 		LCD_DrawString(0,0,"Cannot mount FATFS");
 	}
-	
+	while(1);
 	VOL_CreateVolBar();
   HAL_Delay(200);
   HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
@@ -704,7 +706,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = LCD_BLK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LCD_BLK_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LCD__PREIRQ_Pin */
