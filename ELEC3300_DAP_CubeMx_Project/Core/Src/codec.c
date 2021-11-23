@@ -183,7 +183,7 @@ void coded_i2s_set_up(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t
   */
 	// char string[25];
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CLOCK_RATE_1, 1, buf, 2, 50);
-	HAL_Delay(1);
+	//HAL_Delay(1);
 	/*
 	sprintf(string, "data: %x, %x", buf[0], buf[1]);
 	LCD_DrawString(0,300,string);
@@ -205,7 +205,7 @@ void coded_i2s_set_up(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t
 	HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
 }
 
-void codec_volume_update(uint16_t volume, I2C_HandleTypeDef *hi2c) {
+void codec_volume_update(I2C_HandleTypeDef *hi2c, uint16_t volume){
 	/* dont know why the volume regsister for L/R Headphone work...*/
 	/* only dac volume regsister is working... */
 	/* for dac volume only 00h to C0h can be used, */

@@ -23,7 +23,8 @@
 #include "usbd_audio_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include "codec.h"
+#include "stm32f4xx_hal.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -154,9 +155,13 @@ USBD_AUDIO_ItfTypeDef USBD_AUDIO_fops_HS =
 static int8_t AUDIO_Init_HS(uint32_t AudioFreq, uint32_t Volume, uint32_t options)
 {
   /* USER CODE BEGIN 9 */
-  UNUSED(AudioFreq);
-  UNUSED(Volume);
+  //UNUSED(AudioFreq);
+  //UNUSED(Volume);
   UNUSED(options);
+	
+	coded_i2s_set_up(&hi2s3,&hi2c1,AudioFreq, 16);
+	codec_volume_update(&hi2c1, Volume + 92); // max = 0xC0
+	
   return (USBD_OK);
   /* USER CODE END 9 */
 }
@@ -170,6 +175,8 @@ static int8_t AUDIO_DeInit_HS(uint32_t options)
 {
   /* USER CODE BEGIN 10 */
   UNUSED(options);
+	HAL_I2S_DMAStop(&hi2s3);
+	
   return (USBD_OK);
   /* USER CODE END 10 */
 }
@@ -187,9 +194,11 @@ static int8_t AUDIO_AudioCmd_HS(uint8_t* pbuf, uint32_t size, uint8_t cmd)
   switch(cmd)
   {
     case AUDIO_CMD_START:
+			HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t*)pbuf, size);
     break;
 
     case AUDIO_CMD_PLAY:
+			HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t*)pbuf, size);
     break;
   }
   UNUSED(pbuf);
@@ -207,7 +216,8 @@ static int8_t AUDIO_AudioCmd_HS(uint8_t* pbuf, uint32_t size, uint8_t cmd)
 static int8_t AUDIO_VolumeCtl_HS(uint8_t vol)
 {
   /* USER CODE BEGIN 12 */
-  UNUSED(vol);
+  //UNUSED(vol)
+	codec_volume_update(&hi2c1, vol + 92);
   return (USBD_OK);
   /* USER CODE END 12 */
 }
