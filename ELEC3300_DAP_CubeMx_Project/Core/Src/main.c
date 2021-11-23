@@ -24,12 +24,15 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "lcd.h"
 #include "file_sys_func.h"
 #include "wav_decoder.h"
 #include "codec.h"
 #include "mp3_decoder.h"
 #include "eeprom.h"
+#include "lcdtp.h"
+#include "xpt2046.h"
+#include "menu.h"
+#include "volume_bar.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -60,6 +63,7 @@ DMA_HandleTypeDef hdma_sdio_tx;
 SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim5;
+TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
@@ -67,7 +71,13 @@ UART_HandleTypeDef huart2;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
+// song menu variables
+uint8_t numSongs = 0;
+char **fileNames; // dynamic 2D char array
+uint8_t **fileTypes; // dynamic 1D enum array. 1 = MP3, 2 = WAV, 3 = FLAC
 
+uint32_t encoder_value = 0;
+uint8_t volume = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -83,6 +93,7 @@ static void MX_TIM5_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_DMA_Init(void);
+static void MX_TIM6_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -127,6 +138,7 @@ int main(void)
   MX_SDIO_SD_Init();
   MX_SPI1_Init();
   MX_TIM5_Init();
+  MX_TIM6_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_FATFS_Init();
@@ -155,10 +167,29 @@ int main(void)
 	sprintf(string, "data: %x",ee_buf);
 	LCD_DrawString(0,300,string);
 */
+  fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
+  fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t *)); // malloc row ptr
+
+  // comment / uncomment below to test Stardust menu
+  // MENU_Welcome();
+  LCD_Clear(0, 0, 240, 320, DARK);
+
+	// while( ! XPT2046_Touch_Calibrate () );
+
+	// LCD_GramScan ( 1 );
+	
+  // MENU_SetSongTimer(&htim6);
+  // MENU_Main();
+  // /*******************************/
+
 	if (res == FR_OK)
 	{
-		scan_file("0:/MUSIC");
+		// scan_file("0:/MUSIC");
+		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
 		
+    // testing
+    // MENU_SelectSong(numSongs, fileNames, fileTypes);
+
 		/*
 		wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
 		wav_play_music(&hi2s3, &hi2c1,"Ensoniq-ZR-76-01-Dope-77.wav");
@@ -178,14 +209,34 @@ int main(void)
 		LCD_DrawString(0,0,"Cannot mount FATFS");
 	}
 	
-
-	
+	VOL_CreateVolBar();
+  HAL_Delay(200);
+  HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    uint32_t enc_prev = encoder_value;
+		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
+    
+    char enc_string[20];
+		sprintf(enc_string, "enc val: %d", encoder_value);
+
+    if (encoder_value > enc_prev) {
+      if (volume < 100) {
+        VOL_UpdateVolBar(volume, true);
+        volume++;
+      }
+    } else if (encoder_value < enc_prev) {
+      if (volume > 0) {
+        VOL_UpdateVolBar(volume, false);
+        volume--;
+      }
+    }
+
+		LCD_DrawString(0,300, enc_string);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -460,6 +511,44 @@ static void MX_TIM5_Init(void)
 }
 
 /**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 8400-1;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 10000-1;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -575,7 +664,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(EEPROM_WP_GPIO_Port, EEPROM_WP_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, LCD_BLK_Pin|LCD_RST_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LCD_BLK_GPIO_Port, LCD_BLK_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : LED0_Pin LED1_Pin LED2_Pin Buzzer_Pin */
   GPIO_InitStruct.Pin = LED0_Pin|LED1_Pin|LED2_Pin|Buzzer_Pin;
@@ -610,12 +699,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(EEPROM_WP_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LCD_BLK_Pin LCD_RST_Pin */
-  GPIO_InitStruct.Pin = LCD_BLK_Pin|LCD_RST_Pin;
+  /*Configure GPIO pin : LCD_BLK_Pin */
+  GPIO_InitStruct.Pin = LCD_BLK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(LCD_BLK_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LCD__PREIRQ_Pin */
   GPIO_InitStruct.Pin = LCD__PREIRQ_Pin;

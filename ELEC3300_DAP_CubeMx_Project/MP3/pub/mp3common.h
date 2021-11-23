@@ -89,7 +89,7 @@ typedef struct _MP3DecInfo {
 	MPEGVersion version;
 
 	int mainDataBegin;
-	int mainDataBytes; 	
+	int mainDataBytes;
 
 	int part23Length[MAX_NGRAN][MAX_NCHAN];
 

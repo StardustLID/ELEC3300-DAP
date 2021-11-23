@@ -52,7 +52,6 @@ typedef struct wav_tag_header{
 }wav_tag_header;
 
 
-
 #define WAV_INFO_ID_ARTIST		"IART" // The artist of the original subject of the file
 #define WAV_INFO_ID_TITLE			"INAM" // Title of the subject of the file (name)
 #define WAV_INFO_ID_ALBUM			"IPRD" // Name of the title the subject was originally intended for
