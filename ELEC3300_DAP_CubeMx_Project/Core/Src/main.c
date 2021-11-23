@@ -74,7 +74,7 @@ SRAM_HandleTypeDef hsram1;
 // song menu variables
 uint8_t numSongs = 0;
 char **fileNames; // dynamic 2D char array
-uint8_t **fileTypes; // dynamic 1D enum array. 1 = MP3, 2 = WAV, 3 = FLAC
+uint8_t *fileTypes; // dynamic 1D uint8_t array. 1 = MP3, 2 = WAV, 3 = FLAC
 
 uint32_t encoder_value = 0;
 uint8_t volume = 0;
@@ -167,8 +167,8 @@ int main(void)
 	sprintf(string, "data: %x",ee_buf);
 	LCD_DrawString(0,300,string);
 */
-  // fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
-  // fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t *)); // malloc row ptr
+  fileNames = (char **) calloc(NUM_OF_SCAN_FILE_MAX, sizeof(char *)); // malloc row ptr
+  fileTypes = (uint8_t *) calloc(NUM_OF_SCAN_FILE_MAX, sizeof(uint8_t)); // malloc row ptr
 
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
@@ -185,10 +185,15 @@ int main(void)
 	if (res == FR_OK)
 	{
 		// scan_file("0:/MUSIC");
-		// scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
+		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
 		
     // testing
-    // MENU_SelectSong(numSongs, fileNames, fileTypes);
+    MENU_SelectSong(numSongs, fileNames, fileTypes);
+    while (1)
+    {
+      /* code */
+    }
+    
 
 		/*
 		wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
