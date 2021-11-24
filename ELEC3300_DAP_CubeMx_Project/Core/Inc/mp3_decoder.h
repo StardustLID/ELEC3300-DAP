@@ -35,7 +35,7 @@ typedef struct mp3_type{
 #define MP3_FRAME_ID_LYRICIST					"TEXT"
 #define MP3_FRAME_ID_TRACK_NUMBER			"TRCK"	
 #define MP3_FRAME_ID_UNSYNC_LYRICIST	"USLT"
-#define MP3_FRAME_ID_UNSYNC_LYRICIST	"SYLT"
+#define MP3_FRAME_ID_SYNC_LYRICIST	"SYLT"
 
 
 void mp3_read_header(char* file_name);

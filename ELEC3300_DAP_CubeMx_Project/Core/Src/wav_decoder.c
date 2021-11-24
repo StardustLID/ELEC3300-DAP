@@ -215,7 +215,7 @@ void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file
 			// HAL_I2S_Transmit_DMA(hi2s, &(buffer[AUDIO_HALF_BUFFER_SIZE - wav_buf_pos]), AUDIO_BUFFER_SIZE);
 			f_read(&myFILE, codec_out_buffer + wav_buf_pos, AUDIO_BUFFER_SIZE, &fnum);	// TODO: put it DMA cplt callback, but not working for now
 			// HAL_I2S_Transmit(hi2s, buffer[buffer_flag], AUDIO_BUFFER_SIZE, 1000000);
-			HAL_I2S_Transmit_DMA(hi2s, codec_out_buffer, AUDIO_BUFFER_SIZE);
+			//HAL_I2S_Transmit_DMA(hi2s, codec_out_buffer, AUDIO_BUFFER_SIZE);
 			file_read_flag = 0;
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 		}

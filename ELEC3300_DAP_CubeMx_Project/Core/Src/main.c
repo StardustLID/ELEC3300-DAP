@@ -198,20 +198,24 @@ int main(void)
 		*/
 		
 		
-		wav_read_header("Sample-wav-file.wav");
-		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
+		//wav_read_header("Sample-wav-file.wav");
+		//wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
 		
 		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
+		
 		//mp3_read_header("Kalimba.mp3");
 		//mp3_play_music(&hi2s3, &hi2c1,"Kalimba.mp3");
+		
+		mp3_read_header("Julie-London-Fly-Me-to-the-Moon.mp3");
+		mp3_play_music(&hi2s3, &hi2c1,"Julie-London-Fly-Me-to-the-Moon.mp3");
 		
 		
 	}
 	else{
 		LCD_DrawString(0,0,"Cannot mount FATFS");
 	}
-	while(1);
+	//while(1);
 	VOL_CreateVolBar();
   HAL_Delay(200);
   HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);

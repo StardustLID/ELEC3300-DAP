@@ -83,12 +83,12 @@ void codec_init(I2C_HandleTypeDef *hi2c, I2S_HandleTypeDef *hi2s3, DMA_HandleTyp
 	//LCD_DrawString(0, 300, string);
 
 	buf[0] = 0x00;
-	buf[1] = 0xC0;
+	buf[1] = 0x30;
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_DAC_DIGITAL_VOLUME_LEFT, 1, buf, 2, 50);
 	HAL_Delay(1);
 
 	buf[0] = 0x01;
-	buf[1] = 0xC0;
+	buf[1] = 0x30;
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_DAC_DIGITAL_VOLUME_RIGHT, 1, buf, 2, 50);
 	HAL_Delay(1);
 
@@ -329,3 +329,4 @@ void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
 void i2s_DMA_error_callback(DMA_HandleTypeDef *hdma){
 	HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, 0); 
 }
+

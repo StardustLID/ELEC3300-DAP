@@ -51,7 +51,7 @@ void MX_LIBJPEG_Init(void)
 void decode_jpeg(char* file_name){
 	
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
-	char string[1024] = {0};
+	//char string[1024] = {0};
 	
 	strcat(path, "0:/MUSIC/");
 	strcat(path, file_name);
