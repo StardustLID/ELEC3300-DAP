@@ -40,6 +40,7 @@
 void MX_LIBJPEG_Init(void);
 
 /* USER CODE BEGIN 2 */
+	 void decode_jpeg(char* file_name);
 /* USER CODE END 2 */
 
 #ifdef __cplusplus

@@ -28,6 +28,7 @@
 
 /* USER CODE BEGIN 1 */
 #include "file_sys_func.h"
+#include "lcdtp.h"
 /* USER CODE END 1 */
 
 /* Global variables ---------------------------------------------------------*/
@@ -50,10 +51,10 @@ void MX_LIBJPEG_Init(void)
 /* USER CODE BEGIN 4 */
 void decode_jpeg(char* file_name){
 	
-	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
+	char path[sizeof("0:/MUSIC_COVER/") + _MAX_LFN] = {0};
 	//char string[1024] = {0};
 	
-	strcat(path, "0:/MUSIC/");
+	strcat(path, "0:/MUSIC_COVER/");
 	strcat(path, file_name);
 	
 	struct jpeg_decompress_struct cinfo;
@@ -94,6 +95,9 @@ void decode_jpeg(char* file_name){
 	
 	jpeg_finish_decompress(&cinfo);
 	jpeg_destroy_decompress(&cinfo);
+	
+	
+	
 	free(src_buff);
 	
 	f_close(&myFILE);
