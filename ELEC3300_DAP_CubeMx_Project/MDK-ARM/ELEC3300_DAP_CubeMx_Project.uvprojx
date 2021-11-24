@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../FATFS/Target;         ../FATFS/App;         ../USB_DEVICE/App;         ../USB_DEVICE/Target;         ../Core/Inc;         ../Drivers/STM32F4xx_HAL_Driver/Inc;         ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;         ../Middlewares/Third_Party/FatFs/src;         ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;         ../Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Inc;         ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;         ../Drivers/CMSIS/Include;         ../MP3/real;         ../MP3/pub;         ../MP3;        ../LIBJPEG/App;        ../LIBJPEG/Target;        ../Middlewares/Third_Party/LibJPEG/include</IncludePath>
+              <IncludePath>../FATFS/Target;          ../FATFS/App;          ../USB_DEVICE/App;          ../USB_DEVICE/Target;          ../Core/Inc;          ../Drivers/STM32F4xx_HAL_Driver/Inc;          ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;          ../Middlewares/Third_Party/FatFs/src;          ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;          ../Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Inc;          ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;          ../Drivers/CMSIS/Include;          ../MP3/real;          ../MP3/pub;          ../MP3;         ../LIBJPEG/App;         ../LIBJPEG/Target;         ../Middlewares/Third_Party/LibJPEG/include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -449,6 +449,11 @@
               <FileName>stm32f4xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\uart.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -17,8 +17,13 @@ extern uint8_t file_read_flag;
 
 void codec_init(I2C_HandleTypeDef *hi2c, I2S_HandleTypeDef* hi2s3, DMA_HandleTypeDef* hdma_spi3_tx);
 void coded_i2s_set_up(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t sample_freq, uint8_t bit_pre_sample);
-void codec_i2s_update(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t audio_freq, uint32_t bit_per_sample);
 void codec_volume_update(I2C_HandleTypeDef *hi2c, uint16_t volume);
+void update_play_flag(uint8_t flag);
+void codec_play_pause(void);
+void codec_play_song(void);
+void codec_pause_song(void);
+
+void codec_i2s_update(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t audio_freq, uint32_t bit_per_sample);
 
 void i2s_DMA_cplt_callback(DMA_HandleTypeDef *hdma);
 void i2s_DMA_half_cplt_callback(DMA_HandleTypeDef *hdma);

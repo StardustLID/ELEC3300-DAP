@@ -30,4 +30,6 @@ void eeprom_init(I2C_HandleTypeDef *hi2c);
 void eeprom_read(I2C_HandleTypeDef *hi2c,eeprom_data data);
 void eeprom_write(I2C_HandleTypeDef *hi2c,eeprom_data data, uint8_t* data_buf);
 
+uint8_t get_eeprom_volume();
+
 #endif

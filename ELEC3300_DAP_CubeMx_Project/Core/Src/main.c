@@ -34,6 +34,7 @@
 #include "xpt2046.h"
 #include "menu.h"
 #include "volume_bar.h"
+#include "uart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -183,7 +184,9 @@ int main(void)
   // MENU_SetSongTimer(&htim6);
   // MENU_Main();
   // /*******************************/
-
+	
+	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
+	codec_volume_update(&hi2c1,0xC0);
 	if (res == FR_OK)
 	{
 		// scan_file("0:/MUSIC");
@@ -198,8 +201,8 @@ int main(void)
 		*/
 		
 		
-		//wav_read_header("Sample-wav-file.wav");
-		//wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
+		wav_read_header("Sample-wav-file.wav");
+		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
 		
 		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
@@ -217,8 +220,12 @@ int main(void)
 	VOL_CreateVolBar();
   HAL_Delay(200);
   HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
+	
+	
+	/*
 	mp3_read_header("Julie-London-Fly-Me-to-the-Moon.mp3");
 	mp3_play_music(&hi2s3, &hi2c1,"Julie-London-Fly-Me-to-the-Moon.mp3");
+  */
   /* USER CODE END 2 */
 
   /* Infinite loop */

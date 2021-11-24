@@ -50,7 +50,7 @@ void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c,const uint8
 	int	bytes_left = 0;	
 
 	mp3_play_flag = 1;
-	
+	update_play_flag(mp3_play_flag);
 	res = f_open(&myFILE, path, FA_READ |FA_OPEN_EXISTING);
 	if(res != FR_OK){
 		// cannot open file
@@ -161,6 +161,7 @@ void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c,const uint8
 	MP3FreeDecoder(mp3decoder);
 	f_close(&myFILE);
 	mp3_play_flag = 0;
+	update_play_flag(mp3_play_flag);
 }
 
 inline uint32_t mp3_get_size(){

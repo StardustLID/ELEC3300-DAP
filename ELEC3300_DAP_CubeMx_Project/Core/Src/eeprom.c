@@ -96,6 +96,7 @@ void eeprom_write(I2C_HandleTypeDef *hi2c,eeprom_data data, uint8_t* data_buf){
 		case EEPROM_VOLUME:
 			memaddress = eeprom.volume_address;
 			memsize = sizeof(eeprom.volume_address);
+			eeprom.volume = *data_buf;
 			break;
 		default:
 			return;
@@ -117,3 +118,17 @@ void eeprom_write(I2C_HandleTypeDef *hi2c,eeprom_data data, uint8_t* data_buf){
 	}
 }
 
+/*
+void update_eerprom_data(eeprom_data data, uint32_t value){
+	switch(data){
+		case EEPROM_DATE:	break;
+		case EEPROM_TIME: break;
+		case EEPROM_VOLUME: eeprom.volume = (uint8_t)value; break;
+		default: break
+	}
+}
+*/
+
+uint8_t get_eeprom_volume(){
+	return eeprom.volume;
+}

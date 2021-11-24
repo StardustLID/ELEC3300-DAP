@@ -6,6 +6,7 @@
 #include "main.h"
 #include "wav_decoder.h"
 #include "mp3_decoder.h"
+#include "eeprom.h"
 
 uint16_t codec_out_buffer[AUDIO_BUFFER_SIZE];
 
@@ -13,6 +14,7 @@ uint16_t codec_out_buffer[AUDIO_BUFFER_SIZE];
 uint32_t size;
 uint32_t file_size;
 uint8_t file_read_flag = 0;
+uint8_t play_flag = 0;
 
 void codec_init(I2C_HandleTypeDef *hi2c, I2S_HandleTypeDef *hi2s3, DMA_HandleTypeDef *hdma_spi3_tx) {
 	uint8_t buf[2] = {0};  // 0: device address 1:device address 2:reg_address 3:reg_address
@@ -223,6 +225,31 @@ void codec_volume_update(I2C_HandleTypeDef *hi2c, uint16_t volume){
 	buf[1] = volume;
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_DAC_DIGITAL_VOLUME_RIGHT, 1, buf, 2, 50);
 	HAL_Delay(1);
+	
+	eeprom_write(&hi2c2,EEPROM_VOLUME,buf+1);
+}
+
+void update_play_flag(uint8_t flag){
+	play_flag = flag;
+}
+
+void codec_play_pause(void){
+	if(play_flag)
+		HAL_I2S_DMAPause(&hi2s3);
+	else
+		HAL_I2S_DMAResume(&hi2s3);
+	
+	play_flag^=1;
+}
+
+void codec_play_song(void){
+	HAL_I2S_DMAResume(&hi2s3);
+	play_flag = 0;
+}
+
+void codec_pause_song(void){
+	HAL_I2S_DMAPause(&hi2s3);
+	play_flag = 1;
 }
 
 void codec_i2s_update(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t audio_freq, uint32_t bit_per_sample) {
@@ -291,6 +318,7 @@ void codec_i2s_update(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t
 	}
 #endif /* SPI_I2SCFGR_ASTRTEN */
 }
+
 
 void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
 	if(wav_get_play_flag()){

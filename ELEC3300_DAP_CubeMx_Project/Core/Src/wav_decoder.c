@@ -206,7 +206,10 @@ void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file
 	f_lseek(&myFILE, wav_get_data_offest());  // jump to the music data
 	f_read(&myFILE, codec_out_buffer, AUDIO_BUFFER_SIZE, &fnum);
 	f_read(&myFILE, codec_out_buffer + AUDIO_HALF_BUFFER_SIZE, AUDIO_BUFFER_SIZE, &fnum);
-
+	
+	wav_play_flag = 1;
+	update_play_flag(wav_play_flag);
+	
 	coded_i2s_set_up(hi2s, hi2c, wav_get_sample_rate(), wav_get_bit_per_sample());
 	HAL_I2S_Transmit_DMA(hi2s, codec_out_buffer, AUDIO_BUFFER_SIZE);
 
@@ -223,6 +226,7 @@ void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file
 	HAL_I2S_DMAStop(hi2s);
 	f_close(&myFILE);
 	wav_play_flag = 0;
+	update_play_flag(wav_play_flag);
 }
 
 uint32_t wav_get_file_size(){
