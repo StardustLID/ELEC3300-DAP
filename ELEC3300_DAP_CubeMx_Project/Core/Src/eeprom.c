@@ -23,13 +23,18 @@ void eeprom_init(I2C_HandleTypeDef *hi2c){
 	HAL_Delay(20);
 	eeprom_read(hi2c, EEPROM_TIME);
 	HAL_Delay(20);
-	
+
+	eeprom_read(hi2c,EEPROM_VOLUME);
+	HAL_Delay(20);
 	
 	sprintf(string, "date: %s", eeprom.ver_date);
 	LCD_DrawString(0,260,string);
 	
 	sprintf(string, "time: %s", eeprom.ver_time);
 	LCD_DrawString(0,280,string);
+
+	sprintf(string, "vol: %d", eeprom.volume);
+	LCD_DrawString(0,300,string);
 }
 
 void eeprom_read(I2C_HandleTypeDef *hi2c,eeprom_data data){

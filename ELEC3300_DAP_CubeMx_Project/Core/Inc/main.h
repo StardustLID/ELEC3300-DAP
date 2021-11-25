@@ -72,7 +72,7 @@ extern SRAM_HandleTypeDef hsram1;
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+extern uint8_t play_wav;
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

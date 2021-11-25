@@ -244,12 +244,12 @@ void codec_play_pause(void){
 
 void codec_play_song(void){
 	HAL_I2S_DMAResume(&hi2s3);
-	play_flag = 0;
+	play_flag = 1;
 }
 
 void codec_pause_song(void){
 	HAL_I2S_DMAPause(&hi2s3);
-	play_flag = 1;
+	play_flag = 0;
 }
 
 void codec_i2s_update(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t audio_freq, uint32_t bit_per_sample) {

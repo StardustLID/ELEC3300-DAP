@@ -160,7 +160,7 @@ void wav_read_header(char* file_name){
 		}
 		
 	}
-
+	/*
 	sprintf(string, "artist: %s", wav_tag.list_chunk.artist);
 	LCD_DrawString(0,120,string);
 	sprintf(string, "title: %s", wav_tag.list_chunk.title);
@@ -181,7 +181,7 @@ void wav_read_header(char* file_name){
 	LCD_DrawString(0,280,string);
 	//sprintf(string, "PCM: %d", wav_tag.fmt_chunk.codec_fmt);
 	//LCD_DrawString(0,300,string);
-	
+	*/
 	
 	
 	f_close(&myFILE);

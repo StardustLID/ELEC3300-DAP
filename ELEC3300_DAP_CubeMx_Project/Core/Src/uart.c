@@ -43,8 +43,9 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart){
 		else if(strncmp(UART_REPLAY_CMD, uart1_rx_buffer, 6) == 0){
 		
 		}
-		else if(strncmp(UART_PAUSE_SONG_CMD, uart1_rx_buffer, 6) == 0){
+		else if(strncmp(UART_PAUSE_SONG_CMD, uart1_rx_buffer, 5) == 0){
 			codec_pause_song();
+			HAL_UART_Transmit(huart, UART_OK, 3, 20);
 		}
 		
 		

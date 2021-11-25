@@ -20,7 +20,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "fatfs.h"
-#include "libjpeg.h"
 #include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -35,6 +34,7 @@
 #include "menu.h"
 #include "volume_bar.h"
 #include "uart.h"
+#include "usbd_audio_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -97,7 +97,7 @@ static void MX_USART2_UART_Init(void);
 static void MX_DMA_Init(void);
 static void MX_TIM6_Init(void);
 /* USER CODE BEGIN PFP */
-
+uint8_t play_wav = 0;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -146,7 +146,6 @@ int main(void)
   MX_DMA_Init();
   MX_USB_DEVICE_Init();
   MX_TIM6_Init();
-  MX_LIBJPEG_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
 	eeprom_init(&hi2c2);
@@ -201,8 +200,8 @@ int main(void)
 		*/
 		
 		
-		wav_read_header("Sample-wav-file.wav");
-		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
+		//wav_read_header("Sample-wav-file.wav");
+		//wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
 		
 		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
@@ -221,7 +220,7 @@ int main(void)
   HAL_Delay(200);
   HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 	
-	
+	play_wav = 0;
 	/*
 	mp3_read_header("Julie-London-Fly-Me-to-the-Moon.mp3");
 	mp3_play_music(&hi2s3, &hi2c1,"Julie-London-Fly-Me-to-the-Moon.mp3");
@@ -260,6 +259,13 @@ int main(void)
 			HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
 			last_led_tick = this_tick;
 		}
+		
+		/*
+		if(play_wav){
+			wav_read_header("Sample-wav-file.wav");
+			wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
+		}
+		*/
   }
   /* USER CODE END 3 */
 }
