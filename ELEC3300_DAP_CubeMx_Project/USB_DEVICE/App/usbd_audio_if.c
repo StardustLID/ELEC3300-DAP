@@ -23,7 +23,9 @@
 #include "usbd_audio_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include "codec.h"
+#include "stm32f4xx_hal.h"
+#include "usbd_conf.h"
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,7 +34,9 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+uint32_t usb_volume;
+uint32_t usb_freq;
+uint8_t usb_dac_flag = 0;
 /* USER CODE END PV */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -157,6 +161,11 @@ static int8_t AUDIO_Init_HS(uint32_t AudioFreq, uint32_t Volume, uint32_t option
   UNUSED(AudioFreq);
   UNUSED(Volume);
   UNUSED(options);
+	
+	usb_volume = Volume;
+	usb_freq = AudioFreq;
+	usb_dac_flag = 1;
+	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,0);
   return (USBD_OK);
   /* USER CODE END 9 */
 }
@@ -170,6 +179,9 @@ static int8_t AUDIO_DeInit_HS(uint32_t options)
 {
   /* USER CODE BEGIN 10 */
   UNUSED(options);
+	HAL_I2S_DMAStop(&hi2s3);
+	usb_dac_flag = 0;
+	
   return (USBD_OK);
   /* USER CODE END 10 */
 }
@@ -187,9 +199,13 @@ static int8_t AUDIO_AudioCmd_HS(uint8_t* pbuf, uint32_t size, uint8_t cmd)
   switch(cmd)
   {
     case AUDIO_CMD_START:
+			coded_i2s_set_up(&hi2s3,&hi2c1,usb_freq, 16);
+			codec_volume_update(&hi2c1, usb_volume + 92); // max = 0xC0
+			HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t*)pbuf, size);
     break;
 
     case AUDIO_CMD_PLAY:
+			HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t*)pbuf, size);
     break;
   }
   UNUSED(pbuf);
@@ -207,7 +223,8 @@ static int8_t AUDIO_AudioCmd_HS(uint8_t* pbuf, uint32_t size, uint8_t cmd)
 static int8_t AUDIO_VolumeCtl_HS(uint8_t vol)
 {
   /* USER CODE BEGIN 12 */
-  UNUSED(vol);
+  //UNUSED(vol)
+	//codec_volume_update(&hi2c1, vol + 92);
   return (USBD_OK);
   /* USER CODE END 12 */
 }
@@ -274,7 +291,16 @@ void HalfTransfer_CallBack_HS(void)
 }
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
+void update_usb_dac_flag(uint8_t flag){
+	usb_dac_flag = flag;
+	if(flag == 0){
+		play_wav = 1;
+	}
+}
 
+uint8_t get_usb_dac_flag(){
+	return usb_dac_flag;
+}
 /* USER CODE END PRIVATE_FUNCTIONS_IMPLEMENTATION */
 
 /**

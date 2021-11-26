@@ -2,6 +2,7 @@
 #include "main.h"
 #include "lcdtp.h"
 #include <string.h>
+#include "codec.h"
 
 eeprom_struct eeprom;
 
@@ -23,13 +24,20 @@ void eeprom_init(I2C_HandleTypeDef *hi2c){
 	HAL_Delay(20);
 	eeprom_read(hi2c, EEPROM_TIME);
 	HAL_Delay(20);
+
+	eeprom_read(hi2c,EEPROM_VOLUME);
+	HAL_Delay(20);
 	
+	codec_volume_update(&hi2c1,eeprom.volume);
 	
 	sprintf(string, "date: %s", eeprom.ver_date);
 	LCD_DrawString(0,260,string);
 	
 	sprintf(string, "time: %s", eeprom.ver_time);
 	LCD_DrawString(0,280,string);
+
+	sprintf(string, "vol: %d", eeprom.volume);
+	LCD_DrawString(0,300,string);
 }
 
 void eeprom_read(I2C_HandleTypeDef *hi2c,eeprom_data data){
@@ -96,6 +104,7 @@ void eeprom_write(I2C_HandleTypeDef *hi2c,eeprom_data data, uint8_t* data_buf){
 		case EEPROM_VOLUME:
 			memaddress = eeprom.volume_address;
 			memsize = sizeof(eeprom.volume_address);
+			eeprom.volume = *data_buf;
 			break;
 		default:
 			return;
@@ -117,3 +126,17 @@ void eeprom_write(I2C_HandleTypeDef *hi2c,eeprom_data data, uint8_t* data_buf){
 	}
 }
 
+/*
+void update_eerprom_data(eeprom_data data, uint32_t value){
+	switch(data){
+		case EEPROM_DATE:	break;
+		case EEPROM_TIME: break;
+		case EEPROM_VOLUME: eeprom.volume = (uint8_t)value; break;
+		default: break
+	}
+}
+*/
+
+uint8_t get_eeprom_volume(){
+	return eeprom.volume;
+}

@@ -33,6 +33,8 @@
 #include "xpt2046.h"
 #include "menu.h"
 #include "volume_bar.h"
+#include "uart.h"
+#include "usbd_audio_if.h"
 #include "random.h"
 /* USER CODE END Includes */
 
@@ -99,7 +101,7 @@ static void MX_DMA_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_RNG_Init(void);
 /* USER CODE BEGIN PFP */
-
+uint8_t play_wav = 0;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -151,8 +153,9 @@ int main(void)
   MX_RNG_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
-	eeprom_init(&hi2c2);
+
 	codec_init(&hi2c1, &hi2s3, &hdma_spi3_tx);
+	eeprom_init(&hi2c2);
 	
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
@@ -172,8 +175,8 @@ int main(void)
 	sprintf(string, "data: %x",ee_buf);
 	LCD_DrawString(0,300,string);
 */
-  fileNames = (char **) calloc(NUM_OF_SCAN_FILE_MAX, sizeof(char *)); // malloc row ptr
-  fileTypes = (uint8_t *) calloc(NUM_OF_SCAN_FILE_MAX, sizeof(uint8_t)); // malloc row ptr
+  // fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
+  // fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t *)); // malloc row ptr
 
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
@@ -186,42 +189,48 @@ int main(void)
   // MENU_SetSongTimer(&htim6);
   // MENU_Main();
   // /*******************************/
-
+	
+	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
+	//codec_volume_update(&hi2c1,0xC0);
 	if (res == FR_OK)
 	{
 		// scan_file("0:/MUSIC");
-		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
+		// scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
 		
     // testing
-    MENU_SelectSong(numSongs, fileNames, fileTypes);
-    while (1)
-    {
-      /* code */
-    }
-    
+    // MENU_SelectSong(numSongs, fileNames, fileTypes);
 
 		/*
 		wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
 		wav_play_music(&hi2s3, &hi2c1,"Ensoniq-ZR-76-01-Dope-77.wav");
 		*/
-		/*
+		
+		
 		wav_read_header("Sample-wav-file.wav");
 		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
-		*/
+		
 		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
+		
 		//mp3_read_header("Kalimba.mp3");
 		//mp3_play_music(&hi2s3, &hi2c1,"Kalimba.mp3");
 		
+		//decode_jpeg("Sample-wav-file.jpg");
 		
 	}
 	else{
 		LCD_DrawString(0,0,"Cannot mount FATFS");
 	}
-	
+	//while(1);
 	VOL_CreateVolBar();
   HAL_Delay(200);
   HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
+	
+	play_wav = 0;
+	/*
+	mp3_read_header("Julie-London-Fly-Me-to-the-Moon.mp3");
+	mp3_play_music(&hi2s3, &hi2c1,"Julie-London-Fly-Me-to-the-Moon.mp3");
+  */
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -256,6 +265,13 @@ int main(void)
 			HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
 			last_led_tick = this_tick;
 		}
+		
+		/*
+		if(play_wav){
+			wav_read_header("Sample-wav-file.wav");
+			wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
+		}
+		*/
   }
   /* USER CODE END 3 */
 }

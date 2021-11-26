@@ -116,7 +116,8 @@ void TransferComplete_CallBack_HS(void);
 void HalfTransfer_CallBack_HS(void);
 
 /* USER CODE BEGIN EXPORTED_FUNCTIONS */
-
+void update_usb_dac_flag(uint8_t flag);
+uint8_t get_usb_dac_flag();
 /* USER CODE END EXPORTED_FUNCTIONS */
 
 /**

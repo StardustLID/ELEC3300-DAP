@@ -6,6 +6,7 @@
 #include "main.h"
 #include "wav_decoder.h"
 #include "mp3_decoder.h"
+#include "eeprom.h"
 
 uint16_t codec_out_buffer[AUDIO_BUFFER_SIZE];
 
@@ -13,6 +14,7 @@ uint16_t codec_out_buffer[AUDIO_BUFFER_SIZE];
 uint32_t size;
 uint32_t file_size;
 uint8_t file_read_flag = 0;
+uint8_t play_flag = 0;
 
 void codec_init(I2C_HandleTypeDef *hi2c, I2S_HandleTypeDef *hi2s3, DMA_HandleTypeDef *hdma_spi3_tx) {
 	uint8_t buf[2] = {0};  // 0: device address 1:device address 2:reg_address 3:reg_address
@@ -83,12 +85,12 @@ void codec_init(I2C_HandleTypeDef *hi2c, I2S_HandleTypeDef *hi2s3, DMA_HandleTyp
 	//LCD_DrawString(0, 300, string);
 
 	buf[0] = 0x00;
-	buf[1] = 0x40;
+	buf[1] = 0x30;
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_DAC_DIGITAL_VOLUME_LEFT, 1, buf, 2, 50);
 	HAL_Delay(1);
 
 	buf[0] = 0x01;
-	buf[1] = 0x40;
+	buf[1] = 0x30;
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_DAC_DIGITAL_VOLUME_RIGHT, 1, buf, 2, 50);
 	HAL_Delay(1);
 
@@ -183,7 +185,7 @@ void coded_i2s_set_up(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t
   */
 	// char string[25];
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_CLOCK_RATE_1, 1, buf, 2, 50);
-	HAL_Delay(1);
+	//HAL_Delay(1);
 	/*
 	sprintf(string, "data: %x, %x", buf[0], buf[1]);
 	LCD_DrawString(0,300,string);
@@ -205,7 +207,7 @@ void coded_i2s_set_up(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t
 	HAL_NVIC_EnableIRQ(DMA1_Stream5_IRQn);
 }
 
-void codec_volume_update(uint16_t volume, I2C_HandleTypeDef *hi2c) {
+void codec_volume_update(I2C_HandleTypeDef *hi2c, uint16_t volume){
 	/* dont know why the volume regsister for L/R Headphone work...*/
 	/* only dac volume regsister is working... */
 	/* for dac volume only 00h to C0h can be used, */
@@ -223,6 +225,31 @@ void codec_volume_update(uint16_t volume, I2C_HandleTypeDef *hi2c) {
 	buf[1] = volume;
 	HAL_I2C_Mem_Write(hi2c, WM8918_DEVICE_ID, WM8918_DAC_DIGITAL_VOLUME_RIGHT, 1, buf, 2, 50);
 	HAL_Delay(1);
+	
+	eeprom_write(&hi2c2,EEPROM_VOLUME,buf+1);
+}
+
+void update_play_flag(uint8_t flag){
+	play_flag = flag;
+}
+
+void codec_play_pause(void){
+	if(play_flag)
+		HAL_I2S_DMAPause(&hi2s3);
+	else
+		HAL_I2S_DMAResume(&hi2s3);
+	
+	play_flag^=1;
+}
+
+void codec_play_song(void){
+	HAL_I2S_DMAResume(&hi2s3);
+	play_flag = 1;
+}
+
+void codec_pause_song(void){
+	HAL_I2S_DMAPause(&hi2s3);
+	play_flag = 0;
 }
 
 void codec_i2s_update(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t audio_freq, uint32_t bit_per_sample) {
@@ -329,3 +356,4 @@ void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
 void i2s_DMA_error_callback(DMA_HandleTypeDef *hdma){
 	HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, 0); 
 }
+
