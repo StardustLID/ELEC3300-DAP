@@ -319,7 +319,6 @@ void codec_i2s_update(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t
 #endif /* SPI_I2SCFGR_ASTRTEN */
 }
 
-
 void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
 	if(wav_get_play_flag()){
 		wav_buf_pos_update(AUDIO_HALF_BUFFER_SIZE);

@@ -42,7 +42,7 @@ void MENU_Main() {
 	}
 }
 
-uint8_t MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t** fileTypes) {
+uint8_t MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	LCD_Clear(0, 0, 240, 320, DARK);
 
 	LCD_DrawString_Color(0, 0, "Song Menu", DARK, CYAN);
@@ -65,11 +65,11 @@ uint8_t MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t** fileTypes)
 		char songItem[30];
 		sprintf(songItem, "%d. %s", i, fileNames[i]);
 		LCD_DrawString_Color(0, 16*(i+4), songItem, DARK, CYAN);
-		if (*fileTypes[i] == 1) {
+		if (fileTypes[i] == (uint8_t) 1) {
 			LCD_DrawString_Color(208, 16*(i+4), ".mp3", DARK, CYAN);
-		} else if (*fileTypes[i] == 2) {
+		} else if (fileTypes[i] == (uint8_t) 2) {
 			LCD_DrawString_Color(208, 16*(i+4), ".wav", DARK, CYAN);
-		} else if (*fileTypes[i] == 3) {
+		} else if (fileTypes[i] == (uint8_t) 3) {
 			LCD_DrawString_Color(200, 16*(i+4), ".flac", DARK, CYAN);
 		} else {
 			LCD_DrawString_Color(208, 16*(i+4), "BUG", DARK, RED);

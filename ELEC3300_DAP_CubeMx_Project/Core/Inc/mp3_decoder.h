@@ -37,7 +37,6 @@ typedef struct mp3_type{
 #define MP3_FRAME_ID_UNSYNC_LYRICIST	"USLT"
 #define MP3_FRAME_ID_SYNC_LYRICIST	"SYLT"
 
-
 void mp3_read_header(char* file_name);
 void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c,const uint8_t* file_name);
 uint32_t mp3_get_size();

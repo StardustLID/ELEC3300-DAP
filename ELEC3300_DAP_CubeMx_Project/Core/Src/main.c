@@ -35,6 +35,7 @@
 #include "volume_bar.h"
 #include "uart.h"
 #include "usbd_audio_if.h"
+#include "random.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,6 +59,8 @@ I2C_HandleTypeDef hi2c2;
 I2S_HandleTypeDef hi2s3;
 DMA_HandleTypeDef hdma_spi3_tx;
 
+RNG_HandleTypeDef hrng;
+
 SD_HandleTypeDef hsd;
 DMA_HandleTypeDef hdma_sdio_rx;
 DMA_HandleTypeDef hdma_sdio_tx;
@@ -76,7 +79,7 @@ SRAM_HandleTypeDef hsram1;
 // song menu variables
 uint8_t numSongs = 0;
 char **fileNames; // dynamic 2D char array
-uint8_t **fileTypes; // dynamic 1D enum array. 1 = MP3, 2 = WAV, 3 = FLAC
+uint8_t *fileTypes; // dynamic 1D uint8_t array. 1 = MP3, 2 = WAV, 3 = FLAC
 
 uint32_t encoder_value = 0;
 uint8_t volume = 0;
@@ -96,6 +99,7 @@ static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_DMA_Init(void);
 static void MX_TIM6_Init(void);
+static void MX_RNG_Init(void);
 /* USER CODE BEGIN PFP */
 uint8_t play_wav = 0;
 /* USER CODE END PFP */
@@ -146,6 +150,7 @@ int main(void)
   MX_DMA_Init();
   MX_USB_DEVICE_Init();
   MX_TIM6_Init();
+  MX_RNG_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
 
@@ -413,6 +418,32 @@ static void MX_I2S3_Init(void)
   /* USER CODE BEGIN I2S3_Init 2 */
 
   /* USER CODE END I2S3_Init 2 */
+
+}
+
+/**
+  * @brief RNG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RNG_Init(void)
+{
+
+  /* USER CODE BEGIN RNG_Init 0 */
+
+  /* USER CODE END RNG_Init 0 */
+
+  /* USER CODE BEGIN RNG_Init 1 */
+
+  /* USER CODE END RNG_Init 1 */
+  hrng.Instance = RNG;
+  if (HAL_RNG_Init(&hrng) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RNG_Init 2 */
+
+  /* USER CODE END RNG_Init 2 */
 
 }
 
