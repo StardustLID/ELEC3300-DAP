@@ -148,8 +148,9 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
-	eeprom_init(&hi2c2);
+
 	codec_init(&hi2c1, &hi2s3, &hdma_spi3_tx);
+	eeprom_init(&hi2c2);
 	
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
@@ -185,7 +186,7 @@ int main(void)
   // /*******************************/
 	
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
-	codec_volume_update(&hi2c1,0xC0);
+	//codec_volume_update(&hi2c1,0xC0);
 	if (res == FR_OK)
 	{
 		// scan_file("0:/MUSIC");
@@ -200,8 +201,8 @@ int main(void)
 		*/
 		
 		
-		//wav_read_header("Sample-wav-file.wav");
-		//wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
+		wav_read_header("Sample-wav-file.wav");
+		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
 		
 		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");

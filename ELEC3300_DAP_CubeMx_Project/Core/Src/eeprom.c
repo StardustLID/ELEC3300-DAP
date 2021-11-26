@@ -2,6 +2,7 @@
 #include "main.h"
 #include "lcdtp.h"
 #include <string.h>
+#include "codec.h"
 
 eeprom_struct eeprom;
 
@@ -26,6 +27,8 @@ void eeprom_init(I2C_HandleTypeDef *hi2c){
 
 	eeprom_read(hi2c,EEPROM_VOLUME);
 	HAL_Delay(20);
+	
+	codec_volume_update(&hi2c1,eeprom.volume);
 	
 	sprintf(string, "date: %s", eeprom.ver_date);
 	LCD_DrawString(0,260,string);
