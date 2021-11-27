@@ -11,6 +11,9 @@ wav_tag_header wav_tag = {0};
 uint8_t wav_play_flag = 0;
 uint16_t wav_buf_pos = 0;
 
+uint8_t wav_time_skip_flag = 0;
+int32_t wav_skip_byte = 0;
+
 void wav_read_header(char* file_name){
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
 	char string[1024] = {0};
@@ -205,18 +208,51 @@ void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file
 
 	f_lseek(&myFILE, wav_get_data_offest());  // jump to the music data
 	f_read(&myFILE, codec_out_buffer, AUDIO_BUFFER_SIZE, &fnum);
-	f_read(&myFILE, codec_out_buffer + AUDIO_HALF_BUFFER_SIZE, AUDIO_BUFFER_SIZE, &fnum);
+	//f_read(&myFILE, codec_out_buffer + AUDIO_HALF_BUFFER_SIZE, AUDIO_BUFFER_SIZE, &fnum);
 	
 	wav_play_flag = 1;
 	update_play_flag(wav_play_flag);
 	
 	coded_i2s_set_up(hi2s, hi2c, wav_get_sample_rate(), wav_get_bit_per_sample());
 	HAL_I2S_Transmit_DMA(hi2s, codec_out_buffer, AUDIO_BUFFER_SIZE);
+	
+	sprintf(string, "ori: %d  ", wav_tag.data_chunk.data_offest);
+	LCD_DrawString(0,0,string);
 
 	while (!(f_eof(&myFILE))) {
 		if (file_read_flag) {
 			// HAL_I2S_Transmit_DMA(hi2s, &(buffer[AUDIO_HALF_BUFFER_SIZE - wav_buf_pos]), AUDIO_BUFFER_SIZE);
-			f_read(&myFILE, codec_out_buffer + wav_buf_pos, AUDIO_BUFFER_SIZE, &fnum);	// TODO: put it DMA cplt callback, but not working for now
+			if(wav_time_skip_flag == 1){
+				uint32_t cur_read_offset = f_tell(&myFILE);
+				uint32_t tar_read_offset = cur_read_offset + wav_skip_byte;
+				
+				sprintf(string, "cur: %d  ", cur_read_offset);
+				LCD_DrawString(0,20,string);
+				
+				sprintf(string, "tar: %d  ", tar_read_offset);
+				LCD_DrawString(0,40,string);
+				
+				if(tar_read_offset <= wav_tag.data_chunk.data_offest){
+					tar_read_offset = wav_tag.data_chunk.data_offest;
+				}
+				else if(tar_read_offset >= cur_read_offset + wav_tag.data_chunk.data_offest + wav_tag.data_chunk.size - AUDIO_BUFFER_SIZE){
+					wav_time_skip_flag = 0;
+					break;
+				}
+				
+				f_lseek(&myFILE, tar_read_offset);
+				wav_time_skip_flag = 0;
+			}
+			
+			if(wav_tag.fmt_chunk.sound_ch == 1){
+				f_read(&myFILE, codec_out_buffer + wav_buf_pos, AUDIO_HALF_BUFFER_SIZE, &fnum);	// TODO: put it DMA cplt callback, but not working for now
+				for(int  i = AUDIO_HALF_BUFFER_SIZE - 1; i >= 0; i--){
+					codec_out_buffer[wav_buf_pos + i * 2] = codec_out_buffer[wav_buf_pos + i];
+					codec_out_buffer[wav_buf_pos + i * 2 + 1] = codec_out_buffer[wav_buf_pos + i];
+				}	
+			}
+			else
+				f_read(&myFILE, codec_out_buffer + wav_buf_pos, AUDIO_BUFFER_SIZE, &fnum);	// TODO: put it DMA cplt callback, but not working for now
 			// HAL_I2S_Transmit(hi2s, buffer[buffer_flag], AUDIO_BUFFER_SIZE, 1000000);
 			//HAL_I2S_Transmit_DMA(hi2s, codec_out_buffer, AUDIO_BUFFER_SIZE);
 			file_read_flag = 0;
@@ -227,6 +263,11 @@ void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file
 	f_close(&myFILE);
 	wav_play_flag = 0;
 	update_play_flag(wav_play_flag);
+}
+
+void wav_time_skip(int32_t sec){
+	wav_skip_byte = wav_tag.fmt_chunk.byte_rate * sec;
+	wav_time_skip_flag = 1;
 }
 
 uint32_t wav_get_file_size(){
@@ -245,7 +286,7 @@ uint32_t wav_get_data_offest(){
 	return wav_tag.data_chunk.data_offest;
 }
 
-uint8_t wav_get_play_flag(){
+uint8_t get_wav_play_flag(){
 	return wav_play_flag;
 }
 

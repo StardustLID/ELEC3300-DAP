@@ -454,6 +454,16 @@
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
             </File>
+            <File>
+              <FileName>random.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\random.c</FilePath>
+            </File>
+            <File>
+              <FileName>player_func.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\player_func.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

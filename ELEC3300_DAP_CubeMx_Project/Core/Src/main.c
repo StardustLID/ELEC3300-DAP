@@ -163,6 +163,7 @@ int main(void)
 
 	codec_init(&hi2c1, &hi2s3, &hdma_spi3_tx);
 	eeprom_init(&hi2c2);
+	codec_load_setting();
 	
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
@@ -171,6 +172,7 @@ int main(void)
 	FATFS myFATFS;
 	FRESULT res;
 	res = f_mount(&myFATFS,SDPath,1);
+	
 /*
 	char string[15];
 	uint8_t ee_buf = 0x9c;
