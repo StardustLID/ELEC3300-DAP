@@ -143,7 +143,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>ST-LINKIII-KEIL_SWO</Key>
-          <Name>-U-O142 -O10446 -SF4000 -C0 -A0 -I0 -HNlocalhost -HP7184 -P2 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO15 -FD20000000 -FC800 -FN1 -FF0STM32F4xx_512.FLM -FS08000000 -FL080000 -FP0($$Device:STM32F407VETx$CMSIS\Flash\STM32F4xx_512.FLM)</Name>
+          <Name>-U-O142 -O10446 -S1 -C0 -A0 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO15 -FD20000000 -FC800 -FN1 -FF0STM32F4xx_512.FLM -FS08000000 -FL080000 -FP0($$Device:STM32F407VETx$CMSIS\Flash\STM32F4xx_512.FLM)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint>
@@ -152,7 +152,7 @@
           <Type>0</Type>
           <LineNumber>252</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134253448</Address>
+          <Address>134254328</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -162,6 +162,54 @@
           <Filename>..\Core\Src\codec.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\ELEC3300_DAP_CubeMx_Project\../Core/Src/codec.c\252</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>218</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134221848</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>../Core/Src/stm32f4xx_it.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\ELEC3300_DAP_CubeMx_Project\../Core/Src/stm32f4xx_it.c\218</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>236</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134221880</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>../Core/Src/stm32f4xx_it.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\ELEC3300_DAP_CubeMx_Project\../Core/Src/stm32f4xx_it.c\236</Expression>
+        </Bp>
+        <Bp>
+          <Number>3</Number>
+          <Type>0</Type>
+          <LineNumber>254</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134221916</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>../Core/Src/stm32f4xx_it.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\ELEC3300_DAP_CubeMx_Project\../Core/Src/stm32f4xx_it.c\254</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -185,12 +233,27 @@
           <WinNumber>1</WinNumber>
           <ItemText>mp3_player</ItemText>
         </Ww>
+        <Ww>
+          <count>4</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>btn_2_flag</ItemText>
+        </Ww>
+        <Ww>
+          <count>5</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>btn_1_flag</ItemText>
+        </Ww>
+        <Ww>
+          <count>6</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>btn_0_flag</ItemText>
+        </Ww>
       </WatchWindow1>
       <MemoryWindow1>
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>0</SubType>
-          <ItemText>0x2000BF000</ItemText>
+          <ItemText>0x8005a54</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>

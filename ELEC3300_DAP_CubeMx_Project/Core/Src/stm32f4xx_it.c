@@ -65,9 +65,9 @@ extern TIM_HandleTypeDef htim6;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
-extern uint8_t btn_0_flag;
-extern uint8_t btn_1_flag;
-extern uint8_t btn_2_flag;
+extern volatile uint8_t btn_0_flag;
+extern volatile uint8_t btn_1_flag;
+extern volatile uint8_t btn_2_flag;
 /* USER CODE END EV */
 
 /******************************************************************************/

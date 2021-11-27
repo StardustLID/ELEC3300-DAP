@@ -9,9 +9,11 @@
 #define WELCOME_DELAY 1000
 #define INPUT_DELAY 80
 
-extern uint8_t btn_0_flag;
-extern uint8_t btn_1_flag;
-extern uint8_t btn_2_flag;
+extern volatile uint8_t menu_id;
+extern volatile uint8_t song_id;
+extern volatile uint8_t btn_0_flag;
+extern volatile uint8_t btn_1_flag;
+extern volatile uint8_t btn_2_flag;
 
 static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usColor_Btn, uint16_t usColor_Text);
 static void _renderButton(const Button *btn);
@@ -31,41 +33,29 @@ void MENU_Welcome() {
 
 // main loop of the DAP program
 void MENU_Main() {
+	LCD_Clear(0, 0, 240, 320, DARK);
+	btn_0_flag = 0;
+	btn_1_flag = 0;
+	btn_2_flag = 0;
+	_renderButton(&btn_PlaySongMenu);
+	_renderButton(&btn_FatfsMenu);
+
 	while (1) {
-		LCD_Clear(0, 0, 240, 320, DARK);
-		_renderButton(&btn_PlaySongMenu);
-		_renderButton(&btn_FatfsMenu);
-		while (1) {
-			// 	MENU_PlaySong();
-			if (btn_0_flag == 1) {
-				HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, LED_ON);
-				HAL_Delay(200);
-				btn_0_flag = 0;
-			} else {
-				HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, LED_OFF);
-			}
-
-			if (btn_1_flag == 1) {
-				HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, LED_ON);
-				HAL_Delay(200);
-				btn_1_flag = 0;
-			} else {
-				HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, LED_OFF);
-			}
-
-			if (btn_2_flag == 1) {
-				HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, LED_ON);
-				HAL_Delay(200);
-				btn_2_flag = 0;
-			} else {
-				HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, LED_OFF);
-			}
+		if (btn_2_flag != 0) {
+			btn_2_flag = 0;
+		} else if (btn_1_flag) {
+			btn_1_flag = 0;
+			menu_id = 1;
+			return;
 		}
 	}
 }
 
-uint8_t MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
+void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	LCD_Clear(0, 0, 240, 320, DARK);
+	btn_0_flag = 0;
+	btn_1_flag = 0;
+	btn_2_flag = 0;
 
 	LCD_DrawString_Color(0, 0, "Song Menu", DARK, CYAN);
 	LCD_DrawString_Color(0, 16, "Select a song:", DARK, CYAN);
@@ -99,23 +89,28 @@ uint8_t MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) 
 	}
 
 	// poll for button input
-	// while (1) {
-	// 	if (ucXPT2046_TouchFlag == 1) {
-	// 		strType_XPT2046_Coordinate tempCoor = getTouchedPoint();
-	// 		const Point touchPt = {tempCoor.x, tempCoor.y};
-	// 		for (uint8_t i = 0; i < numSongs; i++) {
-	// 			// if (_btnTouched(&touchPt, btn_songs[i])) LCD_DrawString(0, 0, "selected"); // dummy
-	// 			ucXPT2046_TouchFlag = 0;
-	// 			return 0;
-	// 		}
-	// 	}
-	// }
-	return 0;
+	song_id = 0;
+	while (1) { 
+		if (btn_2_flag != 0) {
+			btn_2_flag = 0;
+			menu_id = 2; // set menu id
+			HAL_Delay(INPUT_DELAY);
+			return; // select current song
+		} else if (btn_1_flag) {
+			btn_1_flag = 0;
+			HAL_Delay(INPUT_DELAY);
+			song_id = (song_id + 1) % numSongs;
+		}
+	}
 }
 
 void MENU_PlaySong() {
 	LCD_Clear(0, 0, 240, 320, DARK);
-	LCD_DrawString_Color(40, 80, "Now Playing: Dummy Song", DARK, CYAN);
+	btn_0_flag = 0;
+	btn_1_flag = 0;
+	btn_2_flag = 0;
+
+	LCD_DrawString_Color(40, 80, "Now Playing: Dummy", DARK, CYAN);
 	_renderButton(&btn_backward);
 	_renderButton(&btn_play);
 	_renderButton(&btn_forward);

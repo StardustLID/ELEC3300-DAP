@@ -80,9 +80,8 @@ void MENU_Main(void);
 
 /**
  * @note the menu when a song is being selected
- * @return index of the chosen song
  */
-uint8_t MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes);
+void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes);
 
 /**
  * @note the menu when a song is being played

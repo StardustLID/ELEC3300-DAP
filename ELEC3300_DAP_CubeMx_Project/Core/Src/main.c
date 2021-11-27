@@ -76,6 +76,8 @@ UART_HandleTypeDef huart2;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
+volatile uint8_t menu_id = 0;
+volatile uint8_t song_id = 0;
 volatile uint8_t btn_0_flag = 0;
 volatile uint8_t btn_1_flag = 0;
 volatile uint8_t btn_2_flag = 0;
@@ -183,47 +185,28 @@ int main(void)
   fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
   fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t)); // malloc row ptr
 
-  // comment / uncomment below to test Stardust menu
-  // MENU_Welcome();
+  MENU_Welcome();
   LCD_Clear(0, 0, 240, 320, DARK);
   HAL_Delay(500);
-	
-  MENU_Main();
-  // /*******************************/
 	
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
 	//codec_volume_update(&hi2c1,0xC0);
 	if (res == FR_OK)
 	{
-		// scan_file("0:/MUSIC");
 		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
-    MENU_SelectSong(numSongs, fileNames, fileTypes);
-    HAL_Delay(1000);
-
-    MENU_PlaySong();
-
-		/*
-		wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
-		wav_play_music(&hi2s3, &hi2c1,"Ensoniq-ZR-76-01-Dope-77.wav");
-		*/
 		
+		// wav_read_header("Sample-wav-file.wav");
+		// wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
 		
-		wav_read_header("Sample-wav-file.wav");
-		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
-		
-		
-    //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
 		
 		//mp3_read_header("Kalimba.mp3");
 		//mp3_play_music(&hi2s3, &hi2c1,"Kalimba.mp3");
-		
-		//decode_jpeg("Sample-wav-file.jpg");
 		
 	}
 	else{
 		LCD_DrawString(0,0,"Cannot mount FATFS");
 	}
-	
+  
 	play_wav = 0;
 	/*
 	mp3_read_header("Julie-London-Fly-Me-to-the-Moon.mp3");
@@ -233,8 +216,26 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint8_t i = 0;
   while (1)
   {
+    char dummy[5];
+    sprintf(dummy, "%d %d", i, menu_id);
+    LCD_DrawString(0, 0, dummy);
+    HAL_Delay(1000);
+    switch(menu_id) {
+      case 0:
+      MENU_Main();
+      break;
+
+      case 1:
+      MENU_SelectSong(numSongs, fileNames, fileTypes);
+      break;
+
+      case 2:
+      MENU_PlaySong();
+      break;
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -244,13 +245,7 @@ int main(void)
 			HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
 			last_led_tick = this_tick;
 		}
-		
-		/*
-		if(play_wav){
-			wav_read_header("Sample-wav-file.wav");
-			wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
-		}
-		*/
+    i++;
   }
   /* USER CODE END 3 */
 }
