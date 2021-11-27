@@ -117,6 +117,66 @@ void codec_init(I2C_HandleTypeDef *hi2c, I2S_HandleTypeDef *hi2s3, DMA_HandleTyp
 	HAL_Delay(1);
 }
 
+void codec_load_setting(){
+	codec_volume_update(&hi2c1,get_eeprom_volume());
+	codec_eq_enable(get_eeprom_eq_ena());
+	codec_eq(get_eeprom_eq1(),get_eeprom_eq2(),get_eeprom_eq3(),get_eeprom_eq4(),get_eeprom_eq5());
+}
+
+void codec_eq_enable(uint8_t enable_flag){
+	// enable EQ
+	uint8_t buf[2] = {0};
+	if(enable_flag)
+		buf[1] = 0x01;
+	
+	HAL_I2C_Mem_Write(&hi2c1, WM8918_DEVICE_ID, WM8918_EQ_ENA, 1, buf, 2, 50);	
+	eeprom_write(&hi2c2,EEPROM_EQ_ENA, buf+1);
+	HAL_Delay(1);
+}
+
+
+void codec_eq(uint8_t band1, uint8_t band2, uint8_t band3, uint8_t band4, uint8_t band5){
+	uint8_t buf[2];
+	char string[15];
+	
+	buf[0] = 0x00;
+	buf[1] = band1;
+	HAL_I2C_Mem_Write(&hi2c1, WM8918_DEVICE_ID, WM8918_EQ1_GAIN, 1, buf, 2, 50);
+	HAL_Delay(1);
+	eeprom_write(&hi2c2, EEPROM_EQ1, buf + 1);
+	HAL_Delay(1);
+
+	buf[0] = 0x00;
+	buf[1] = band2;
+	HAL_I2C_Mem_Write(&hi2c1, WM8918_DEVICE_ID, WM8918_EQ2_GAIN, 1, buf, 2, 50);
+	HAL_Delay(1);
+	eeprom_write(&hi2c2, EEPROM_EQ2, buf + 1);
+	HAL_Delay(1);
+
+	buf[0] = 0x00;
+	buf[1] = band3;
+	HAL_I2C_Mem_Write(&hi2c1, WM8918_DEVICE_ID, WM8918_EQ3_GAIN, 1, buf, 2, 50);
+	HAL_Delay(1);
+	eeprom_write(&hi2c2, EEPROM_EQ3, buf + 1);
+	HAL_Delay(1);
+	
+	buf[0] = 0x00;
+	buf[1] = band4;
+	HAL_I2C_Mem_Write(&hi2c1, WM8918_DEVICE_ID, WM8918_EQ4_GAIN, 1, buf, 2, 50);
+	HAL_Delay(1);
+	eeprom_write(&hi2c2, EEPROM_EQ4, buf + 1);
+	HAL_Delay(1);
+
+	buf[0] = 0x00;
+	buf[1] = band5;
+	HAL_I2C_Mem_Write(&hi2c1, WM8918_DEVICE_ID, WM8918_EQ5_GAIN, 1, buf, 2, 50);
+	HAL_Delay(1);
+	eeprom_write(&hi2c2, EEPROM_EQ5, buf + 1);
+	HAL_Delay(1);
+
+
+}
+
 void coded_i2s_set_up(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t sample_freq, uint8_t bit_pre_sample) {
 	
 	HAL_I2S_DeInit(hi2s);
@@ -231,6 +291,8 @@ void codec_volume_update(I2C_HandleTypeDef *hi2c, uint16_t volume){
 
 void update_play_flag(uint8_t flag){
 	play_flag = flag;
+<<<<<<< HEAD
+=======
 }
 
 void codec_play_pause(void){
@@ -250,7 +312,9 @@ void codec_play_song(void){
 void codec_pause_song(void){
 	HAL_I2S_DMAPause(&hi2s3);
 	play_flag = 0;
+>>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
 }
+
 
 void codec_i2s_update(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t audio_freq, uint32_t bit_per_sample) {
 	uint32_t i2sdiv;
@@ -320,7 +384,7 @@ void codec_i2s_update(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t
 }
 
 void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
-	if(wav_get_play_flag()){
+	if(get_wav_play_flag()){
 		wav_buf_pos_update(AUDIO_HALF_BUFFER_SIZE);
 	}
 	else if(mp3_get_play_flag()){
@@ -338,7 +402,7 @@ void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {
 }
 
 void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef *hi2s) {
-	if(wav_get_play_flag()){
+	if(get_wav_play_flag()){
 		wav_buf_pos_update(0);
 	}
 	else if(mp3_get_play_flag()){
@@ -357,3 +421,8 @@ void i2s_DMA_error_callback(DMA_HandleTypeDef *hdma){
 	HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, 0); 
 }
 
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
