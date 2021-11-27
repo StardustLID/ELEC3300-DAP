@@ -183,7 +183,7 @@ int main(void)
 
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
-  // LCD_Clear(0, 0, 240, 320, DARK);
+	LCD_Clear(0, 0, 240, 320, DARK);
 
 	// while( ! XPT2046_Touch_Calibrate () );
 
@@ -210,9 +210,8 @@ int main(void)
 		// }
 		
 		
-		wav_read_header("Sample-wav-file.wav");
-		player_display_cover("wav_icon-py.bin");
-		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
+		//wav_read_header("Sample-wav-file.wav");
+		//wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
 		
 		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
@@ -228,6 +227,7 @@ int main(void)
 	}
 	//while(1);
 	VOL_CreateVolBar();
+	player_display_cover("Sample-wav-file.bin");
   HAL_Delay(200);
   HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 	

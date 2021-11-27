@@ -41,10 +41,10 @@ void player_display_cover(char* file_name){
 	char ReadBuffer[2] = {0};
 	f_open(&myFILE, path, FA_READ |FA_OPEN_EXISTING);
 
-	for(int i = 0; i < 128; i++){
-		for(int j = 0; j < 128; j++){
+	for(int i = 0; i < 200; i++){
+		for(int j = 0; j < 200; j++){
 			f_read(&myFILE, &ReadBuffer, 2, &fnum);
-			LCD_DrawDot(10+j,10+i, (uint16_t)((ReadBuffer[1] << 8)| (ReadBuffer[0])));
+			LCD_DrawDot(25+j,10+i, (uint16_t)((ReadBuffer[1] << 8)| (ReadBuffer[0])));
 		}
 	}
 	f_close(&myFILE);
