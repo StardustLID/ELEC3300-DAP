@@ -13,8 +13,9 @@ extern uint8_t uart1_rx_byte;
 #define UART_PLAY_SONG_CMD "play"
 #define UART_REPLAY_CMD "replay"
 #define UART_PAUSE_SONG_CMD "pause"
-
-#define UART_EQ_ENA_CMD "eq"
+#define UART_FORWARD_SEC_CMD "fws"
+#define UART_BACKWARD_SEC_CMD "bws"
+#define UART_EQ_ENA_CMD "eqe"
 #define UART_EQ1_CMD    "eq1"
 #define UART_EQ2_CMD    "eq2"
 #define UART_EQ3_CMD    "eq3"

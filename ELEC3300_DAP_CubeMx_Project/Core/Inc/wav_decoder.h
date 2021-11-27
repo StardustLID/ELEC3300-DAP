@@ -71,14 +71,15 @@ typedef struct wav_tag_header{
 #define WAV_ID_DATA						"data"
 #define WAV_ID_FACT						"fact"
 #define WAV_ID_LIST						"LIST"
-#define WAV_ID_END_OF_LIST		"INFO"
+#define WAV_ID_END_OF_LIST				"INFO"
 
 void wav_read_header(char* file_name);
 void wav_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c, char* file_name);
+void wav_time_skip(int32_t sec);
 inline uint32_t wav_get_file_size(void);
 inline uint32_t wav_get_sample_rate(void);
 inline uint16_t wav_get_bit_per_sample(void);
 inline uint32_t wav_get_data_offest(void);
-uint8_t wav_get_play_flag();
+uint8_t get_wav_play_flag();
 void wav_buf_pos_update(uint16_t pos);
 #endif

@@ -156,6 +156,7 @@ int main(void)
 
 	codec_init(&hi2c1, &hi2s3, &hdma_spi3_tx);
 	eeprom_init(&hi2c2);
+	codec_load_setting();
 	
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
@@ -164,6 +165,7 @@ int main(void)
 	FATFS myFATFS;
 	FRESULT res;
 	res = f_mount(&myFATFS,SDPath,1);
+	
 /*
 	char string[15];
 	uint8_t ee_buf = 0x9c;
@@ -180,7 +182,7 @@ int main(void)
 
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
-  LCD_Clear(0, 0, 240, 320, DARK);
+  // LCD_Clear(0, 0, 240, 320, DARK);
 
 	// while( ! XPT2046_Touch_Calibrate () );
 
@@ -189,9 +191,7 @@ int main(void)
   // MENU_SetSongTimer(&htim6);
   // MENU_Main();
   // /*******************************/
-	
-	codec_enable_eq();
-	codec_eq(0,0,0,0,0);
+
 	
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
 	//codec_volume_update(&hi2c1,0xC0);
@@ -203,15 +203,15 @@ int main(void)
     // testing
     // MENU_SelectSong(numSongs, fileNames, fileTypes);
 
-		while(1){
-			wav_read_header("net_sin_1000Hz_-3dBFS_10s.wav");
-			wav_play_music(&hi2s3, &hi2c1,"net_sin_1000Hz_-3dBFS_10s.wav");
-		}
+		// while(1){
+		// 	wav_read_header("net_sin_1000Hz_-3dBFS_10s.wav");
+		// 	wav_play_music(&hi2s3, &hi2c1,"net_sin_1000Hz_-3dBFS_10s.wav");
+		// }
 		
-		/*
+		
 		wav_read_header("Sample-wav-file.wav");
 		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
-		*/
+		
 		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
 		
@@ -619,7 +619,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = 9600;//115200;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;

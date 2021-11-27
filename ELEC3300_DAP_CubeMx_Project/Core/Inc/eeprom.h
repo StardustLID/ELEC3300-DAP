@@ -50,6 +50,7 @@ void eeprom_write(I2C_HandleTypeDef *hi2c,eeprom_data data, uint8_t* data_buf);
 void eeprom_reset_eq_value();
 
 uint8_t get_eeprom_volume(void);
+uint8_t get_eeprom_eq_ena(void);
 int8_t get_eeprom_eq1(void);
 int8_t get_eeprom_eq2(void);
 int8_t get_eeprom_eq3(void);
