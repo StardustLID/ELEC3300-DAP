@@ -22,7 +22,7 @@ extern volatile uint16_t playtimeElapsed;
 
 static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usColor_Btn, uint16_t usColor_Text);
 static void _renderButton(const Button *btn);
-// static inline bool _btnTouched(const Point *touchPt, const Button *btn);
+static void _formatSongItem(char* songItem, char** fileNames, uint8_t* fileTypes, uint8_t songId);
 
 static bool playFlag = false;
 
@@ -65,23 +65,14 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	LCD_DrawString_Color(208, 48, "Type", DARK, CYAN);
 
 	char songItem[31];
-	char extension[6];
 
 	for (uint8_t i = 0; i < numSongs; i++) {
-		if (fileTypes[i] == 1) {
-			strcpy(extension, "mp3");
-		} else if (fileTypes[i] == 2) {
-			strcpy(extension, "wav");
-		} else if (fileTypes[i] == 3) {
-			strcpy(extension, "flac");
-		} else {
-			strcpy(extension, "BUG");
-		}
-		sprintf(songItem, "%d. %-22s %s", i, fileNames[i], extension);
+		_formatSongItem(songItem, fileNames, fileTypes, i);
 		LCD_DrawString_Color(0, 16*(i+4), songItem, DARK, CYAN);
 	}
 
 	song_id = 0;
+	_formatSongItem(songItem, fileNames, fileTypes, 0);
 	LCD_DrawString_Color(0, 64, songItem, WHITE, BLUE);
 
 	// poll for button input
@@ -92,22 +83,11 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 			HAL_Delay(INPUT_DELAY);
 			return; // select current song
 		} else if (btn_1_flag) {
-			sprintf(songItem, "%d. %s", song_id, fileNames[song_id]);
-			if (fileTypes[song_id] == 1) {
-				strcpy(extension, "mp3");
-			} else if (fileTypes[song_id] == 2) {
-				strcpy(extension, "wav");
-			}
-			sprintf(songItem, "%d. %-22s %s", song_id, fileNames[song_id], extension);
+			_formatSongItem(songItem, fileNames, fileTypes, song_id);
 			LCD_DrawString_Color(0, 16*(song_id+4), songItem, BLACK, CYAN);
 
 			song_id = (song_id + 1) % numSongs;
-			if (fileTypes[song_id] == 1) {
-				strcpy(extension, "mp3");
-			} else if (fileTypes[song_id] == 2) {
-				strcpy(extension, "wav");
-			}
-			sprintf(songItem, "%d. %-22s %s", song_id, fileNames[song_id], extension);
+			_formatSongItem(songItem, fileNames, fileTypes, song_id);
 			LCD_DrawString_Color(0, 16*(song_id+4), songItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
 			btn_1_flag = 0;
@@ -187,10 +167,17 @@ static void _renderButton(const Button *btn) {
 	_createButton(btn->pos.x, btn->pos.y, btn->text, btn->usColor_Btn, btn->usColor_Text);
 }
 
-// static void _clearLine(uint16_t usP) {
-// 	LCD_Clear(0, usP, 240, HEIGHT_EN_CHAR, WHITE);
-// }
+static void _formatSongItem(char* songItem, char** fileNames, uint8_t* fileTypes, uint8_t songId) {
+	char extension[6];
+	if (fileTypes[songId] == 1) {
+		strcpy(extension, "mp3");
+	} else if (fileTypes[songId] == 2) {
+		strcpy(extension, "wav");
+	} else if (fileTypes[songId] == 3) {
+		strcpy(extension, "flac");
+	} else {
+		strcpy(extension, "BUG");
+	}
+	sprintf(songItem, "%d. %-22s %s", songId, fileNames[songId], extension);
+}
 
-// static inline bool _btnTouched(const Point *touchPt, const Button *btn) {
-// 	return touchPt->x > btn->pos.x && touchPt->x < btn->pos.x + btn->width && touchPt->y > btn->pos.y && touchPt->y < btn->pos.y + btn->height;
-// }

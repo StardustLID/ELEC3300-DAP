@@ -219,10 +219,6 @@ int main(void)
   uint8_t i = 0;
   while (1)
   {
-    char dummy[5];
-    sprintf(dummy, "%d %d", i, menu_id);
-    LCD_DrawString(0, 0, dummy);
-    HAL_Delay(1000);
     switch(menu_id) {
       case 0:
       MENU_Main();
@@ -233,7 +229,14 @@ int main(void)
       break;
 
       case 2:
-      MENU_PlaySong();
+      // MENU_PlaySong();
+      // if (fileTypes[song_id] == 1) {
+        // mp3_read_header(fileNames[song_id]);
+        // mp3_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
+      // } else if (fileTypes[song_id] == 2) {
+        wav_read_header(fileNames[song_id]);
+        wav_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
+      // }
       break;
     }
     /* USER CODE END WHILE */
@@ -590,7 +593,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = 9600;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;

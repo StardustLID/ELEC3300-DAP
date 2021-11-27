@@ -38,7 +38,7 @@ void mp3_read_header(char* file_name){
 	
 }
 
-void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c,const uint8_t* file_name){
+void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c, char* file_name){
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
 	strcat(path, "0:/MUSIC/");
 
@@ -96,7 +96,7 @@ void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c,const uint8
 				if(i) i = 4 - i;
 				memcpy(mp3_read_buf + i, read_ptr, bytes_left);
 				read_ptr = mp3_read_buf + i;
-				res = f_read(&myFILE, mp3_read_buf + bytes_left + i, MP3_READ_BUF_SIZE - bytes_left - i, &fnum);//补充数据
+				res = f_read(&myFILE, mp3_read_buf + bytes_left + i, MP3_READ_BUF_SIZE - bytes_left - i, &fnum);
 				if(res != FR_OK)
 				{
 					break;
