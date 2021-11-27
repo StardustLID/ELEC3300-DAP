@@ -87,6 +87,7 @@ uint8_t numSongs = 0;
 char **fileNames; // dynamic 2D char array
 uint8_t *fileTypes; // dynamic 1D uint8_t array. 1 = MP3, 2 = WAV, 3 = FLAC
 
+volatile uint16_t playtimeElapsed = 0; // in seconds
 uint32_t encoder_value = 0;
 uint8_t volume = 0;
 /* USER CODE END PV */
@@ -167,7 +168,6 @@ int main(void)
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
 	HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
   
-  MENU_SetSongTimer(&htim6);
 	FATFS myFATFS;
 	FRESULT res;
 	res = f_mount(&myFATFS,SDPath,1);
@@ -810,7 +810,13 @@ static void MX_FSMC_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim == &htim6) {
+    // HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
+    ++playtimeElapsed;
+  }
+}
 /* USER CODE END 4 */
 
 /**

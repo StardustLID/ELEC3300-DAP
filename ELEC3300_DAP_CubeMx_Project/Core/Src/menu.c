@@ -9,11 +9,16 @@
 #define WELCOME_DELAY 1000
 #define INPUT_DELAY 80
 
+extern TIM_HandleTypeDef htim5;
+extern TIM_HandleTypeDef htim6;
+
 extern volatile uint8_t menu_id;
 extern volatile uint8_t song_id;
 extern volatile uint8_t btn_0_flag;
 extern volatile uint8_t btn_1_flag;
 extern volatile uint8_t btn_2_flag;
+
+extern volatile uint16_t playtimeElapsed;
 
 static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usColor_Btn, uint16_t usColor_Text);
 static void _renderButton(const Button *btn);
@@ -22,7 +27,6 @@ static inline bool _btnTouched(const Point *touchPt, const Button *btn);
 static TIM_HandleTypeDef *songTimer;
 
 static bool playFlag = false;
-static uint16_t playtimeElapsed = 0;
 
 void MENU_Welcome() {
 	LCD_Clear(0, 0, 240, 320, DARK);
@@ -119,7 +123,7 @@ void MENU_PlaySong() {
 	HAL_Delay(100);
 	HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 	if (!playFlag) {
-		HAL_TIM_Base_Start_IT(songTimer);
+		HAL_TIM_Base_Start_IT(&htim6);
 		playFlag = true;
 	}
 	
@@ -161,14 +165,6 @@ void MENU_UpdatePlayTime(void) {
 	char time_mmss[6];
 	sprintf(time_mmss, "%02d:%02d", playtimeElapsed / 60, playtimeElapsed % 60);
 	LCD_DrawString_Color(0, 0, time_mmss, GREEN, BLUE);
-}
-
-void MENU_SetSongTimer(TIM_HandleTypeDef *htim) {
-	songTimer = htim;
-}
-
-void MENU_incrementPlayTimeElapsed(void) {
-	playtimeElapsed++;
 }
 
 /* helper function */

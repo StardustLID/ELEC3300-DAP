@@ -90,9 +90,4 @@ void MENU_PlaySong(void);
 
 void MENU_UpdatePlayTime(void);
 
-void MENU_SetSongTimer(TIM_HandleTypeDef *htim);
-
-void MENU_incrementPlayTimeElapsed(void);
-
 #endif 
-
