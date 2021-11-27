@@ -190,6 +190,9 @@ int main(void)
   // MENU_Main();
   // /*******************************/
 	
+	codec_enable_eq();
+	codec_eq(0,0,0,0,0);
+	
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
 	//codec_volume_update(&hi2c1,0xC0);
 	if (res == FR_OK)
@@ -200,15 +203,15 @@ int main(void)
     // testing
     // MENU_SelectSong(numSongs, fileNames, fileTypes);
 
+		while(1){
+			wav_read_header("net_sin_1000Hz_-3dBFS_10s.wav");
+			wav_play_music(&hi2s3, &hi2c1,"net_sin_1000Hz_-3dBFS_10s.wav");
+		}
+		
 		/*
-		wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
-		wav_play_music(&hi2s3, &hi2c1,"Ensoniq-ZR-76-01-Dope-77.wav");
-		*/
-		
-		
 		wav_read_header("Sample-wav-file.wav");
 		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
-		
+		*/
 		
     //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
 		

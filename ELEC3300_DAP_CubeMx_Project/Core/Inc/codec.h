@@ -23,6 +23,9 @@ void codec_play_pause(void);
 void codec_play_song(void);
 void codec_pause_song(void);
 
+void codec_enable_eq(void);
+void codec_eq(uint8_t band1, uint8_t band2, uint8_t band3, uint8_t band4, uint8_t band5);
+
 void codec_i2s_update(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t audio_freq, uint32_t bit_per_sample);
 
 void i2s_DMA_cplt_callback(DMA_HandleTypeDef *hdma);
