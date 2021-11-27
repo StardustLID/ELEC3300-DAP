@@ -145,7 +145,7 @@ void MENU_PlaySong() {
 		uint32_t enc_prev = encoder_value;
 		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
 		
-		if (encoder_value > enc_prev && volume < 100) {
+		if (encoder_value > enc_prev && volume < 92) {
 			VOL_UpdateVolBar(volume, true);
 			volume++;
 			HAL_Delay(40);
