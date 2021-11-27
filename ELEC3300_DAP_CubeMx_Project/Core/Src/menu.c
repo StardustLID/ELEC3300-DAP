@@ -1,16 +1,16 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "main.h"
 #include "menu.h"
-#include "xpt2046.h"
+#include "volume_bar.h"
+#include "random.h"
 
 #define WELCOME_DELAY 1000
 #define INPUT_DELAY 80
 
 static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usColor_Btn, uint16_t usColor_Text);
 static void _renderButton(const Button *btn);
-// static void _refreshSong(uint8_t songIndex);
-// static void _clearLine(uint16_t usP);
 static inline bool _btnTouched(const Point *touchPt, const Button *btn);
 
 static TIM_HandleTypeDef *songTimer;
@@ -19,9 +19,9 @@ static bool playFlag = false;
 static uint16_t playtimeElapsed = 0;
 
 void MENU_Welcome() {
-	LCD_Clear(0, 0, 240, 320, MAGENTA);
-	LCD_DrawString(4, 80, "ELEC3300 Digital Audio Player");
-	LCD_DrawString(88, 96, "Group 27");
+	LCD_Clear(0, 0, 240, 320, DARK);
+	LCD_DrawString_Color(4, 80, "ELEC3300 Digital Audio Player", DARK, CYAN);
+	LCD_DrawString_Color(88, 96, "Group 27", DARK, CYAN);
 	HAL_Delay(WELCOME_DELAY);
 }
 
@@ -32,12 +32,32 @@ void MENU_Main() {
 		_renderButton(&btn_PlaySongMenu);
 		_renderButton(&btn_FatfsMenu);
 		while (1) {
-			if (ucXPT2046_TouchFlag == 1) {
-				strType_XPT2046_Coordinate tempCoor = getTouchedPoint();
-				const Point touchPt = {tempCoor.x, tempCoor.y};
-				if (_btnTouched(&touchPt, &btn_PlaySongMenu)) MENU_PlaySong();
-				ucXPT2046_TouchFlag = 0;
+			// 	MENU_PlaySong();
+			if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0) == GPIO_PIN_SET) {
+				HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, LED_ON);
+				LCD_DrawString(0, 0, "PB0 set");
+			} else {
+				HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, LED_OFF);
+				LCD_DrawString(0, 0, "PB0 not set");
 			}
+
+			if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1) == GPIO_PIN_SET) {
+				HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, LED_ON);
+				LCD_DrawString(0, 32, "PB1 set");
+			} else {
+				HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, LED_OFF);
+				LCD_DrawString(0, 32, "PB1 not set");
+			}
+
+			if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2) == GPIO_PIN_SET) {
+				HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, LED_ON);
+				LCD_DrawString(0, 64, "PB2 set");
+			} else {
+				HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, LED_OFF);
+				LCD_DrawString(0, 64, "PB2 not set");
+			}
+			
+			HAL_Delay(200);
 		}
 	}
 }
@@ -97,25 +117,28 @@ void MENU_PlaySong() {
 	_renderButton(&btn_backward);
 	_renderButton(&btn_play);
 	_renderButton(&btn_forward);
+
+	VOL_CreateVolBar();
+	HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 	
 	while (1) {
-		if ( ucXPT2046_TouchFlag == 1 ) {
-			strType_XPT2046_Coordinate tempCoor = getTouchedPoint();
-			const Point touchPt = {tempCoor.x, tempCoor.y};
-			if (_btnTouched(&touchPt, &btn_play)) {
-				if (playFlag == 0) HAL_TIM_Base_Start_IT(songTimer);
-				else HAL_TIM_Base_Stop_IT(songTimer);
-				playFlag = !playFlag;
-			} else if (_btnTouched(&touchPt, &btn_forward)) {
-				playtimeElapsed += 5;
-			} else if (_btnTouched(&touchPt, &btn_backward)) {
-				if (playtimeElapsed < 5) playtimeElapsed = 0; // avoid underflow
-				else playtimeElapsed -= 5;
-			}
-			ucXPT2046_TouchFlag = 0;
-			MENU_UpdatePlayTime();
-			HAL_Delay(INPUT_DELAY);
-		}
+	// 	if ( ucXPT2046_TouchFlag == 1 ) {
+	// 		strType_XPT2046_Coordinate tempCoor = getTouchedPoint();
+	// 		const Point touchPt = {tempCoor.x, tempCoor.y};
+	// 		if (_btnTouched(&touchPt, &btn_play)) {
+	// 			if (playFlag == 0) HAL_TIM_Base_Start_IT(songTimer);
+	// 			else HAL_TIM_Base_Stop_IT(songTimer);
+	// 			playFlag = !playFlag;
+	// 		} else if (_btnTouched(&touchPt, &btn_forward)) {
+	// 			playtimeElapsed += 5;
+	// 		} else if (_btnTouched(&touchPt, &btn_backward)) {
+	// 			if (playtimeElapsed < 5) playtimeElapsed = 0; // avoid underflow
+	// 			else playtimeElapsed -= 5;
+	// 		}
+	// 		ucXPT2046_TouchFlag = 0;
+	// 		MENU_UpdatePlayTime();
+	// 		HAL_Delay(INPUT_DELAY);
+	// 	}
 	}
 }
 

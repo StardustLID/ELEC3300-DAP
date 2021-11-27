@@ -101,7 +101,8 @@ extern uint8_t play_wav;
 #define Jack_detect_Pin GPIO_PIN_6
 #define Jack_detect_GPIO_Port GPIOD
 /* USER CODE BEGIN Private defines */
-
+#define LED_ON 0
+#define LED_OFF 1
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

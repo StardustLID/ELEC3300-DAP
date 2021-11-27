@@ -34,20 +34,14 @@ FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** fileNames, uint8_
 			}
 
 			// file names
-			fileNames[numFiles] = malloc(strlen(fno.fname) + 1);
+			fileNames[numFiles] = malloc((strlen(fno.fname) + 1) * sizeof(char));
 			strcpy(fileNames[numFiles], fno.fname);
-			LCD_Clear(0, 0, 240, 320, MAGENTA);
-			HAL_Delay(500);
-			LCD_DrawString(0, 0, fileNames[numFiles]);
-			LCD_DrawString(0, 16, fno.fname);
 
 			// file types / extensions
 			char fileType_buffer[10] = "";
 			find_file_type(fileNames[numFiles], fileType_buffer);
 			
-			LCD_DrawString(0, 32, fileType_buffer);
 			char temp[5] = "";
-			sprintf(temp, "%d", fileType_buffer);
 			if (strcmp(fileType_buffer, ".mp3") == 0) {
 				fileTypes[numFiles] = 1;
 			} else if (strcmp(fileType_buffer, ".wav") == 0) {
@@ -57,8 +51,6 @@ FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** fileNames, uint8_
 			} else {
 				fileTypes[numFiles] = 99;
 			}
-			LCD_DrawString(0, 48, temp);
-			HAL_Delay(500);
 
 			numFiles++;
 		}

@@ -160,7 +160,8 @@ int main(void)
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
 	HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
-	//LCD_Clear(0, 0, 240, 320, BACKGROUND);
+  
+  MENU_SetSongTimer(&htim6);
 	FATFS myFATFS;
 	FRESULT res;
 	res = f_mount(&myFATFS,SDPath,1);
@@ -175,18 +176,13 @@ int main(void)
 	sprintf(string, "data: %x",ee_buf);
 	LCD_DrawString(0,300,string);
 */
-  // fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
-  // fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t *)); // malloc row ptr
+  fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
+  fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t)); // malloc row ptr
 
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
   LCD_Clear(0, 0, 240, 320, DARK);
-
-	// while( ! XPT2046_Touch_Calibrate () );
-
-	// LCD_GramScan ( 1 );
 	
-  // MENU_SetSongTimer(&htim6);
   // MENU_Main();
   // /*******************************/
 	
@@ -195,10 +191,8 @@ int main(void)
 	if (res == FR_OK)
 	{
 		// scan_file("0:/MUSIC");
-		// scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
-		
-    // testing
-    // MENU_SelectSong(numSongs, fileNames, fileTypes);
+		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
+    MENU_SelectSong(numSongs, fileNames, fileTypes);
 
 		/*
 		wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
@@ -221,10 +215,6 @@ int main(void)
 	else{
 		LCD_DrawString(0,0,"Cannot mount FATFS");
 	}
-	//while(1);
-	VOL_CreateVolBar();
-  HAL_Delay(200);
-  HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 	
 	play_wav = 0;
 	/*
