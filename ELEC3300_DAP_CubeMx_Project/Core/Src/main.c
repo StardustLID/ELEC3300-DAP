@@ -35,6 +35,7 @@
 #include "volume_bar.h"
 #include "uart.h"
 #include "usbd_audio_if.h"
+#include "player_func.h"
 #include "random.h"
 /* USER CODE END Includes */
 
@@ -191,7 +192,8 @@ int main(void)
   // MENU_SetSongTimer(&htim6);
   // MENU_Main();
   // /*******************************/
-	
+	player_display_cover("wav_icon-py.bin");
+	while(1);
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
 	//codec_volume_update(&hi2c1,0xC0);
 	if (res == FR_OK)
