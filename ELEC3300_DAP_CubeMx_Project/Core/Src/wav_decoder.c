@@ -208,7 +208,11 @@ void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file
 
 	f_lseek(&myFILE, wav_get_data_offest());  // jump to the music data
 	f_read(&myFILE, codec_out_buffer, AUDIO_BUFFER_SIZE, &fnum);
+<<<<<<< HEAD
 	//f_read(&myFILE, codec_out_buffer + AUDIO_HALF_BUFFER_SIZE, AUDIO_BUFFER_SIZE, &fnum);
+=======
+	f_read(&myFILE, codec_out_buffer + AUDIO_HALF_BUFFER_SIZE, AUDIO_BUFFER_SIZE, &fnum);
+>>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
 	
 	wav_play_flag = 1;
 	update_play_flag(wav_play_flag);
@@ -263,11 +267,14 @@ void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file
 	f_close(&myFILE);
 	wav_play_flag = 0;
 	update_play_flag(wav_play_flag);
+<<<<<<< HEAD
 }
 
 void wav_time_skip(int32_t sec){
 	wav_skip_byte = wav_tag.fmt_chunk.byte_rate * sec;
 	wav_time_skip_flag = 1;
+=======
+>>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
 }
 
 uint32_t wav_get_file_size(){

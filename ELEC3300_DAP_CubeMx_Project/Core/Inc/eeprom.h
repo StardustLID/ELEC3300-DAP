@@ -57,4 +57,6 @@ int8_t get_eeprom_eq3(void);
 int8_t get_eeprom_eq4(void);
 int8_t get_eeprom_eq5(void);
 
+uint8_t get_eeprom_volume();
+
 #endif

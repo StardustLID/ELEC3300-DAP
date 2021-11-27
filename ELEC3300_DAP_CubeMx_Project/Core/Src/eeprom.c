@@ -33,6 +33,7 @@ void eeprom_init(I2C_HandleTypeDef *hi2c){
 
 	eeprom_read(hi2c,EEPROM_VOLUME);
 	HAL_Delay(20);
+<<<<<<< HEAD
 	
 	codec_volume_update(&hi2c1,eeprom.volume);
 	HAL_Delay(5);
@@ -69,6 +70,10 @@ void eeprom_init(I2C_HandleTypeDef *hi2c){
 	
 	sprintf(string, "band5: %d", eeprom.eq5);
 	LCD_DrawString(0,240,string);
+=======
+	
+	codec_volume_update(&hi2c1,eeprom.volume);
+>>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
 	
 	sprintf(string, "date: %s", eeprom.ver_date);
 	LCD_DrawString(0,260,string);
@@ -166,6 +171,7 @@ void eeprom_write(I2C_HandleTypeDef *hi2c,eeprom_data data, uint8_t* data_buf){
 			break;
 		case EEPROM_VOLUME:
 			memaddress = eeprom.volume_address;
+<<<<<<< HEAD
 			memsize = sizeof(eeprom.volume);
 			eeprom.volume = *data_buf;
 			break;
@@ -198,6 +204,10 @@ void eeprom_write(I2C_HandleTypeDef *hi2c,eeprom_data data, uint8_t* data_buf){
 			memaddress = eeprom.eq5_address;
 			memsize = sizeof(eeprom.eq5);
 			eeprom.eq5 = *data_buf;
+=======
+			memsize = sizeof(eeprom.volume_address);
+			eeprom.volume = *data_buf;
+>>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
 			break;
 		default:
 			return;
@@ -219,6 +229,7 @@ void eeprom_write(I2C_HandleTypeDef *hi2c,eeprom_data data, uint8_t* data_buf){
 	}
 }
 
+<<<<<<< HEAD
 uint8_t get_eeprom_volume(){
 	return eeprom.volume;
 }
@@ -246,3 +257,19 @@ int8_t get_eeprom_eq4(){
 int8_t get_eeprom_eq5(){
 	return eeprom.eq5;
 }
+=======
+/*
+void update_eerprom_data(eeprom_data data, uint32_t value){
+	switch(data){
+		case EEPROM_DATE:	break;
+		case EEPROM_TIME: break;
+		case EEPROM_VOLUME: eeprom.volume = (uint8_t)value; break;
+		default: break
+	}
+}
+*/
+
+uint8_t get_eeprom_volume(){
+	return eeprom.volume;
+}
+>>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
