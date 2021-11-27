@@ -9,6 +9,10 @@
 #define WELCOME_DELAY 1000
 #define INPUT_DELAY 80
 
+extern uint8_t btn_0_flag;
+extern uint8_t btn_1_flag;
+extern uint8_t btn_2_flag;
+
 static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usColor_Btn, uint16_t usColor_Text);
 static void _renderButton(const Button *btn);
 static inline bool _btnTouched(const Point *touchPt, const Button *btn);
@@ -33,31 +37,29 @@ void MENU_Main() {
 		_renderButton(&btn_FatfsMenu);
 		while (1) {
 			// 	MENU_PlaySong();
-			if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0) == GPIO_PIN_SET) {
+			if (btn_0_flag == 1) {
 				HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, LED_ON);
-				LCD_DrawString(0, 0, "PB0 set");
+				HAL_Delay(200);
+				btn_0_flag = 0;
 			} else {
 				HAL_GPIO_WritePin(LED0_GPIO_Port, LED0_Pin, LED_OFF);
-				LCD_DrawString(0, 0, "PB0 not set");
 			}
 
-			if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1) == GPIO_PIN_SET) {
+			if (btn_1_flag == 1) {
 				HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, LED_ON);
-				LCD_DrawString(0, 32, "PB1 set");
+				HAL_Delay(200);
+				btn_1_flag = 0;
 			} else {
 				HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, LED_OFF);
-				LCD_DrawString(0, 32, "PB1 not set");
 			}
 
-			if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2) == GPIO_PIN_SET) {
+			if (btn_2_flag == 1) {
 				HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, LED_ON);
-				LCD_DrawString(0, 64, "PB2 set");
+				HAL_Delay(200);
+				btn_2_flag = 0;
 			} else {
 				HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, LED_OFF);
-				LCD_DrawString(0, 64, "PB2 not set");
 			}
-			
-			HAL_Delay(200);
 		}
 	}
 }
@@ -119,7 +121,12 @@ void MENU_PlaySong() {
 	_renderButton(&btn_forward);
 
 	VOL_CreateVolBar();
+	HAL_Delay(100);
 	HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
+	if (!playFlag) {
+		HAL_TIM_Base_Start_IT(songTimer);
+		playFlag = true;
+	}
 	
 	while (1) {
 	// 	if ( ucXPT2046_TouchFlag == 1 ) {
@@ -136,9 +143,22 @@ void MENU_PlaySong() {
 	// 			else playtimeElapsed -= 5;
 	// 		}
 	// 		ucXPT2046_TouchFlag = 0;
-	// 		MENU_UpdatePlayTime();
 	// 		HAL_Delay(INPUT_DELAY);
 	// 	}
+		MENU_UpdatePlayTime();
+
+		uint32_t enc_prev = encoder_value;
+		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
+		
+		if (encoder_value > enc_prev && volume < 100) {
+			VOL_UpdateVolBar(volume, true);
+			volume++;
+			HAL_Delay(40);
+		} else if (encoder_value < enc_prev && volume > 0) {
+			VOL_UpdateVolBar(volume, false);
+			volume--;
+			HAL_Delay(40);
+		}
 	}
 }
 
@@ -168,14 +188,6 @@ static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usC
 static void _renderButton(const Button *btn) {
 	_createButton(btn->pos.x, btn->pos.y, btn->text, btn->usColor_Btn, btn->usColor_Text);
 }
-
-// static void _refreshSong(uint8_t songIndex) {
-// 	_clearLine(SONG_NAME_USP);
-// 	char songName[15];
-// 	sprintf(songName, "dummy song %d", songIndex);
-// 	// LCD_DrawString(0, SONG_NAME_USP, songName);
-// 	_createButton(0, SONG_NAME_USP, songName, MAGENTA, YELLOW);
-// }
 
 // static void _clearLine(uint16_t usP) {
 // 	LCD_Clear(0, usP, 240, HEIGHT_EN_CHAR, WHITE);

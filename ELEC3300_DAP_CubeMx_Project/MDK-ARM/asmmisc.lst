@@ -81,7 +81,7 @@ erwork --depend=elec3300_dap_cubemx_project\asmmisc.d -oelec3300_dap_cubemx_pro
 ject\asmmisc.o -I.\RTE\_ELEC3300_DAP_CubeMx_Project -IC:\Keil_v5\ARM\PACK\ARM\C
 MSIS\5.8.0\CMSIS\Core\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.15.0\D
 rivers\CMSIS\Device\ST\STM32F4xx\Include --predefine="__UVISION_VERSION SETA 52
-4" --predefine="_RTE_ SETA 1" --predefine="STM32F407xx SETA 1" --list=asmmisc.l
+3" --predefine="_RTE_ SETA 1" --predefine="STM32F407xx SETA 1" --list=asmmisc.l
 st ..\MP3\real\arm\asmmisc.s
 
 

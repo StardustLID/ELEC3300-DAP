@@ -11,6 +11,9 @@
 #define SONG_NAME_USP 240
 #define BTN_HEIGHT 30
 
+extern uint32_t encoder_value;
+extern uint8_t volume;
+
 typedef struct {
 	const Point pos;
     const uint16_t height;

@@ -65,7 +65,9 @@ extern TIM_HandleTypeDef htim6;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
-
+extern uint8_t btn_0_flag;
+extern uint8_t btn_1_flag;
+extern uint8_t btn_2_flag;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -205,6 +207,60 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f4xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles EXTI line0 interrupt.
+  */
+void EXTI0_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI0_IRQn 0 */
+	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET) {
+		btn_0_flag = 1;
+		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
+		HAL_GPIO_EXTI_Callback(GPIO_PIN_0);
+	}
+  /* USER CODE END EXTI0_IRQn 0 */
+  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+  /* USER CODE BEGIN EXTI0_IRQn 1 */
+
+  /* USER CODE END EXTI0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line1 interrupt.
+  */
+void EXTI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI1_IRQn 0 */
+	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_1) != RESET) {
+		btn_1_flag = 1;
+		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_1);
+		HAL_GPIO_EXTI_Callback(GPIO_PIN_1);
+	}
+  /* USER CODE END EXTI1_IRQn 0 */
+  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
+  /* USER CODE BEGIN EXTI1_IRQn 1 */
+
+  /* USER CODE END EXTI1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line2 interrupt.
+  */
+void EXTI2_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI2_IRQn 0 */
+	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_2) != RESET) {
+		btn_2_flag = 1;
+		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_2);
+		HAL_GPIO_EXTI_Callback(GPIO_PIN_2);
+	}
+  /* USER CODE END EXTI2_IRQn 0 */
+  // HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
+  /* USER CODE BEGIN EXTI2_IRQn 1 */
+
+  /* USER CODE END EXTI2_IRQn 1 */
+}
 
 /**
   * @brief This function handles DMA1 stream5 global interrupt.

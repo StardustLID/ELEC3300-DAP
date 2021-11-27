@@ -88,10 +88,6 @@ extern uint8_t play_wav;
 #define Rot_Enc_But_GPIO_Port GPIOE
 #define SPI1_CS_Pin GPIO_PIN_4
 #define SPI1_CS_GPIO_Port GPIOC
-#define Button_0_Pin GPIO_PIN_0
-#define Button_0_GPIO_Port GPIOB
-#define Button_1_Pin GPIO_PIN_1
-#define Button_1_GPIO_Port GPIOB
 #define EEPROM_WP_Pin GPIO_PIN_12
 #define EEPROM_WP_GPIO_Port GPIOB
 #define LCD_BLK_Pin GPIO_PIN_12

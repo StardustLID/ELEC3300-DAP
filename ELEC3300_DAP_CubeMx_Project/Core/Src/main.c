@@ -76,6 +76,10 @@ UART_HandleTypeDef huart2;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
+volatile uint8_t btn_0_flag = 0;
+volatile uint8_t btn_1_flag = 0;
+volatile uint8_t btn_2_flag = 0;
+
 // song menu variables
 uint8_t numSongs = 0;
 char **fileNames; // dynamic 2D char array
@@ -148,9 +152,9 @@ int main(void)
   MX_USART2_UART_Init();
   MX_FATFS_Init();
   MX_DMA_Init();
-  MX_USB_DEVICE_Init();
   MX_TIM6_Init();
   MX_RNG_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
 
@@ -182,8 +186,9 @@ int main(void)
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
   LCD_Clear(0, 0, 240, 320, DARK);
+  HAL_Delay(500);
 	
-  // MENU_Main();
+  MENU_Main();
   // /*******************************/
 	
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
@@ -193,6 +198,9 @@ int main(void)
 		// scan_file("0:/MUSIC");
 		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
     MENU_SelectSong(numSongs, fileNames, fileTypes);
+    HAL_Delay(1000);
+
+    MENU_PlaySong();
 
 		/*
 		wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
@@ -227,25 +235,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    uint32_t enc_prev = encoder_value;
-		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
-    
-    char enc_string[20];
-		sprintf(enc_string, "enc val: %d", encoder_value);
-
-    if (encoder_value > enc_prev) {
-      if (volume < 100) {
-        VOL_UpdateVolBar(volume, true);
-        volume++;
-      }
-    } else if (encoder_value < enc_prev) {
-      if (volume > 0) {
-        VOL_UpdateVolBar(volume, false);
-        volume--;
-      }
-    }
-
-		LCD_DrawString(0,300, enc_string);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -728,10 +717,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(SPI1_CS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Button_0_Pin Button_1_Pin PB2 */
-  GPIO_InitStruct.Pin = Button_0_Pin|Button_1_Pin|GPIO_PIN_2;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  /*Configure GPIO pins : PB0 PB1 PB2 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : EEPROM_WP_Pin */
@@ -759,6 +748,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Jack_detect_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 
 }
 
