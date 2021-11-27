@@ -13,7 +13,7 @@ void play_song(){
 }
 
 void pause_song(){
-	HAL_I2S_DMAResume(&hi2s3);
+	HAL_I2S_DMAPause(&hi2s3);
 	update_play_flag(0);
 }
 

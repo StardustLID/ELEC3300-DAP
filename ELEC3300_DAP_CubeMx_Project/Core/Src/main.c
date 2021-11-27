@@ -192,8 +192,8 @@ int main(void)
   // MENU_SetSongTimer(&htim6);
   // MENU_Main();
   // /*******************************/
-	player_display_cover("wav_icon-py.bin");
-	while(1);
+	
+	//while(1);
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
 	//codec_volume_update(&hi2c1,0xC0);
 	if (res == FR_OK)
@@ -211,6 +211,7 @@ int main(void)
 		
 		
 		wav_read_header("Sample-wav-file.wav");
+		player_display_cover("wav_icon-py.bin");
 		wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
 		
 		
