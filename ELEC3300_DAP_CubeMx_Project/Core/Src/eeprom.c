@@ -33,7 +33,6 @@ void eeprom_init(I2C_HandleTypeDef *hi2c){
 
 	eeprom_read(hi2c,EEPROM_VOLUME);
 	HAL_Delay(20);
-<<<<<<< HEAD
 	
 	codec_volume_update(&hi2c1,eeprom.volume);
 	HAL_Delay(5);
@@ -70,10 +69,6 @@ void eeprom_init(I2C_HandleTypeDef *hi2c){
 	
 	sprintf(string, "band5: %d", eeprom.eq5);
 	LCD_DrawString(0,240,string);
-=======
-	
-	codec_volume_update(&hi2c1,eeprom.volume);
->>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
 	
 	sprintf(string, "date: %s", eeprom.ver_date);
 	LCD_DrawString(0,260,string);

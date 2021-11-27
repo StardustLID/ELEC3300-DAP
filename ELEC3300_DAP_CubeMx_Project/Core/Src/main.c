@@ -156,10 +156,7 @@ int main(void)
 
 	codec_init(&hi2c1, &hi2s3, &hdma_spi3_tx);
 	eeprom_init(&hi2c2);
-<<<<<<< HEAD
 	codec_load_setting();
-=======
->>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
 	
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
@@ -194,10 +191,6 @@ int main(void)
   // MENU_SetSongTimer(&htim6);
   // MENU_Main();
   // /*******************************/
-<<<<<<< HEAD
-
-=======
->>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
 	
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
 	//codec_volume_update(&hi2c1,0xC0);
@@ -209,17 +202,10 @@ int main(void)
     // testing
     // MENU_SelectSong(numSongs, fileNames, fileTypes);
 
-<<<<<<< HEAD
 		// while(1){
 		// 	wav_read_header("net_sin_1000Hz_-3dBFS_10s.wav");
 		// 	wav_play_music(&hi2s3, &hi2c1,"net_sin_1000Hz_-3dBFS_10s.wav");
 		// }
-=======
-		/*
-		wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
-		wav_play_music(&hi2s3, &hi2c1,"Ensoniq-ZR-76-01-Dope-77.wav");
-		*/
->>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
 		
 		
 		wav_read_header("Sample-wav-file.wav");
