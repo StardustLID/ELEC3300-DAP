@@ -1,8 +1,8 @@
 #include "main.h"
 #include "player_func.h"
 #include "codec.h"
-#include "mp3_player.h"
-#include "wav_player.h"
+#include "mp3_decoder.h"
+#include "wav_decoder.h"
 
 void play_song(){
 	HAL_I2S_DMAResume(&hi2s3);

@@ -399,8 +399,5 @@ void i2s_DMA_error_callback(DMA_HandleTypeDef *hdma){
 	HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, 0); 
 }
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
