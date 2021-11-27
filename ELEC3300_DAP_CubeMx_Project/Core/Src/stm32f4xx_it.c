@@ -23,6 +23,7 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "player_func.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -68,6 +69,8 @@ extern UART_HandleTypeDef huart2;
 extern volatile uint8_t btn_0_flag;
 extern volatile uint8_t btn_1_flag;
 extern volatile uint8_t btn_2_flag;
+
+extern volatile uint8_t play_flag;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -215,7 +218,9 @@ void EXTI0_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI0_IRQn 0 */
 	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET) {
-		btn_0_flag = 1;
+    btn_0_flag = 1;
+		if (play_flag) pause_song();
+    else play_song();
 		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
 		HAL_GPIO_EXTI_Callback(GPIO_PIN_0);
 	}

@@ -190,6 +190,7 @@ int main(void)
   MENU_Welcome();
   LCD_Clear(0, 0, 240, 320, DARK);
   HAL_Delay(500);
+  MENU_Equalizer();
 	
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
 	//codec_volume_update(&hi2c1,0xC0);

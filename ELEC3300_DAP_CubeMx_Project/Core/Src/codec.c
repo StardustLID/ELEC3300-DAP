@@ -14,7 +14,7 @@ uint16_t codec_out_buffer[AUDIO_BUFFER_SIZE];
 uint32_t size;
 uint32_t file_size;
 uint8_t file_read_flag = 0;
-uint8_t play_flag = 0;
+volatile uint8_t play_flag = 0;
 
 void codec_init(I2C_HandleTypeDef *hi2c, I2S_HandleTypeDef *hi2s3, DMA_HandleTypeDef *hdma_spi3_tx) {
 	uint8_t buf[2] = {0};  // 0: device address 1:device address 2:reg_address 3:reg_address

@@ -97,6 +97,8 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes);
  */
 void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes);
 
+void MENU_Equalizer(void);
+
 void MENU_UpdatePlayTime(void);
 
 #endif 

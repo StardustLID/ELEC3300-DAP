@@ -110,12 +110,12 @@ void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	VOL_CreateVolBar();
 	HAL_Delay(100);
 	HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
-	// if (!play_flag) {
-	// 	HAL_TIM_Base_Start_IT(&htim6);
+	if (!play_flag) {
+		HAL_TIM_Base_Start_IT(&htim6);
 
-	// 	wav_read_header(fileNames[song_id]);
-	// 	wav_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
-	// }
+		wav_read_header(fileNames[song_id]);
+		wav_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
+	}
 	
 	while (1) {
 	// 	if ( ucXPT2046_TouchFlag == 1 ) {
@@ -148,10 +148,52 @@ void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 			volume--;
 			HAL_Delay(40);
 		}
-		
+	}
+}
+
+void MENU_Equalizer() {
+	LCD_Clear(0, 0, 240, 320, DARK);
+	btn_0_flag = 0;
+	btn_1_flag = 0;
+	btn_2_flag = 0;
+
+	LCD_DrawString_Color(0, 0, "Tune equalizer", DARK, CYAN);
+	for (uint8_t i = 0; i < 5; i++) {
+		char bandItem[8];
+		sprintf(bandItem, "band %d:", i);
+		LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2*(i+1), bandItem, DARK, CYAN);
+	}
+
+	uint8_t equalizerId = 0;
+	uint8_t bands[5] = {0};
+
+	// poll for button input
+	while (1) {
 		if (btn_2_flag) {
 			btn_2_flag = 0;
-			codec_play_pause();
+			if (bands[equalizerId] >= 24) continue;
+			bands[equalizerId]++;
+			char band_str[1];
+			sprintf(band_str, "%d", bands[equalizerId]);
+			LCD_DrawString_Color(WIDTH_EN_CHAR*8, HEIGHT_EN_CHAR*2*(equalizerId+1), band_str, WHITE, BLUE);
+			HAL_Delay(INPUT_DELAY);
+		} else if (btn_1_flag) {
+			btn_1_flag = 0;
+			char band_str[1];
+			sprintf(band_str, "%d", bands[equalizerId]);
+			LCD_DrawString_Color(WIDTH_EN_CHAR*8, HEIGHT_EN_CHAR*2*(equalizerId+1), band_str, DARK, CYAN);
+			equalizerId = (equalizerId + 1) % 5;
+			sprintf(band_str, "%d", bands[equalizerId]);
+			LCD_DrawString_Color(WIDTH_EN_CHAR*8, HEIGHT_EN_CHAR*2*(equalizerId+1), band_str, WHITE, BLUE);
+			HAL_Delay(INPUT_DELAY);
+		} else if (btn_0_flag) {
+			btn_0_flag = 0;
+			if (bands[equalizerId] <= 0) continue;
+			bands[equalizerId]--;
+			char band_str[1];
+			sprintf(band_str, "%d", bands[equalizerId]);
+			LCD_DrawString_Color(WIDTH_EN_CHAR*8, HEIGHT_EN_CHAR*2*(equalizerId+1), band_str, WHITE, BLUE);
+			HAL_Delay(INPUT_DELAY);
 		}
 	}
 }
