@@ -19,3 +19,12 @@ void song_forback_ward(int32_t sec){
 		wav_time_skip(sec);
 	}
 }
+
+void equalizer_enable(uint8_t enable_flag){
+	codec_eq_enable(enable_flag);
+}
+
+/*band value should between [0:24], min = 0. max = 24*/
+void equalizer_tuning(int8_t band1, uint8_t band2, uint8_t band3, uint8_t band4, uint8_t band5){
+	codec_eq(band1, band2, band3, band4, band5);
+}
