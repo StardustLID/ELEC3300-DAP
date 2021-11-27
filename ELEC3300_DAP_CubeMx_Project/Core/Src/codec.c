@@ -291,28 +291,6 @@ void codec_volume_update(I2C_HandleTypeDef *hi2c, uint16_t volume){
 
 void update_play_flag(uint8_t flag){
 	play_flag = flag;
-<<<<<<< HEAD
-=======
-}
-
-void codec_play_pause(void){
-	if(play_flag)
-		HAL_I2S_DMAPause(&hi2s3);
-	else
-		HAL_I2S_DMAResume(&hi2s3);
-	
-	play_flag^=1;
-}
-
-void codec_play_song(void){
-	HAL_I2S_DMAResume(&hi2s3);
-	play_flag = 1;
-}
-
-void codec_pause_song(void){
-	HAL_I2S_DMAPause(&hi2s3);
-	play_flag = 0;
->>>>>>> 2b88573e3b7dfbb2e2266b9512a21764ad2f75f9
 }
 
 
