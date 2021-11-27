@@ -68,6 +68,15 @@ static Button btn_forward = {
 	.usColor_Text = WHITE
 };
 
+static Button btn_random = {
+	.pos = {172, 0},
+    .height = HEIGHT_EN_CHAR * 3,
+    .width = 48,
+	.text = " random ",
+	.usColor_Btn = CYAN,
+	.usColor_Text = WHITE
+};
+
 /**
  * entry point of the menu
  */
@@ -86,7 +95,7 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes);
 /**
  * @note the menu when a song is being played
  */
-void MENU_PlaySong(void);
+void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes);
 
 void MENU_UpdatePlayTime(void);
 

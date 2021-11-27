@@ -17,6 +17,7 @@ extern volatile uint8_t song_id;
 extern volatile uint8_t btn_0_flag;
 extern volatile uint8_t btn_1_flag;
 extern volatile uint8_t btn_2_flag;
+extern uint8_t play_flag;
 
 extern volatile uint16_t playtimeElapsed;
 
@@ -24,7 +25,6 @@ static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usC
 static void _renderButton(const Button *btn);
 static void _formatSongItem(char* songItem, char** fileNames, uint8_t* fileTypes, uint8_t songId);
 
-static bool playFlag = false;
 
 void MENU_Welcome() {
 	LCD_Clear(0, 0, 240, 320, DARK);
@@ -76,7 +76,7 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	LCD_DrawString_Color(0, 64, songItem, WHITE, BLUE);
 
 	// poll for button input
-	while (1) { 
+	while (1) {
 		if (btn_2_flag != 0) {
 			btn_2_flag = 0;
 			menu_id = 2; // set menu id
@@ -95,33 +95,36 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	}
 }
 
-void MENU_PlaySong() {
+void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	LCD_Clear(0, 0, 240, 320, DARK);
 	btn_0_flag = 0;
 	btn_1_flag = 0;
 	btn_2_flag = 0;
 
-	LCD_DrawString_Color(40, 80, "Now Playing: Dummy", DARK, CYAN);
+	LCD_DrawString_Color(40, 80, fileNames[song_id], DARK, CYAN);
 	_renderButton(&btn_backward);
 	_renderButton(&btn_play);
 	_renderButton(&btn_forward);
+	_renderButton(&btn_random);
 
 	VOL_CreateVolBar();
 	HAL_Delay(100);
 	HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
-	if (!playFlag) {
-		HAL_TIM_Base_Start_IT(&htim6);
-		playFlag = true;
-	}
+	// if (!play_flag) {
+	// 	HAL_TIM_Base_Start_IT(&htim6);
+
+	// 	wav_read_header(fileNames[song_id]);
+	// 	wav_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
+	// }
 	
 	while (1) {
 	// 	if ( ucXPT2046_TouchFlag == 1 ) {
 	// 		strType_XPT2046_Coordinate tempCoor = getTouchedPoint();
 	// 		const Point touchPt = {tempCoor.x, tempCoor.y};
 	// 		if (_btnTouched(&touchPt, &btn_play)) {
-	// 			if (playFlag == 0) HAL_TIM_Base_Start_IT(songTimer);
+	// 			if (play_flag == 0) HAL_TIM_Base_Start_IT(songTimer);
 	// 			else HAL_TIM_Base_Stop_IT(songTimer);
-	// 			playFlag = !playFlag;
+	// 			play_flag = !play_flag;
 	// 		} else if (_btnTouched(&touchPt, &btn_forward)) {
 	// 			playtimeElapsed += 5;
 	// 		} else if (_btnTouched(&touchPt, &btn_backward)) {
@@ -145,13 +148,18 @@ void MENU_PlaySong() {
 			volume--;
 			HAL_Delay(40);
 		}
+		
+		if (btn_2_flag) {
+			btn_2_flag = 0;
+			codec_play_pause();
+		}
 	}
 }
 
 void MENU_UpdatePlayTime(void) {
 	char time_mmss[6];
 	sprintf(time_mmss, "%02d:%02d", playtimeElapsed / 60, playtimeElapsed % 60);
-	LCD_DrawString_Color(0, 0, time_mmss, GREEN, BLUE);
+	LCD_DrawString_Color(0, 0, time_mmss, DARK, CYAN);
 }
 
 /* helper function */

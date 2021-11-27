@@ -229,13 +229,11 @@ int main(void)
       break;
 
       case 2:
-      // MENU_PlaySong();
+      MENU_PlaySong(numSongs, fileNames, fileTypes);
       // if (fileTypes[song_id] == 1) {
         // mp3_read_header(fileNames[song_id]);
         // mp3_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
       // } else if (fileTypes[song_id] == 2) {
-        wav_read_header(fileNames[song_id]);
-        wav_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
       // }
       break;
     }
