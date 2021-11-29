@@ -291,8 +291,8 @@ void EXTI2_IRQHandler(void)
       btnFlag[2] = 1;
       
       if (inPlayMenu) {
-        if (switches[0].holdTime > LONG_PRESS_DELAY) {
-          f_lseek(&myFILE, f_size(&myFILE));
+        if (switches[2].holdTime > LONG_PRESS_DELAY) {
+          wav_time_skip(1000);
         } else {
           int32_t delta = 5;
           playtimeElapsed += delta;
