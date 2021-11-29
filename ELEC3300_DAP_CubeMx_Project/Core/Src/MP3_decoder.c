@@ -5,7 +5,7 @@
 #include "file_sys_func.h"
 #include "codec.h"
 
-mp3_tag_header mp3_tag = {0};
+//mp3_tag_header mp3_tag = {0};
 uint8_t mp3_read_buf[MP3_READ_BUF_SIZE];
 uint16_t mp3_out_buf[MP3_OUT_BUF_SIZE];
 uint8_t mp3_play_flag = 0;
@@ -16,7 +16,7 @@ static MP3FrameInfo mp3frameinfo;
 static mp3_type mp3_player;
 
 
-
+/*
 void mp3_read_header(char* file_name){
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
 	//char string[1024] = {0};
@@ -37,7 +37,7 @@ void mp3_read_header(char* file_name){
 	f_close(&myFILE);	
 	
 }
-
+*/
 void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c, char* file_name){
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
 	strcat(path, "0:/MUSIC/");
@@ -163,11 +163,11 @@ void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c, char* file
 	mp3_play_flag = 0;
 	update_play_flag(mp3_play_flag);
 }
-
+/*
 inline uint32_t mp3_get_size(){
 	return mp3_tag.total_tag_size + 10;
 }
-
+*/
 uint8_t mp3_get_play_flag(){
 	return mp3_play_flag;
 }

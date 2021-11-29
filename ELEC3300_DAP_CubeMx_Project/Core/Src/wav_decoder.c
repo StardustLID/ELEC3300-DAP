@@ -21,7 +21,7 @@ void wav_read_header(char* file_name){
 	strcat(path, "0:/MUSIC/");
 	strcat(path, file_name);
 
-	char ReadBuffer[256] = {0};
+	char ReadBuffer[20] = {0};
 	f_open(&myFILE, path, FA_READ |FA_OPEN_EXISTING);
 	
 	//RIFF section
@@ -60,7 +60,7 @@ void wav_read_header(char* file_name){
 	sprintf(string, "bit_per_sample: %d", wav_tag.fmt_chunk.bit_per_sample);
 	LCD_DrawString(0,230,string);
 	*/
-	
+	/*
 	while(!f_eof(&myFILE)){
 		f_read(&myFILE, ReadBuffer, 4, &fnum);
 		*(ReadBuffer + 4) = '\0';
@@ -163,6 +163,7 @@ void wav_read_header(char* file_name){
 		}
 		
 	}
+	*/
 	/*
 	sprintf(string, "artist: %s", wav_tag.list_chunk.artist);
 	LCD_DrawString(0,120,string);

@@ -81,39 +81,3 @@ void find_file_type(char* file_name, char* output_file_type){
 	}
 	*(output_file_type + i) = '\0';
 }
-
-FRESULT sd_write_txt(char* tar_txt_name, char* string_to_write, uint16_t len){
-	DIR dir;
-	FILINFO fno;
-	FRESULT res;
-
-	char path[sizeof("0:/PLAY_LIST/") + _MAX_LFN] = {0};
-	strcat(path, "0:/PLAY_LIST/");
-	strcat(path, tar_txt_name);
-
-	res = f_open(&myFILE, path, FA_OPEN_APPEND|FA_WRITE);
-	if(res != FR_OK){
-		return res;
-	}
-
-	res = f_write(&myFILE, string_to_write, len, &fnum);
-	if(res != FR_OK){
-		return res;
-	}
-	res = f_write(&myFILE, "\n", 1, &fnum);
-	if(res != FR_OK){
-		return res;
-	}
-
-	f_close(&myFILE);
-	return res;
-}
-
-file_ending file_read_for_wav(void* buff,	UINT buf_size, uint32_t* read_size, const uint32_t file_size){
-	f_read(&myFILE, buff, buf_size, &fnum);
-	*read_size += AUDIO_BUFFER_SIZE;
-	HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
-	if(*read_size >= file_size){
-		f_close(&myFILE);
-	}
-}
