@@ -77,6 +77,8 @@ static Button btn_random = {
 	.usColor_Text = WHITE
 };
 
+static char freqs[][5] = {"100", "300", "875", "2400", "6900"};
+
 /**
  * entry point of the menu
  */

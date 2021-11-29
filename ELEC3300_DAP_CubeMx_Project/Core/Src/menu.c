@@ -159,19 +159,19 @@ void MENU_Equalizer() {
 	btn_2_flag = 0;
 
 	LCD_DrawString_Color(0, 0, "Equalizer Menu", DARK, CYAN);
-	LCD_DrawString_Color(0, HEIGHT_EN_CHAR, "Tune equalizer val (-12 to 12)", DARK, CYAN);
-
+	LCD_DrawString_Color(0, HEIGHT_EN_CHAR, "Tune amplifier gain (+-12 dB):", DARK, CYAN);
+	LCD_DrawString_Color(0, HEIGHT_EN_CHAR*3, "Band  Freq (Hz)  dB", DARK, CYAN);
 	uint8_t bandId = 0;
-	char bandItem[12];
+	char bandItem[22];
 	uint8_t bands[5] = {12, 12, 12, 12, 12}; // read from EEPROM
 
 	for (uint8_t i = 0; i < 5; i++) {
 		_formatBandItem(bandItem, i, bands[i]);
-		LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2*(i+1), bandItem, DARK, CYAN);
+		LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(i+4), bandItem, DARK, CYAN);
 	}
 
 	_formatBandItem(bandItem, 0, bands[0]);
-	LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2, bandItem, WHITE, BLUE);
+	LCD_DrawString_Color(0, HEIGHT_EN_CHAR*4, bandItem, WHITE, BLUE);
 
 	// poll for button input
 	while (1) {
@@ -180,22 +180,22 @@ void MENU_Equalizer() {
 			if (bands[bandId] >= 24) continue;
 			bands[bandId]++;
 			_formatBandItem(bandItem, bandId, bands[bandId]);
-			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2*(bandId+1), bandItem, WHITE, BLUE);
+			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(bandId+4), bandItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
 		} else if (btn_1_flag) {
 			btn_1_flag = 0;
 			_formatBandItem(bandItem, bandId, bands[bandId]);
-			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2*(bandId+1), bandItem, DARK, CYAN);
+			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(bandId+4), bandItem, DARK, CYAN);
 			bandId = (bandId + 1) % 5;
 			_formatBandItem(bandItem, bandId, bands[bandId]);
-			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2*(bandId+1), bandItem, WHITE, BLUE);
+			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(bandId+4), bandItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
 		} else if (btn_0_flag) {
 			btn_0_flag = 0;
 			if (bands[bandId] <= 0) continue;
 			bands[bandId]--;
 			_formatBandItem(bandItem, bandId, bands[bandId]);
-			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2*(bandId+1), bandItem, WHITE, BLUE);
+			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(bandId+4), bandItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
 		}
 	}
@@ -237,5 +237,5 @@ static void _formatSongItem(char* songItem, char** fileNames, uint8_t* fileTypes
 }
 
 static void _formatBandItem(char* bandItem, uint8_t bandId, uint8_t bandVal) {
-	sprintf(bandItem, "band %d: %-3d", bandId, bandVal - 12); // display as -12 to 12, implicit 0 to 24
+	sprintf(bandItem, "%-5d %-10s %-3d", bandId + 1, freqs[bandId], bandVal - 12); // display as -12 to 12, implicit 0 to 24
 }
