@@ -68,6 +68,7 @@ extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
 extern volatile uint8_t play_flag;
+extern volatile uint8_t inPlayMenu;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -216,13 +217,14 @@ void EXTI0_IRQHandler(void)
   /* USER CODE BEGIN EXTI0_IRQn 0 */
 	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET) {
     switches[0].buttonState = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0);
-		if (switches[0].buttonState == GPIO_PIN_SET) btnFlag[0] = 1;
+		if (switches[0].buttonState == GPIO_PIN_SET) {
+      btnFlag[0] = 1;
+      song_forback_ward(-5);
+    }
     if (switches[0].buttonState != switches[0].lastButtonState) {
       updateSwitch(0);
       switches[0].lastButtonState = switches[0].buttonState;
     }
-		// if (play_flag) pause_song();
-    // else play_song();
 
 		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
 		HAL_GPIO_EXTI_Callback(GPIO_PIN_0);
@@ -242,7 +244,19 @@ void EXTI1_IRQHandler(void)
   /* USER CODE BEGIN EXTI1_IRQn 0 */
 	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_1) != RESET) {
     switches[1].buttonState = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1);
-		if (switches[1].buttonState == GPIO_PIN_SET) btnFlag[1] = 1;
+		if (switches[1].buttonState == GPIO_PIN_SET) {
+      btnFlag[1] = 1;
+      
+      if (inPlayMenu) {
+        if (play_flag) {
+          pause_song();
+          HAL_TIM_Base_Stop_IT(&htim6);
+        } else {
+          play_song();
+          HAL_TIM_Base_Start_IT(&htim6);
+        }
+      }
+    }
     if (switches[1].buttonState != switches[1].lastButtonState) {
       updateSwitch(1);
       switches[1].lastButtonState = switches[1].buttonState;
@@ -266,7 +280,10 @@ void EXTI2_IRQHandler(void)
   /* USER CODE BEGIN EXTI2_IRQn 0 */
 	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_2) != RESET) {
     switches[2].buttonState = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2);
-		if (switches[2].buttonState == GPIO_PIN_SET) btnFlag[2] = 1;
+		if (switches[2].buttonState == GPIO_PIN_SET) {
+      btnFlag[2] = 1;
+      song_forback_ward(5);
+    }
     if (switches[2].buttonState != switches[2].lastButtonState) {
       updateSwitch(2);
       switches[2].lastButtonState = switches[2].buttonState;

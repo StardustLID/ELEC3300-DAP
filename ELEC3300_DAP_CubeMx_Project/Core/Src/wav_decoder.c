@@ -192,7 +192,7 @@ void wav_read_header(char* file_name){
 
 void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file_name) {
 	char path[sizeof("0:/MUSIC/") + _MAX_LFN] = {0};
-	char string[128] = {0};
+	// char string[128] = {0};
 
 	strcat(path, "0:/MUSIC/");
 	strcat(path, file_name);
@@ -216,8 +216,8 @@ void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file
 	coded_i2s_set_up(hi2s, hi2c, wav_get_sample_rate(), wav_get_bit_per_sample());
 	HAL_I2S_Transmit_DMA(hi2s, codec_out_buffer, AUDIO_BUFFER_SIZE);
 	
-	sprintf(string, "ori: %d  ", wav_tag.data_chunk.data_offest);
-	LCD_DrawString(0,0,string);
+	// sprintf(string, "ori: %d  ", wav_tag.data_chunk.data_offest);
+	// LCD_DrawString(0,0,string);
 
 	while (!(f_eof(&myFILE))) {
 		if (file_read_flag) {
@@ -226,11 +226,11 @@ void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file
 				uint32_t cur_read_offset = f_tell(&myFILE);
 				uint32_t tar_read_offset = cur_read_offset + wav_skip_byte;
 				
-				sprintf(string, "cur: %d  ", cur_read_offset);
-				LCD_DrawString(0,20,string);
+				// sprintf(string, "cur: %d  ", cur_read_offset);
+				// LCD_DrawString(0,20,string);
 				
-				sprintf(string, "tar: %d  ", tar_read_offset);
-				LCD_DrawString(0,40,string);
+				// sprintf(string, "tar: %d  ", tar_read_offset);
+				// LCD_DrawString(0,40,string);
 				
 				if(tar_read_offset <= wav_tag.data_chunk.data_offest){
 					tar_read_offset = wav_tag.data_chunk.data_offest;

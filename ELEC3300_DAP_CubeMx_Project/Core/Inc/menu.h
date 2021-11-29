@@ -13,6 +13,8 @@
 
 extern uint32_t encoder_value;
 extern uint8_t volume;
+extern volatile uint16_t playtimeElapsed;
+extern volatile uint8_t inPlayMenu;
 
 typedef struct {
 	const Point pos;

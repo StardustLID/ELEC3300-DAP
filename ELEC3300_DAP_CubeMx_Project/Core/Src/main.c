@@ -85,8 +85,6 @@ uint8_t numSongs = 0;
 char **fileNames; // dynamic 2D char array
 uint8_t *fileTypes; // dynamic 1D uint8_t array. 1 = MP3, 2 = WAV, 3 = FLAC
 
-volatile uint16_t playtimeElapsed = 0; // in seconds
-uint32_t encoder_value = 0;
 uint8_t volume = 0;
 
 uint8_t bands[5] = {12, 12, 12, 12, 12}; // default
@@ -287,12 +285,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		uint32_t this_tick = HAL_GetTick();
-		static uint32_t last_led_tick = 0;
-		if(this_tick - last_led_tick >= 300){
-			HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
-			last_led_tick = this_tick;
-		}
+		// uint32_t this_tick = HAL_GetTick();
+		// static uint32_t last_led_tick = 0;
+		// if(this_tick - last_led_tick >= 300){
+		// 	HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
+		// 	last_led_tick = this_tick;
+		// }
   }
   /* USER CODE END 3 */
 }
@@ -860,8 +858,10 @@ static void MX_FSMC_Init(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   if (htim == &htim6) {
-    // HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_1);
-    ++playtimeElapsed;
+    if (inPlayMenu == 1) {
+      ++playtimeElapsed;
+      MENU_UpdatePlayTime();
+    }
   }
 }
 /* USER CODE END 4 */

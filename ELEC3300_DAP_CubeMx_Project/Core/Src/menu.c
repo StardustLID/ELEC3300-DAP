@@ -19,7 +19,9 @@ extern volatile uint8_t song_id;
 extern uint8_t play_flag;
 extern uint8_t bands[5];
 
-extern volatile uint16_t playtimeElapsed;
+uint32_t encoder_value = 0;
+volatile uint16_t playtimeElapsed = 0; // in seconds
+volatile uint8_t inPlayMenu = 0;
 
 static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usColor_Btn, uint16_t usColor_Text);
 static void _renderButton(const Button *btn);
@@ -117,6 +119,7 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	LCD_Clear(0, 0, 240, 320, DARK);
 	btnFlagReset();
+	inPlayMenu = 1;
 
 	LCD_DrawString_Color(40, 80, fileNames[song_id], DARK, CYAN);
 	_renderButton(&btn_backward);
@@ -125,7 +128,7 @@ void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	_renderButton(&btn_random);
 
 	VOL_CreateVolBar();
-	HAL_Delay(100);
+	HAL_Delay(50);
 	HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 	if (!play_flag) {
 		HAL_TIM_Base_Start_IT(&htim6);
@@ -135,24 +138,6 @@ void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	}
 	
 	while (1) {
-	// 	if ( ucXPT2046_TouchFlag == 1 ) {
-	// 		strType_XPT2046_Coordinate tempCoor = getTouchedPoint();
-	// 		const Point touchPt = {tempCoor.x, tempCoor.y};
-	// 		if (_btnTouched(&touchPt, &btn_play)) {
-	// 			if (play_flag == 0) HAL_TIM_Base_Start_IT(songTimer);
-	// 			else HAL_TIM_Base_Stop_IT(songTimer);
-	// 			play_flag = !play_flag;
-	// 		} else if (_btnTouched(&touchPt, &btn_forward)) {
-	// 			playtimeElapsed += 5;
-	// 		} else if (_btnTouched(&touchPt, &btn_backward)) {
-	// 			if (playtimeElapsed < 5) playtimeElapsed = 0; // avoid underflow
-	// 			else playtimeElapsed -= 5;
-	// 		}
-	// 		ucXPT2046_TouchFlag = 0;
-	// 		HAL_Delay(INPUT_DELAY);
-	// 	}
-		MENU_UpdatePlayTime();
-
 		uint32_t enc_prev = encoder_value;
 		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
 		
