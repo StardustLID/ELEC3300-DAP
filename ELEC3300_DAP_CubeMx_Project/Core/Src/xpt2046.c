@@ -1,6 +1,7 @@
 #include "xpt2046.h"
 #include "lcdtp.h"
 #include "stm32f4xx_hal_tim.h"
+#include "main.h"
 #include <stdio.h> 
 #include <string.h>
 
@@ -44,7 +45,8 @@ static void XPT2046_WriteCMD ( uint8_t ucCmd )
 {
 	uint8_t i;
 
-
+	//HAL_SPI_Transmit(&hspi1, &ucCmd, 1, 50);
+	
 	macXPT2046_MOSI_0();
 	
 	macXPT2046_CLK_LOW();
@@ -95,6 +97,19 @@ static uint16_t XPT2046_ReadCMD ( void )
 
 static uint16_t XPT2046_ReadAdc ( uint8_t ucChannel )
 {
+	
+	uint8_t tx_buf = ucChannel;
+	uint8_t rx_buf[2] = {0};
+	uint8_t dummy_tx[2] = {0};
+	uint16_t adc_result = 0;
+	
+	HAL_SPI_Transmit(&hspi1,&tx_buf,1,20);
+	HAL_SPI_TransmitReceive(&hspi1, dummy_tx, rx_buf,2,50);
+		
+	adc_result = (uint16_t)(rx_buf[0] << 8 | rx_buf[1]);
+	return adc_result;
+	
+	
 	XPT2046_WriteCMD ( ucChannel );
 
   return 	XPT2046_ReadCMD ();

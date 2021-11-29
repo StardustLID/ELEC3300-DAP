@@ -149,9 +149,9 @@ int main(void)
   MX_USART2_UART_Init();
   MX_FATFS_Init();
   MX_DMA_Init();
-  MX_USB_DEVICE_Init();
   MX_TIM6_Init();
   MX_RNG_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
 	LCD_INIT();
 
@@ -184,8 +184,46 @@ int main(void)
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
 	LCD_Clear(0, 0, 240, 320, DARK);
-
-	// while( ! XPT2046_Touch_Calibrate () );
+	
+	HAL_Delay(1000);
+	HAL_GPIO_WritePin(SPI1_CS_GPIO_Port,SPI1_CS_Pin,0);
+	/*
+	while(1){
+		
+		uint8_t spi_tx_data = 0xD0;
+		uint8_t dummy_tx[2] = {0};
+		uint8_t spi_rx_data[2] = {0};
+		//HAL_GPIO_WritePin(SPI1_CS_GPIO_Port,SPI1_CS_Pin,0);
+		HAL_SPI_Transmit(&hspi1, &spi_tx_data, 1, 50);
+		//HAL_SPI_Receive(&hspi1, spi_rx_data, 1, 50);
+		//HAL_SPI_Receive(&hspi1, spi_rx_data + 1, 1, 50);
+		HAL_SPI_TransmitReceive(&hspi1, dummy_tx, spi_rx_data,2,50);
+		//HAL_SPI_Receive(&hspi1,spi_rx_data + 1,1,50);
+		//HAL_GPIO_WritePin(SPI1_CS_GPIO_Port,SPI1_CS_Pin,1);
+		
+		
+		uint8_t spi_tx_data1 = 0x90;
+		uint8_t spi_rx_data1[2] = {0};
+		//HAL_GPIO_WritePin(SPI1_CS_GPIO_Port,SPI1_CS_Pin,0);
+		HAL_SPI_Transmit(&hspi1, &spi_tx_data1, 1, 50);
+		HAL_SPI_TransmitReceive(&hspi1, dummy_tx, spi_rx_data1,2,50);
+		//HAL_GPIO_WritePin(SPI1_CS_GPIO_Port,SPI1_CS_Pin,1);
+		//HAL_SPI_Receive(&hspi1, spi_rx_data1 + 1, 1, 50);
+		//HAL_SPI_TransmitReceive(&hspi1, dummy_tx, spi_rx_data1,2,50);
+		//HAL_SPI_Receive(&hspi1,spi_rx_data1 + 1,1,50);
+		
+		
+		char string[15];
+		sprintf(string, "rx:%x %x  ", spi_rx_data[0],spi_rx_data[1]);
+		LCD_DrawString(0,0,string);
+		
+		sprintf(string, "rx1:%x %x  ", spi_rx_data1[0],spi_rx_data1[1]);
+		LCD_DrawString(0,20,string);
+		HAL_Delay(300);
+	}
+	*/
+	
+	while( ! XPT2046_Touch_Calibrate () );
 
 	// LCD_GramScan ( 1 );
 	
@@ -503,7 +541,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -621,7 +659,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 9600;//115200;
+  huart1.Init.BaudRate = 115200;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
