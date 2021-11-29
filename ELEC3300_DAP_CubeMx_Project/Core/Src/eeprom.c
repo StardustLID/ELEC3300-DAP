@@ -231,24 +231,32 @@ uint8_t get_eeprom_eq_ena(){
 	return eeprom.eq_ena;
 }
 
-int8_t get_eeprom_eq1(){
+uint8_t get_eeprom_eq1(){
 	return eeprom.eq1;
 }
 
-int8_t get_eeprom_eq2(){
+uint8_t get_eeprom_eq2(){
 	return eeprom.eq2;
 }
 
-int8_t get_eeprom_eq3(){
+uint8_t get_eeprom_eq3(){
 	return eeprom.eq3;
 }
 
-int8_t get_eeprom_eq4(){
+uint8_t get_eeprom_eq4(){
 	return eeprom.eq4;
 }
 
-int8_t get_eeprom_eq5(){
+uint8_t get_eeprom_eq5(){
 	return eeprom.eq5;
+}
+
+void get_eeprom_eq(uint8_t eq[]) {
+	eq[0] = eeprom.eq1;
+	eq[1] = eeprom.eq2;
+	eq[2] = eeprom.eq3;
+	eq[3] = eeprom.eq4;
+	eq[4] = eeprom.eq5;
 }
 
 uint8_t get_eeprom_num_of_playlist(){

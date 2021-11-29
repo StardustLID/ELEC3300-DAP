@@ -6,7 +6,7 @@
 #define MP3_OUT_BUF_SIZE 4608//2304*2
 #define MP3_HALF_OUT_BUF_SIZE 2304
 
-
+/*
 typedef struct mp3_id_frame{
 	uint32_t size;
 	char data[50];
@@ -24,22 +24,24 @@ typedef struct mp3_tag_frame_header{
 	uint16_t flag;
 }mp3_tag_frame_header;
 
-typedef struct mp3_type{
-	uint8_t volume;
-	uint32_t sample_rate;
-	uint32_t output_buf_size;
-}mp3_type;
-
 #define MP3_FRAME_ID_ALBUM_TITLE			"TALB"
 #define MP3_FRAME_ID_SONG_TITLE				"TIT2"
 #define MP3_FRAME_ID_LYRICIST					"TEXT"
 #define MP3_FRAME_ID_TRACK_NUMBER			"TRCK"	
 #define MP3_FRAME_ID_UNSYNC_LYRICIST	"USLT"
 #define MP3_FRAME_ID_SYNC_LYRICIST	"SYLT"
+*/
 
 
-void mp3_read_header(char* file_name);
-void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c,const uint8_t* file_name);
+typedef struct mp3_type{
+	uint8_t volume;
+	uint32_t sample_rate;
+	uint32_t output_buf_size;
+}mp3_type;
+
+
+//void mp3_read_header(char* file_name);
+void mp3_play_music(I2S_HandleTypeDef* hi2s, I2C_HandleTypeDef *hi2c, char* file_name);
 uint32_t mp3_get_size();
 uint8_t mp3_get_play_flag();
 void mp3_buf_pos_update(uint16_t pos);

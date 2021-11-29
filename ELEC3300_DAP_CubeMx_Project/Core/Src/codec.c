@@ -14,7 +14,7 @@ uint16_t codec_out_buffer[AUDIO_BUFFER_SIZE];
 uint32_t size;
 uint32_t file_size;
 uint8_t file_read_flag = 0;
-uint8_t play_flag = 0;
+volatile uint8_t play_flag = 0;
 
 void codec_init(I2C_HandleTypeDef *hi2c, I2S_HandleTypeDef *hi2s3, DMA_HandleTypeDef *hdma_spi3_tx) {
 	uint8_t buf[2] = {0};  // 0: device address 1:device address 2:reg_address 3:reg_address
@@ -291,74 +291,6 @@ void codec_volume_update(I2C_HandleTypeDef *hi2c, uint16_t volume){
 
 void update_play_flag(uint8_t flag){
 	play_flag = flag;
-}
-
-
-void codec_i2s_update(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, uint32_t audio_freq, uint32_t bit_per_sample) {
-	uint32_t i2sdiv;
-	uint32_t i2sodd;
-	uint32_t packetlength;
-	uint32_t tmp;
-	uint32_t i2sclk;
-
-	hi2s->Init.AudioFreq = audio_freq;
-	hi2s->Init.DataFormat = bit_per_sample;
-	if (hi2s->Init.AudioFreq != I2S_AUDIOFREQ_DEFAULT) {
-		/* Check the frame length (For the Prescaler computing) ********************/
-		if (hi2s->Init.DataFormat == I2S_DATAFORMAT_16B) {
-			/* Packet length is 16 bits */
-			packetlength = 16U;
-		} else {
-			/* Packet length is 32 bits */
-			packetlength = 32U;
-		}
-
-#if defined(I2S_APB1_APB2_FEATURE)
-		if (IS_I2S_APB1_INSTANCE(hi2s->Instance)) {
-			i2sclk = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2S_APB1);
-		} else {
-			i2sclk = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2S_APB2);
-		}
-#else
-		i2sclk = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2S);
-#endif /* I2S_APB1_APB2_FEATURE */
-
-		if (hi2s->Init.MCLKOutput == I2S_MCLKOUTPUT_ENABLE) {
-			/* MCLK output is enabled */
-			if (hi2s->Init.DataFormat != I2S_DATAFORMAT_16B) {
-				tmp = (uint32_t)(((((i2sclk / (packetlength * 4U)) * 10U) / hi2s->Init.AudioFreq)) + 5U);
-			} else {
-				tmp = (uint32_t)(((((i2sclk / (packetlength * 8U)) * 10U) / hi2s->Init.AudioFreq)) + 5U);
-			}
-		} else {
-			/* MCLK output is disabled */
-			tmp = (uint32_t)(((((i2sclk / packetlength) * 10U) / hi2s->Init.AudioFreq)) + 5U);
-		}
-		/* Remove the flatting point */
-		tmp = tmp / 10U;
-
-		/* Check the parity of the divider */
-		i2sodd = (uint32_t)(tmp & (uint32_t)1U);
-
-		/* Compute the i2sdiv prescaler */
-		i2sdiv = (uint32_t)((tmp - i2sodd) / 2U);
-
-		/* Get the Mask for the Odd bit (SPI_I2SPR[8]) register */
-		i2sodd = (uint32_t)(i2sodd << 8U);
-	}
-
-	/* Write to SPIx I2SPR register the computed value */
-	hi2s->Instance->I2SPR = (uint32_t)((uint32_t)i2sdiv | (uint32_t)(i2sodd | (uint32_t)hi2s->Init.MCLKOutput));
-	MODIFY_REG(hi2s->Instance->I2SCFGR,
-			   (SPI_I2SCFGR_CHLEN | SPI_I2SCFGR_DATLEN | SPI_I2SCFGR_CKPOL | SPI_I2SCFGR_I2SSTD | SPI_I2SCFGR_PCMSYNC |
-				SPI_I2SCFGR_I2SCFG | SPI_I2SCFGR_I2SE | SPI_I2SCFGR_I2SMOD),
-			   (SPI_I2SCFGR_I2SMOD | hi2s->Init.Mode | hi2s->Init.Standard | hi2s->Init.DataFormat | hi2s->Init.CPOL));
-#if defined(SPI_I2SCFGR_ASTRTEN)
-	if ((hi2s->Init.Standard == I2S_STANDARD_PCM_SHORT) || ((hi2s->Init.Standard == I2S_STANDARD_PCM_LONG))) {
-		/* Write to SPIx I2SCFGR */
-		SET_BIT(hi2s->Instance->I2SCFGR, SPI_I2SCFGR_ASTRTEN);
-	}
-#endif /* SPI_I2SCFGR_ASTRTEN */
 }
 
 void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s) {

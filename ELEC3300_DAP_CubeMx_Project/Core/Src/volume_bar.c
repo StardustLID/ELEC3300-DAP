@@ -20,7 +20,7 @@ void VOL_CreateVolBar() {
 void VOL_UpdateVolBar(uint8_t initVol, bool isIncrease) {
 	uint16_t barBottomPage = volumeBar.pos.y + volumeBar.height - 1;
 	if (isIncrease) {
-		if (initVol >= 100) return;
+		if (initVol >= 92) return;
 		for (uint8_t i = 0; i < LEVEL_HEIGHT; i++) {
 			const uint16_t vol_y = barBottomPage - LEVEL_HEIGHT*initVol - i - 1;
 			LCD_DrawLine(VOL_BAR_UPDATE_X0, vol_y, VOL_BAR_UPDATE_X1, vol_y, volumeBar.usColor);

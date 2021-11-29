@@ -30,7 +30,6 @@
 #include "mp3_decoder.h"
 #include "eeprom.h"
 #include "lcdtp.h"
-#include "xpt2046.h"
 #include "menu.h"
 #include "volume_bar.h"
 #include "uart.h"
@@ -77,13 +76,17 @@ UART_HandleTypeDef huart2;
 SRAM_HandleTypeDef hsram1;
 
 /* USER CODE BEGIN PV */
+volatile uint8_t menu_id = 0;
+volatile uint8_t song_id = 0;
+
 // song menu variables
 uint8_t numSongs = 0;
 char **fileNames; // dynamic 2D char array
 uint8_t *fileTypes; // dynamic 1D uint8_t array. 1 = MP3, 2 = WAV, 3 = FLAC
 
-uint32_t encoder_value = 0;
 uint8_t volume = 0;
+
+uint8_t bands[5] = {12, 12, 12, 12, 12}; // default
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -158,11 +161,13 @@ int main(void)
 	codec_init(&hi2c1, &hi2s3, &hdma_spi3_tx);
 	eeprom_init(&hi2c2);
 	codec_load_setting();
+  codec_eq_enable(1);
+  get_eeprom_eq(bands);
 	
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);
 	HAL_GPIO_WritePin(LED2_GPIO_Port,LED2_Pin, 1);
-	//LCD_Clear(0, 0, 240, 320, BACKGROUND);
+  
 	FATFS myFATFS;
 	FRESULT res;
 	res = f_mount(&myFATFS,SDPath,1);
@@ -178,8 +183,8 @@ int main(void)
 	sprintf(string, "data: %x",ee_buf);
 	LCD_DrawString(0,300,string);
 */
-  // fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
-  // fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t *)); // malloc row ptr
+  fileNames = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(char *)); // malloc row ptr
+  fileTypes = malloc(NUM_OF_SCAN_FILE_MAX * sizeof(uint8_t)); // malloc row ptr
 
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
@@ -228,19 +233,12 @@ int main(void)
 	
 	//write_song_to_play_list(0xa, 2);
 	//eeprom_earse_all();
-	//while( ! XPT2046_Touch_Calibrate () );
-
-	// LCD_GramScan ( 1 );
 	
-  // MENU_SetSongTimer(&htim6);
-  // MENU_Main();
-  // /*******************************/
-	
-	//while(1);
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
 	
 	
 	//write_song_to_play_list(4,1);
+	/*
 	uint8_t* play_list;
 	uint8_t num = 0;
 	play_list = read_playlist(2, &num);
@@ -250,89 +248,62 @@ int main(void)
 		sprintf(string, "data: %d ", *(play_list + i));
 		LCD_DrawString(0,i*20,string);
 	}
-	
+	*/
 	//codec_volume_update(&hi2c1,0xC0);
 	if (res == FR_OK)
 	{
-		// scan_file("0:/MUSIC");
-		// scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
-		
-    // testing
-    // MENU_SelectSong(numSongs, fileNames, fileTypes);
-
-		// while(1){
-		// 	wav_read_header("net_sin_1000Hz_-3dBFS_10s.wav");
-		// 	wav_play_music(&hi2s3, &hi2c1,"net_sin_1000Hz_-3dBFS_10s.wav");
-		// }
-		
+		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
 		
 		//wav_read_header("Sample-wav-file.wav");
 		//wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
 		
 		
-    //wav_read_header("Ensoniq-ZR-76-01-Dope-77.wav");
-		
 		//mp3_read_header("Kalimba.mp3");
 		//mp3_play_music(&hi2s3, &hi2c1,"Kalimba.mp3");
-		
-		//decode_jpeg("Sample-wav-file.jpg");
 		
 	}
 	else{
 		LCD_DrawString(0,0,"Cannot mount FATFS");
 	}
-	//while(1);
-	//VOL_CreateVolBar();
-	//player_display_cover("Sample-wav-file.bin");
-  HAL_Delay(200);
-  HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
+
+	// player_display_cover("Sample-wav-file.bin");
+  // HAL_Delay(200);
 	
 	play_wav = 0;
-	/*
-	mp3_read_header("Julie-London-Fly-Me-to-the-Moon.mp3");
-	mp3_play_music(&hi2s3, &hi2c1,"Julie-London-Fly-Me-to-the-Moon.mp3");
-  */
+	//mp3_read_header("Fly-Me-to-the-Moon.mp3");
+	//mp3_play_music(&hi2s3, &hi2c1,"Fly-Me-to-the-Moon.mp3");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    uint32_t enc_prev = encoder_value;
-		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
-    
-    char enc_string[20];
-		sprintf(enc_string, "enc val: %d", encoder_value);
+    switch(menu_id) {
+      case 0:
+      MENU_Main();
+      break;
 
-    if (encoder_value > enc_prev) {
-      if (volume < 100) {
-        VOL_UpdateVolBar(volume, true);
-        volume++;
-      }
-    } else if (encoder_value < enc_prev) {
-      if (volume > 0) {
-        VOL_UpdateVolBar(volume, false);
-        volume--;
-      }
+      case 1:
+      MENU_SelectSong(numSongs, fileNames, fileTypes);
+      break;
+
+      case 2:
+      MENU_Equalizer();
+      break;
+      
+      case 3:
+      MENU_PlaySong(numSongs, fileNames, fileTypes);
+      break;
     }
-
-		LCD_DrawString(0,300, enc_string);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		uint32_t this_tick = HAL_GetTick();
-		static uint32_t last_led_tick = 0;
-		if(this_tick - last_led_tick >= 300){
-			HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
-			last_led_tick = this_tick;
-		}
-		
-		/*
-		if(play_wav){
-			wav_read_header("Sample-wav-file.wav");
-			wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
-		}
-		*/
+		// uint32_t this_tick = HAL_GetTick();
+		// static uint32_t last_led_tick = 0;
+		// if(this_tick - last_led_tick >= 300){
+		// 	HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
+		// 	last_led_tick = this_tick;
+		// }
   }
   /* USER CODE END 3 */
 }
@@ -799,10 +770,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(SPI1_CS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Button_0_Pin Button_1_Pin PB2 */
-  GPIO_InitStruct.Pin = Button_0_Pin|Button_1_Pin|GPIO_PIN_2;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  /*Configure GPIO pins : PB0 PB1 PB2 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pin : EEPROM_WP_Pin */
@@ -830,6 +801,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(Jack_detect_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 
 }
 
@@ -887,7 +868,15 @@ static void MX_FSMC_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim == &htim6) {
+    if (inPlayMenu == 1) {
+      ++playtimeElapsed;
+      MENU_UpdatePlayTime();
+    }
+  }
+}
 /* USER CODE END 4 */
 
 /**

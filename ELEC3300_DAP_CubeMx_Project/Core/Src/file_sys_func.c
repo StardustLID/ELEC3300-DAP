@@ -34,20 +34,14 @@ FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** fileNames, uint8_
 			}
 
 			// file names
-			fileNames[numFiles] = malloc(strlen(fno.fname) + 1);
+			fileNames[numFiles] = malloc((strlen(fno.fname) + 1) * sizeof(char));
 			strcpy(fileNames[numFiles], fno.fname);
-			LCD_Clear(0, 0, 240, 320, MAGENTA);
-			HAL_Delay(500);
-			LCD_DrawString(0, 0, fileNames[numFiles]);
-			LCD_DrawString(0, 16, fno.fname);
 
 			// file types / extensions
 			char fileType_buffer[10] = "";
 			find_file_type(fileNames[numFiles], fileType_buffer);
 			
-			LCD_DrawString(0, 32, fileType_buffer);
 			char temp[5] = "";
-			sprintf(temp, "%d", fileType_buffer);
 			if (strcmp(fileType_buffer, ".mp3") == 0) {
 				fileTypes[numFiles] = 1;
 			} else if (strcmp(fileType_buffer, ".wav") == 0) {
@@ -57,8 +51,6 @@ FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** fileNames, uint8_
 			} else {
 				fileTypes[numFiles] = 99;
 			}
-			LCD_DrawString(0, 48, temp);
-			HAL_Delay(500);
 
 			numFiles++;
 		}
@@ -88,40 +80,4 @@ void find_file_type(char* file_name, char* output_file_type){
 		ptr++;
 	}
 	*(output_file_type + i) = '\0';
-}
-
-FRESULT sd_write_txt(char* tar_txt_name, char* string_to_write, uint16_t len){
-	DIR dir;
-	FILINFO fno;
-	FRESULT res;
-
-	char path[sizeof("0:/PLAY_LIST/") + _MAX_LFN] = {0};
-	strcat(path, "0:/PLAY_LIST/");
-	strcat(path, tar_txt_name);
-
-	res = f_open(&myFILE, path, FA_OPEN_APPEND|FA_WRITE);
-	if(res != FR_OK){
-		return res;
-	}
-
-	res = f_write(&myFILE, string_to_write, len, &fnum);
-	if(res != FR_OK){
-		return res;
-	}
-	res = f_write(&myFILE, "\n", 1, &fnum);
-	if(res != FR_OK){
-		return res;
-	}
-
-	f_close(&myFILE);
-	return res;
-}
-
-file_ending file_read_for_wav(void* buff,	UINT buf_size, uint32_t* read_size, const uint32_t file_size){
-	f_read(&myFILE, buff, buf_size, &fnum);
-	*read_size += AUDIO_BUFFER_SIZE;
-	HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
-	if(*read_size >= file_size){
-		f_close(&myFILE);
-	}
 }

@@ -23,6 +23,9 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "menu.h"
+#include "player_func.h"
+#include "switch.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,7 +68,8 @@ extern TIM_HandleTypeDef htim6;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
-
+extern volatile uint8_t play_flag;
+extern volatile uint8_t inPlayMenu;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -205,6 +209,111 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f4xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles EXTI line0 interrupt.
+  */
+void EXTI0_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI0_IRQn 0 */
+	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET) {
+    switches[0].buttonState = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0);
+		if (switches[0].buttonState == GPIO_PIN_SET) {
+      btnFlag[0] = 1;
+      
+      if (inPlayMenu) {
+        int32_t delta = playtimeElapsed > 5 ? -5 : -playtimeElapsed;
+        playtimeElapsed += delta;
+        song_forback_ward(delta);
+      }
+    }
+    if (switches[0].buttonState != switches[0].lastButtonState) {
+      updateSwitch(0);
+      switches[0].lastButtonState = switches[0].buttonState;
+    }
+
+		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
+		HAL_GPIO_EXTI_Callback(GPIO_PIN_0);
+	}
+  /* USER CODE END EXTI0_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+  /* USER CODE BEGIN EXTI0_IRQn 1 */
+
+  /* USER CODE END EXTI0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line1 interrupt.
+  */
+void EXTI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI1_IRQn 0 */
+	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_1) != RESET) {
+    switches[1].buttonState = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1);
+		if (switches[1].buttonState == GPIO_PIN_SET) {
+      btnFlag[1] = 1;
+      
+      if (inPlayMenu) {
+        if (play_flag) {
+          pause_song();
+          HAL_TIM_Base_Stop_IT(&htim6);
+        } else {
+          play_song();
+          HAL_TIM_Base_Start_IT(&htim6);
+        }
+        // MENU_FlashButton(&btn_playpause);
+      }
+    }
+    if (switches[1].buttonState != switches[1].lastButtonState) {
+      updateSwitch(1);
+      switches[1].lastButtonState = switches[1].buttonState;
+    }
+
+		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_1);
+		HAL_GPIO_EXTI_Callback(GPIO_PIN_1);
+	}
+  /* USER CODE END EXTI1_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
+  /* USER CODE BEGIN EXTI1_IRQn 1 */
+
+  /* USER CODE END EXTI1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line2 interrupt.
+  */
+void EXTI2_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI2_IRQn 0 */
+	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_2) != RESET) {
+    switches[2].buttonState = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2);
+		if (switches[2].buttonState == GPIO_PIN_SET) {
+      btnFlag[2] = 1;
+      
+      if (inPlayMenu) {
+        if (switches[2].holdTime > LONG_PRESS_DELAY) {
+          wav_time_skip(1000);
+        } else {
+          int32_t delta = 5;
+          playtimeElapsed += delta;
+          song_forback_ward(delta);
+        }
+      }
+    }
+    if (switches[2].buttonState != switches[2].lastButtonState) {
+      updateSwitch(2);
+      switches[2].lastButtonState = switches[2].buttonState;
+    }
+
+		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_2);
+		HAL_GPIO_EXTI_Callback(GPIO_PIN_2);
+	}
+  /* USER CODE END EXTI2_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
+  /* USER CODE BEGIN EXTI2_IRQn 1 */
+
+  /* USER CODE END EXTI2_IRQn 1 */
+}
 
 /**
   * @brief This function handles DMA1 stream5 global interrupt.
