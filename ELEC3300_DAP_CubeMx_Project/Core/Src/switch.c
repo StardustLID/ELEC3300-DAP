@@ -3,6 +3,7 @@
 
 #include "switch.h"
 
+volatile uint8_t btnFlag[3] = {0};
 volatile SwitchState switches[3] = {0};
 
 void updateSwitch(uint8_t id) {
@@ -32,4 +33,8 @@ void updateSwitch(uint8_t id) {
 		// 	Serial.println("Button was held for one second or more"); 
 		// }
 	}
+}
+
+void btnFlagReset() {
+	for (uint8_t i = 0; i < 3; i++) btnFlag[i] = 0;
 }

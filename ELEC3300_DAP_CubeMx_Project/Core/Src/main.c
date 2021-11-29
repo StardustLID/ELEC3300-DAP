@@ -79,9 +79,6 @@ SRAM_HandleTypeDef hsram1;
 /* USER CODE BEGIN PV */
 volatile uint8_t menu_id = 0;
 volatile uint8_t song_id = 0;
-volatile uint8_t btn_0_flag = 0;
-volatile uint8_t btn_1_flag = 0;
-volatile uint8_t btn_2_flag = 0;
 
 // song menu variables
 uint8_t numSongs = 0;
@@ -251,7 +248,6 @@ int main(void)
 	else{
 		LCD_DrawString(0,0,"Cannot mount FATFS");
 	}
-	//while(1);
 
   MENU_SelectSong(numSongs, fileNames, fileTypes);
   VOL_CreateVolBar();

@@ -14,8 +14,11 @@ typedef struct {
 	uint32_t idleTime;        // how long the button was idle
 } SwitchState;
 
+extern volatile uint8_t btnFlag[3];
 extern volatile SwitchState switches[3];
 
 void updateSwitch(uint8_t id);
+
+void btnFlagReset(void);
 
 #endif

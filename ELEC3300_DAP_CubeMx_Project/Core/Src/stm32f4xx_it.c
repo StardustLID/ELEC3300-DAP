@@ -67,10 +67,6 @@ extern TIM_HandleTypeDef htim6;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
-extern volatile uint8_t btn_0_flag;
-extern volatile uint8_t btn_1_flag;
-extern volatile uint8_t btn_2_flag;
-
 extern volatile uint8_t play_flag;
 /* USER CODE END EV */
 
@@ -219,7 +215,7 @@ void EXTI0_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI0_IRQn 0 */
 	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET) {
-    btn_0_flag = 1;
+    btnFlag[0] = 1;
 		if (play_flag) pause_song();
     else play_song();
 		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
@@ -240,7 +236,7 @@ void EXTI1_IRQHandler(void)
   /* USER CODE BEGIN EXTI1_IRQn 0 */
 	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_1) != RESET) {
     switches[1].buttonState = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_1);
-		if (switches[1].buttonState == GPIO_PIN_SET) btn_1_flag = 1;
+		if (switches[1].buttonState == GPIO_PIN_SET) btnFlag[1] = 1;
     if (switches[1].buttonState != switches[1].lastButtonState) {
       updateSwitch(1);
       switches[1].lastButtonState = switches[1].buttonState;
@@ -263,7 +259,7 @@ void EXTI2_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI2_IRQn 0 */
 	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_2) != RESET) {
-		btn_2_flag = 1;
+		btnFlag[2] = 1;
 		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_2);
 		HAL_GPIO_EXTI_Callback(GPIO_PIN_2);
 	}

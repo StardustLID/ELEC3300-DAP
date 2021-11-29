@@ -16,9 +16,6 @@ extern TIM_HandleTypeDef htim6;
 
 extern volatile uint8_t menu_id;
 extern volatile uint8_t song_id;
-extern volatile uint8_t btn_0_flag;
-extern volatile uint8_t btn_1_flag;
-extern volatile uint8_t btn_2_flag;
 extern uint8_t play_flag;
 
 extern volatile uint16_t playtimeElapsed;
@@ -38,17 +35,16 @@ void MENU_Welcome() {
 // main loop of the DAP program
 void MENU_Main() {
 	LCD_Clear(0, 0, 240, 320, DARK);
-	btn_0_flag = 0;
-	btn_1_flag = 0;
-	btn_2_flag = 0;
+	btnFlagReset();
+
 	_renderButton(&btn_PlaySongMenu);
 	_renderButton(&btn_FatfsMenu);
 
 	while (1) {
-		if (btn_2_flag != 0) {
-			btn_2_flag = 0;
-		} else if (btn_1_flag) {
-			btn_1_flag = 0;
+		if (btnFlag[2] != 0) {
+			btnFlag[2] = 0;
+		} else if (btnFlag[1]) {
+			btnFlag[1] = 0;
 			menu_id = 1;
 			return;
 		}
@@ -57,9 +53,7 @@ void MENU_Main() {
 
 void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	LCD_Clear(0, 0, 240, 320, DARK);
-	btn_0_flag = 0;
-	btn_1_flag = 0;
-	btn_2_flag = 0;
+	btnFlagReset();
 
 	LCD_DrawString_Color(0, 0, "Song Menu", DARK, CYAN);
 	LCD_DrawString_Color(0, 16, "Select a song:", DARK, CYAN);
@@ -79,12 +73,12 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 
 	// poll for button input
 	while (1) {
-		if (btn_2_flag != 0) {
-			btn_2_flag = 0;
+		if (btnFlag[2] != 0) {
+			btnFlag[2] = 0;
 			menu_id = 2; // set menu id
 			HAL_Delay(INPUT_DELAY);
 			return; // select current song
-		} else if (btn_1_flag) {
+		} else if (btnFlag[1]) {
 			_formatSongItem(songItem, fileNames, fileTypes, song_id);
 			LCD_DrawString_Color(0, 16*(song_id+4), songItem, BLACK, CYAN);
 
@@ -92,7 +86,7 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 			_formatSongItem(songItem, fileNames, fileTypes, song_id);
 			LCD_DrawString_Color(0, 16*(song_id+4), songItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
-			btn_1_flag = 0;
+			btnFlag[1] = 0;
 		}
 
 		char temp[10];
@@ -107,9 +101,7 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 
 void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	LCD_Clear(0, 0, 240, 320, DARK);
-	btn_0_flag = 0;
-	btn_1_flag = 0;
-	btn_2_flag = 0;
+	btnFlagReset();
 
 	LCD_DrawString_Color(40, 80, fileNames[song_id], DARK, CYAN);
 	_renderButton(&btn_backward);
@@ -163,9 +155,7 @@ void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 
 void MENU_Equalizer() {
 	LCD_Clear(0, 0, 240, 320, DARK);
-	btn_0_flag = 0;
-	btn_1_flag = 0;
-	btn_2_flag = 0;
+	btnFlagReset();
 
 	LCD_DrawString_Color(0, 0, "Equalizer Menu", DARK, CYAN);
 	LCD_DrawString_Color(0, HEIGHT_EN_CHAR, "Tune amplifier gain (+-12 dB):", DARK, CYAN);
@@ -184,23 +174,23 @@ void MENU_Equalizer() {
 
 	// poll for button input
 	while (1) {
-		if (btn_2_flag) {
-			btn_2_flag = 0;
+		if (btnFlag[2]) {
+			btnFlag[2] = 0;
 			if (bands[bandId] >= 24) continue;
 			bands[bandId]++;
 			_formatBandItem(bandItem, bandId, bands[bandId]);
 			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(bandId+4), bandItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
-		} else if (btn_1_flag == 1) {
-			btn_1_flag = 0;
+		} else if (btnFlag[1] == 1) {
+			btnFlag[1] = 0;
 			_formatBandItem(bandItem, bandId, bands[bandId]);
 			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(bandId+4), bandItem, DARK, CYAN);
 			bandId = (bandId + 1) % 5;
 			_formatBandItem(bandItem, bandId, bands[bandId]);
 			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(bandId+4), bandItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
-		} else if (btn_0_flag) {
-			btn_0_flag = 0;
+		} else if (btnFlag[0]) {
+			btnFlag[0] = 0;
 			if (bands[bandId] <= 0) continue;
 			bands[bandId]--;
 			_formatBandItem(bandItem, bandId, bands[bandId]);
