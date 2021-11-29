@@ -17,6 +17,7 @@ extern TIM_HandleTypeDef htim6;
 extern volatile uint8_t menu_id;
 extern volatile uint8_t song_id;
 extern uint8_t play_flag;
+extern uint8_t bands[5];
 
 extern volatile uint16_t playtimeElapsed;
 
@@ -176,7 +177,7 @@ void MENU_Equalizer() {
 	LCD_DrawString_Color(0, HEIGHT_EN_CHAR*3, "Band  Freq (Hz)  dB", DARK, CYAN);
 	uint8_t bandId = 0;
 	char bandItem[22];
-	uint8_t bands[5] = {12, 12, 12, 12, 12}; // read from EEPROM
+	get_eeprom_eq(bands);
 
 	for (uint8_t i = 0; i < 5; i++) {
 		_formatBandItem(bandItem, i, bands[i]);
@@ -185,11 +186,20 @@ void MENU_Equalizer() {
 
 	_formatBandItem(bandItem, 0, bands[0]);
 	LCD_DrawString_Color(0, HEIGHT_EN_CHAR*4, bandItem, WHITE, BLUE);
+	
+	menu_id = 0;
 
 	// poll for button input
 	while (1) {
 		if (btnFlag[2]) {
 			btnFlag[2] = 0;
+
+			// long press
+			if (switches[2].holdTime > LONG_PRESS_DELAY) {
+				equalizer_tuning(bands[0], bands[1], bands[2], bands[3], bands[4]);
+				return;
+			}
+
 			if (bands[bandId] >= 24) continue;
 			bands[bandId]++;
 			_formatBandItem(bandItem, bandId, bands[bandId]);
@@ -205,6 +215,12 @@ void MENU_Equalizer() {
 			HAL_Delay(INPUT_DELAY);
 		} else if (btnFlag[0]) {
 			btnFlag[0] = 0;
+			
+			// long press
+			if (switches[0].holdTime > LONG_PRESS_DELAY) {
+				return;
+			}
+
 			if (bands[bandId] <= 0) continue;
 			bands[bandId]--;
 			_formatBandItem(bandItem, bandId, bands[bandId]);
@@ -212,8 +228,6 @@ void MENU_Equalizer() {
 			HAL_Delay(INPUT_DELAY);
 		}
 	}
-
-	equalizer_tuning(bands[0], bands[1], bands[2], bands[3], bands[4]);
 }
 
 void MENU_UpdatePlayTime(void) {

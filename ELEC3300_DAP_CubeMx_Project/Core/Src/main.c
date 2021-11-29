@@ -88,6 +88,8 @@ uint8_t *fileTypes; // dynamic 1D uint8_t array. 1 = MP3, 2 = WAV, 3 = FLAC
 volatile uint16_t playtimeElapsed = 0; // in seconds
 uint32_t encoder_value = 0;
 uint8_t volume = 0;
+
+uint8_t bands[5] = {12, 12, 12, 12, 12}; // default
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -162,6 +164,7 @@ int main(void)
 	codec_init(&hi2c1, &hi2s3, &hdma_spi3_tx);
 	eeprom_init(&hi2c2);
 	codec_load_setting();
+  get_eeprom_eq(bands);
 	
 	HAL_GPIO_WritePin(LED0_GPIO_Port,LED0_Pin, 1);
 	HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin, 1);

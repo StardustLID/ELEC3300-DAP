@@ -215,9 +215,15 @@ void EXTI0_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI0_IRQn 0 */
 	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_0) != RESET) {
-    btnFlag[0] = 1;
-		if (play_flag) pause_song();
-    else play_song();
+    switches[0].buttonState = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0);
+		if (switches[0].buttonState == GPIO_PIN_SET) btnFlag[0] = 1;
+    if (switches[0].buttonState != switches[0].lastButtonState) {
+      updateSwitch(0);
+      switches[0].lastButtonState = switches[0].buttonState;
+    }
+		// if (play_flag) pause_song();
+    // else play_song();
+
 		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_0);
 		HAL_GPIO_EXTI_Callback(GPIO_PIN_0);
 	}
@@ -259,7 +265,13 @@ void EXTI2_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI2_IRQn 0 */
 	if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_2) != RESET) {
-		btnFlag[2] = 1;
+    switches[2].buttonState = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2);
+		if (switches[2].buttonState == GPIO_PIN_SET) btnFlag[2] = 1;
+    if (switches[2].buttonState != switches[2].lastButtonState) {
+      updateSwitch(2);
+      switches[2].lastButtonState = switches[2].buttonState;
+    }
+
 		__HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_2);
 		HAL_GPIO_EXTI_Callback(GPIO_PIN_2);
 	}

@@ -51,10 +51,11 @@ void eeprom_reset_eq_value();
 
 uint8_t get_eeprom_volume(void);
 uint8_t get_eeprom_eq_ena(void);
-int8_t get_eeprom_eq1(void);
-int8_t get_eeprom_eq2(void);
-int8_t get_eeprom_eq3(void);
-int8_t get_eeprom_eq4(void);
-int8_t get_eeprom_eq5(void);
+uint8_t get_eeprom_eq1(void);
+uint8_t get_eeprom_eq2(void);
+uint8_t get_eeprom_eq3(void);
+uint8_t get_eeprom_eq4(void);
+uint8_t get_eeprom_eq5(void);
+void get_eeprom_eq(uint8_t eq[]);
 
 #endif
