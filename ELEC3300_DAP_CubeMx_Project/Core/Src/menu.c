@@ -37,16 +37,30 @@ void MENU_Main() {
 	LCD_Clear(0, 0, 240, 320, DARK);
 	btnFlagReset();
 
-	_renderButton(&btn_PlaySongMenu);
-	_renderButton(&btn_FatfsMenu);
+	LCD_DrawString_Color(0, 0, "Main Menu", DARK, CYAN);
+
+	static char menuItem[][31] = {"1. Select song", "2. Set equalizer"};
+	static uint8_t menuMap[2] = {1, 2};
+
+	for (uint8_t i = 0; i < 2; i++) {
+		LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(i+1), menuItem[i], DARK, CYAN);
+	}
+
+	menu_id = 0;
+	LCD_DrawString_Color(0, HEIGHT_EN_CHAR, menuItem[0], WHITE, BLUE);
 
 	while (1) {
-		if (btnFlag[2] != 0) {
+		if (btnFlag[2]) {
+			HAL_Delay(INPUT_DELAY);
 			btnFlag[2] = 0;
-		} else if (btnFlag[1]) {
-			btnFlag[1] = 0;
-			menu_id = 1;
+			menu_id = menuMap[menu_id];
 			return;
+		} else if (btnFlag[1]) {
+			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(menu_id+1), menuItem[menu_id], DARK, CYAN);
+			menu_id = (menu_id + 1) % 2;
+			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(menu_id+1), menuItem[menu_id], WHITE, BLUE);
+			HAL_Delay(INPUT_DELAY);
+			btnFlag[1] = 0;
 		}
 	}
 }
@@ -74,10 +88,10 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	// poll for button input
 	while (1) {
 		if (btnFlag[2] != 0) {
-			btnFlag[2] = 0;
-			menu_id = 2; // set menu id
 			HAL_Delay(INPUT_DELAY);
-			return; // select current song
+			btnFlag[2] = 0;
+			menu_id = 3;
+			return;
 		} else if (btnFlag[1]) {
 			_formatSongItem(songItem, fileNames, fileTypes, song_id);
 			LCD_DrawString_Color(0, 16*(song_id+4), songItem, BLACK, CYAN);

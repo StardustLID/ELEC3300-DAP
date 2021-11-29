@@ -249,8 +249,6 @@ int main(void)
 		LCD_DrawString(0,0,"Cannot mount FATFS");
 	}
 
-  MENU_SelectSong(numSongs, fileNames, fileTypes);
-  VOL_CreateVolBar();
 	player_display_cover("Sample-wav-file.bin");
   HAL_Delay(200);
   HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
@@ -264,7 +262,6 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  uint8_t i = 0;
   while (1)
   {
     switch(menu_id) {
@@ -277,12 +274,11 @@ int main(void)
       break;
 
       case 2:
+      MENU_Equalizer();
+      break;
+      
+      case 3:
       MENU_PlaySong(numSongs, fileNames, fileTypes);
-      // if (fileTypes[song_id] == 1) {
-        // mp3_read_header(fileNames[song_id]);
-        // mp3_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
-      // } else if (fileTypes[song_id] == 2) {
-      // }
       break;
     }
     /* USER CODE END WHILE */
@@ -294,7 +290,6 @@ int main(void)
 			HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin);
 			last_led_tick = this_tick;
 		}
-    i++;
   }
   /* USER CODE END 3 */
 }
