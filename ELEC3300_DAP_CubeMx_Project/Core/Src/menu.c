@@ -24,7 +24,7 @@ volatile uint16_t playtimeElapsed = 0; // in seconds
 volatile uint8_t inPlayMenu = 0;
 
 static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usColor_Btn, uint16_t usColor_Text);
-static void _renderButton(const Button *btn);
+static void _renderButton(const Button *btn, uint16_t usColor_Btn, uint16_t usColor_Text);
 static void _formatSongItem(char* songItem, char** fileNames, uint8_t* fileTypes, uint8_t songId);
 static void _formatBandItem(char* bandItem, uint8_t bandId, uint8_t bandVal);
 
@@ -133,36 +133,41 @@ void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	btnFlagReset();
 	inPlayMenu = 1;
 
-	LCD_DrawString_Color(40, 80, fileNames[song_id], DARK, CYAN);
-	_renderButton(&btn_backward);
-	_renderButton(&btn_play);
-	_renderButton(&btn_forward);
-	_renderButton(&btn_random);
+	LCD_DrawString_Color(40, 240, fileNames[song_id], DARK, CYAN);
+	_renderButton(&btn_backward, CYAN, WHITE);
+	_renderButton(&btn_playpause, CYAN, WHITE);
+	_renderButton(&btn_forward, CYAN, WHITE);
 
 	VOL_CreateVolBar();
 	HAL_Delay(50);
 	HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
-	if (!play_flag) {
-		HAL_TIM_Base_Start_IT(&htim6);
+	HAL_TIM_Base_Start_IT(&htim6);
 
-		wav_read_header(fileNames[song_id]);
-		wav_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
-	}
+	// if (fileTypes[song_id] == 1) {
+		// mp3_read_header(fileNames[song_id]);
+		// mp3_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
+	// } else if (fileTypes[song_id] == 2) {
+	wav_read_header(fileNames[song_id]);
+	wav_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
+	// }
+
+	LCD_DrawString(0, 0, "DONE");
+	while(1){}
 	
-	while (1) {
-		uint32_t enc_prev = encoder_value;
-		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
+	// while (1) {
+	// 	uint32_t enc_prev = encoder_value;
+	// 	encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
 		
-		if (encoder_value > enc_prev && volume < 92) {
-			VOL_UpdateVolBar(volume, true);
-			volume++;
-			HAL_Delay(40);
-		} else if (encoder_value < enc_prev && volume > 0) {
-			VOL_UpdateVolBar(volume, false);
-			volume--;
-			HAL_Delay(40);
-		}
-	}
+	// 	if (encoder_value > enc_prev && volume < 92) {
+	// 		VOL_UpdateVolBar(volume, true);
+	// 		volume++;
+	// 		HAL_Delay(40);
+	// 	} else if (encoder_value < enc_prev && volume > 0) {
+	// 		VOL_UpdateVolBar(volume, false);
+	// 		volume--;
+	// 		HAL_Delay(40);
+	// 	}
+	// }
 }
 
 void MENU_Equalizer() {
@@ -230,7 +235,13 @@ void MENU_Equalizer() {
 void MENU_UpdatePlayTime(void) {
 	char time_mmss[6];
 	sprintf(time_mmss, "%02d:%02d", playtimeElapsed / 60, playtimeElapsed % 60);
-	LCD_DrawString_Color(0, 0, time_mmss, DARK, CYAN);
+	LCD_DrawString_Color(120, 256, time_mmss, DARK, CYAN);
+}
+
+void MENU_FlashButton(const Button *btn) {
+	_renderButton(btn, WHITE, BLUE);
+	HAL_Delay(10);
+	_renderButton(btn, CYAN, WHITE);
 }
 
 /* helper function */
@@ -242,8 +253,8 @@ static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usC
 	LCD_DrawString_Color(x, y + (BTN_HEIGHT - HEIGHT_EN_CHAR)/2, pStr, usColor_Btn, usColor_Text);
 }
 
-static void _renderButton(const Button *btn) {
-	_createButton(btn->pos.x, btn->pos.y, btn->text, btn->usColor_Btn, btn->usColor_Text);
+static void _renderButton(const Button *btn, uint16_t usColor_Btn, uint16_t usColor_Text) {
+	_createButton(btn->pos.x, btn->pos.y, btn->text, usColor_Btn, usColor_Text);
 }
 
 static void _formatSongItem(char* songItem, char** fileNames, uint8_t* fileTypes, uint8_t songId) {

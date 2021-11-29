@@ -250,8 +250,8 @@ int main(void)
 		LCD_DrawString(0,0,"Cannot mount FATFS");
 	}
 
-	player_display_cover("Sample-wav-file.bin");
-  HAL_Delay(200);
+	// player_display_cover("Sample-wav-file.bin");
+  // HAL_Delay(200);
   HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 	
 	play_wav = 0;

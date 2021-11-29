@@ -3,7 +3,7 @@
 
 #include "stm32f4xx_hal.h"
 
-#define LONG_PRESS_DELAY 400
+#define LONG_PRESS_DELAY 500
 
 typedef struct {
 	GPIO_PinState buttonState;     // current state of the button

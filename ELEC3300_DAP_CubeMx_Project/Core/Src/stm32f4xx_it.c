@@ -23,6 +23,7 @@
 #include "stm32f4xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "menu.h"
 #include "player_func.h"
 #include "switch.h"
 /* USER CODE END Includes */
@@ -219,7 +220,12 @@ void EXTI0_IRQHandler(void)
     switches[0].buttonState = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0);
 		if (switches[0].buttonState == GPIO_PIN_SET) {
       btnFlag[0] = 1;
-      song_forback_ward(-5);
+      
+      if (inPlayMenu) {
+        int32_t delta = playtimeElapsed > 5 ? -5 : -playtimeElapsed;
+        playtimeElapsed += delta;
+        song_forback_ward(delta);
+      }
     }
     if (switches[0].buttonState != switches[0].lastButtonState) {
       updateSwitch(0);
@@ -255,6 +261,7 @@ void EXTI1_IRQHandler(void)
           play_song();
           HAL_TIM_Base_Start_IT(&htim6);
         }
+        // MENU_FlashButton(&btn_playpause);
       }
     }
     if (switches[1].buttonState != switches[1].lastButtonState) {
@@ -282,7 +289,16 @@ void EXTI2_IRQHandler(void)
     switches[2].buttonState = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_2);
 		if (switches[2].buttonState == GPIO_PIN_SET) {
       btnFlag[2] = 1;
-      song_forback_ward(5);
+      
+      if (inPlayMenu) {
+        if (switches[0].holdTime > LONG_PRESS_DELAY) {
+          f_lseek(&myFILE, f_size(&myFILE));
+        } else {
+          int32_t delta = 5;
+          playtimeElapsed += delta;
+          song_forback_ward(delta);
+        }
+      }
     }
     if (switches[2].buttonState != switches[2].lastButtonState) {
       updateSwitch(2);
