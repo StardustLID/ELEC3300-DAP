@@ -76,6 +76,7 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	LCD_DrawString_Color(0, 16, "Select a song:", DARK, CYAN);
 	LCD_DrawString_Color(0, 48, "Song Name", DARK, CYAN);
 	LCD_DrawString_Color(208, 48, "Type", DARK, CYAN);
+	LCD_DrawString_Color(0, 304, "Random: ???", DARK, CYAN);
 
 	char songItem[31];
 
@@ -90,7 +91,7 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 
 	// poll for button input
 	while (1) {
-		if (btnFlag[2] != 0) {
+		if (btnFlag[2]) {
 			HAL_Delay(INPUT_DELAY);
 			btnFlag[2] = 0;
 			menu_id = 3;
@@ -104,6 +105,17 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 			LCD_DrawString_Color(0, 16*(song_id+4), songItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
 			btnFlag[1] = 0;
+		} else if (btnFlag[0]) {
+			for (uint8_t i = 0; i < numSongs; i++) {
+				_formatSongItem(songItem, fileNames, fileTypes, i);
+				LCD_DrawString_Color(0, 16*(i+4), songItem, DARK, CYAN);
+			}
+			song_id = getRandomSongId(numSongs);
+			menu_id = 3;
+			sprintf(songItem, "Random: %d!!!", song_id);
+			LCD_DrawString_Color(0, 304, songItem, WHITE, BLUE);
+			HAL_Delay(1000);
+			return;
 		}
 
 		char temp[10];
