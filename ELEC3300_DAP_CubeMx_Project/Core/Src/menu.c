@@ -3,6 +3,7 @@
 
 #include "main.h"
 #include "menu.h"
+#include "player_func.h"
 #include "volume_bar.h"
 #include "random.h"
 
@@ -24,7 +25,7 @@ extern volatile uint16_t playtimeElapsed;
 static void _createButton(uint16_t x, uint16_t y, const char* pStr, uint16_t usColor_Btn, uint16_t usColor_Text);
 static void _renderButton(const Button *btn);
 static void _formatSongItem(char* songItem, char** fileNames, uint8_t* fileTypes, uint8_t songId);
-
+static void _formatBandItem(char* bandItem, uint8_t bandId, uint8_t bandVal);
 
 void MENU_Welcome() {
 	LCD_Clear(0, 0, 240, 320, DARK);
@@ -157,45 +158,49 @@ void MENU_Equalizer() {
 	btn_1_flag = 0;
 	btn_2_flag = 0;
 
-	LCD_DrawString_Color(0, 0, "Tune equalizer", DARK, CYAN);
+	LCD_DrawString_Color(0, 0, "Equalizer Menu", DARK, CYAN);
+	LCD_DrawString_Color(0, HEIGHT_EN_CHAR, "Tune equalizer val (-12 to 12)", DARK, CYAN);
+
+	uint8_t bandId = 0;
+	char bandItem[12];
+	uint8_t bands[5] = {12, 12, 12, 12, 12}; // read from EEPROM
+
 	for (uint8_t i = 0; i < 5; i++) {
-		char bandItem[8];
-		sprintf(bandItem, "band %d:", i);
+		_formatBandItem(bandItem, i, bands[i]);
 		LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2*(i+1), bandItem, DARK, CYAN);
 	}
 
-	uint8_t equalizerId = 0;
-	uint8_t bands[5] = {0};
+	_formatBandItem(bandItem, 0, bands[0]);
+	LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2, bandItem, WHITE, BLUE);
 
 	// poll for button input
 	while (1) {
 		if (btn_2_flag) {
 			btn_2_flag = 0;
-			if (bands[equalizerId] >= 24) continue;
-			bands[equalizerId]++;
-			char band_str[1];
-			sprintf(band_str, "%d", bands[equalizerId]);
-			LCD_DrawString_Color(WIDTH_EN_CHAR*8, HEIGHT_EN_CHAR*2*(equalizerId+1), band_str, WHITE, BLUE);
+			if (bands[bandId] >= 24) continue;
+			bands[bandId]++;
+			_formatBandItem(bandItem, bandId, bands[bandId]);
+			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2*(bandId+1), bandItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
 		} else if (btn_1_flag) {
 			btn_1_flag = 0;
-			char band_str[1];
-			sprintf(band_str, "%d", bands[equalizerId]);
-			LCD_DrawString_Color(WIDTH_EN_CHAR*8, HEIGHT_EN_CHAR*2*(equalizerId+1), band_str, DARK, CYAN);
-			equalizerId = (equalizerId + 1) % 5;
-			sprintf(band_str, "%d", bands[equalizerId]);
-			LCD_DrawString_Color(WIDTH_EN_CHAR*8, HEIGHT_EN_CHAR*2*(equalizerId+1), band_str, WHITE, BLUE);
+			_formatBandItem(bandItem, bandId, bands[bandId]);
+			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2*(bandId+1), bandItem, DARK, CYAN);
+			bandId = (bandId + 1) % 5;
+			_formatBandItem(bandItem, bandId, bands[bandId]);
+			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2*(bandId+1), bandItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
 		} else if (btn_0_flag) {
 			btn_0_flag = 0;
-			if (bands[equalizerId] <= 0) continue;
-			bands[equalizerId]--;
-			char band_str[1];
-			sprintf(band_str, "%d", bands[equalizerId]);
-			LCD_DrawString_Color(WIDTH_EN_CHAR*8, HEIGHT_EN_CHAR*2*(equalizerId+1), band_str, WHITE, BLUE);
+			if (bands[bandId] <= 0) continue;
+			bands[bandId]--;
+			_formatBandItem(bandItem, bandId, bands[bandId]);
+			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*2*(bandId+1), bandItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
 		}
 	}
+
+	equalizer_tuning(bands[0], bands[1], bands[2], bands[3], bands[4]);
 }
 
 void MENU_UpdatePlayTime(void) {
@@ -231,3 +236,6 @@ static void _formatSongItem(char* songItem, char** fileNames, uint8_t* fileTypes
 	sprintf(songItem, "%d. %-22s %s", songId, fileNames[songId], extension);
 }
 
+static void _formatBandItem(char* bandItem, uint8_t bandId, uint8_t bandVal) {
+	sprintf(bandItem, "band %d: %-3d", bandId, bandVal - 12); // display as -12 to 12, implicit 0 to 24
+}
