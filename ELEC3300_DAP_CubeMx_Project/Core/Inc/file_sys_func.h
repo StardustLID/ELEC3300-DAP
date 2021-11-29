@@ -19,5 +19,6 @@ extern char filelist[NUM_OF_SCAN_FILE_MAX][_MAX_LFN];
 // FRESULT scan_file(const TCHAR* path);
 FRESULT scan_file(const TCHAR* path, uint8_t* numSongs, char** fileNames, uint8_t* fileTypes);
 void find_file_type(char* file_name, char* output_file_type);
+FRESULT sd_write_txt(char* tar_txt_name, char* string_to_write, uint16_t len);
 file_ending file_read_for_wav(void* buff,	UINT buf_size, uint32_t* read_size, const uint32_t file_size);
 #endif

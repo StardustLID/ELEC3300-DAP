@@ -189,10 +189,13 @@ int main(void)
 
   // comment / uncomment below to test Stardust menu
   // MENU_Welcome();
-	LCD_Clear(0, 0, 240, 320, DARK);
-	
-	HAL_Delay(1000);
+	//LCD_Clear(0, 0, 240, 320, DARK);
+
 	HAL_GPIO_WritePin(SPI1_CS_GPIO_Port,SPI1_CS_Pin,0);
+
+	//sd_write_txt("testing.txt", string, strlen(string));
+  //sd_write_txt("testing.txt", "2nd line", strlen("2nd line"));
+
 	/*
 	while(1){
 		
@@ -229,11 +232,26 @@ int main(void)
 	}
 	*/
 	
-	// while( ! XPT2046_Touch_Calibrate () );
+	//write_song_to_play_list(0xa, 2);
+	//eeprom_earse_all();
+	//while( ! XPT2046_Touch_Calibrate () );
 
 	// LCD_GramScan ( 1 );
 	
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
+	
+	
+	//write_song_to_play_list(4,1);
+	uint8_t* play_list;
+	uint8_t num = 0;
+	play_list = read_playlist(2, &num);
+	
+	uint8_t string[15] = {0};
+	for(int i = 0; i < num; i++){
+		sprintf(string, "data: %d ", *(play_list + i));
+		LCD_DrawString(0,i*20,string);
+	}
+	
 	//codec_volume_update(&hi2c1,0xC0);
 	if (res == FR_OK)
 	{

@@ -4,11 +4,13 @@
 #include <string.h>
 #include "codec.h"
 
-eeprom_struct eeprom;
+eeprom_struct eeprom = {0};
 
 char string[15];
 
 void eeprom_init(I2C_HandleTypeDef *hi2c){
+	//eeprom_earse_all();
+	
 	eeprom.date_address = 0;
 	eeprom.time_address = sizeof(eeprom.ver_date)/sizeof(eeprom.ver_date[0]);
 	eeprom.volume_address = sizeof(eeprom.ver_time)/sizeof(eeprom.ver_time[0]) + eeprom.time_address;
@@ -18,6 +20,7 @@ void eeprom_init(I2C_HandleTypeDef *hi2c){
 	eeprom.eq3_address = sizeof(eeprom.eq3) + eeprom.eq2_address;
 	eeprom.eq4_address = sizeof(eeprom.eq4) + eeprom.eq3_address;
 	eeprom.eq5_address = sizeof(eeprom.eq4) + eeprom.eq4_address;
+	eeprom.num_of_playlist_address = sizeof(eeprom.num_of_playlist) + eeprom.eq5_address;
 
 	uint8_t* data = __DATE__;
 	eeprom_write(hi2c,EEPROM_DATE, data);
@@ -48,36 +51,17 @@ void eeprom_init(I2C_HandleTypeDef *hi2c){
 	HAL_Delay(5);
 	eeprom_read(&hi2c2,EEPROM_EQ5);
 	HAL_Delay(5);
+	eeprom_read(&hi2c2,EEPROM_NUM_OF_PLAYLIST);
+	HAL_Delay(5);
 	
-	//uint8_t buf = 0;
-	//HAL_I2C_Mem_Read(hi2c,EEPROM_DEVICE_ADDRESS,eeprom.eq_ena_address,1, &buf, 1, 50);
+	sprintf(string, "Num: %d", eeprom.num_of_playlist);
+	LCD_DrawString(0,260, string);
 	
-	sprintf(string, "eq_ena: %d", eeprom.eq_ena);
-	LCD_DrawString(0,140,string);
+	sprintf(string, "Date: %s", eeprom.ver_date);
+	LCD_DrawString(0,280, string);
 	
-	sprintf(string, "band1: %d", eeprom.eq1);
-	LCD_DrawString(0,160,string);
-	
-	sprintf(string, "band2: %d", eeprom.eq2);
-	LCD_DrawString(0,180,string);
-	
-	sprintf(string, "band3: %d", eeprom.eq3);
-	LCD_DrawString(0,200,string);
-	
-	sprintf(string, "band4: %d", eeprom.eq4);
-	LCD_DrawString(0,220,string);
-	
-	sprintf(string, "band5: %d", eeprom.eq5);
-	LCD_DrawString(0,240,string);
-	
-	sprintf(string, "date: %s", eeprom.ver_date);
-	LCD_DrawString(0,260,string);
-	
-	sprintf(string, "time: %s", eeprom.ver_time);
-	LCD_DrawString(0,280,string);
-
-	sprintf(string, "vol: %d", eeprom.volume);
-	LCD_DrawString(0,300,string);
+	sprintf(string, "TIme: %s", eeprom.ver_time);
+	LCD_DrawString(0,300, string);
 }
 
 void eeprom_read(I2C_HandleTypeDef *hi2c,eeprom_data data){
@@ -129,6 +113,11 @@ void eeprom_read(I2C_HandleTypeDef *hi2c,eeprom_data data){
 			memaddress = eeprom.eq5_address;
 			memsize = sizeof(eeprom.eq5);
 			data_ptr = &eeprom.eq5;
+			break;
+		case EEPROM_NUM_OF_PLAYLIST:
+			memaddress = eeprom.num_of_playlist_address;
+			memsize = sizeof(eeprom.num_of_playlist);
+			data_ptr = &eeprom.num_of_playlist;
 			break;
 		default:
 			return;
@@ -199,6 +188,11 @@ void eeprom_write(I2C_HandleTypeDef *hi2c,eeprom_data data, uint8_t* data_buf){
 			memsize = sizeof(eeprom.eq5);
 			eeprom.eq5 = *data_buf;
 			break;
+		case EEPROM_NUM_OF_PLAYLIST:
+			memaddress = eeprom.num_of_playlist_address;
+			memsize = sizeof(eeprom.num_of_playlist_address);
+			eeprom.num_of_playlist = *data_buf;
+			break;
 		default:
 			return;
 	}
@@ -222,6 +216,16 @@ void eeprom_write(I2C_HandleTypeDef *hi2c,eeprom_data data, uint8_t* data_buf){
 uint8_t get_eeprom_volume(){
 	return eeprom.volume;
 }
+
+
+void eeprom_earse_all(){
+	uint8_t buf = 0;
+	for(int i = 0; i < 256; i++){
+		HAL_I2C_Mem_Write(&hi2c2, EEPROM_DEVICE_ADDRESS, i, 1, &buf,1,50);
+		HAL_Delay(5);
+	}
+}
+	
 
 uint8_t get_eeprom_eq_ena(){
 	return eeprom.eq_ena;
@@ -253,4 +257,12 @@ void get_eeprom_eq(uint8_t eq[]) {
 	eq[2] = eeprom.eq3;
 	eq[3] = eeprom.eq4;
 	eq[4] = eeprom.eq5;
+}
+
+uint8_t get_eeprom_num_of_playlist(){
+	return eeprom.num_of_playlist;
+}
+
+uint16_t get_eeprom_num_of_playlist_address(){
+	return eeprom.num_of_playlist_address;
 }

@@ -20,7 +20,8 @@ typedef enum eeprom_data{
 	EEPROM_EQ2,
 	EEPROM_EQ3,
 	EEPROM_EQ4,
-	EEPROM_EQ5
+	EEPROM_EQ5,
+	EEPROM_NUM_OF_PLAYLIST
 }eeprom_data;
 
 typedef struct eeprom_struct{
@@ -42,7 +43,15 @@ typedef struct eeprom_struct{
 	uint16_t eq4_address;
 	uint8_t eq5;
 	uint16_t eq5_address;
+	uint8_t num_of_playlist;
+	uint16_t num_of_playlist_address;
 }eeprom_struct;
+
+/*
+playlist:
+1st byte: 3bit:playlist num, 5bit:size_of_playlist
+nth byte: song num
+*/
 
 void eeprom_init(I2C_HandleTypeDef *hi2c);
 void eeprom_read(I2C_HandleTypeDef *hi2c,eeprom_data data);
@@ -57,5 +66,7 @@ uint8_t get_eeprom_eq3(void);
 uint8_t get_eeprom_eq4(void);
 uint8_t get_eeprom_eq5(void);
 void get_eeprom_eq(uint8_t eq[]);
-
+uint8_t get_eeprom_num_of_playlist(void);
+uint16_t get_eeprom_num_of_playlist_address(void);
+void eeprom_earse_all();
 #endif
