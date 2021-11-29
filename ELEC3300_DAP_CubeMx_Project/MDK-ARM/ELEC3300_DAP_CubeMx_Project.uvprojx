@@ -415,11 +415,6 @@
               <FilePath>..\Core\Src\eeprom.c</FilePath>
             </File>
             <File>
-              <FileName>xpt2046.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\xpt2046.c</FilePath>
-            </File>
-            <File>
               <FileName>volume_bar.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Core\Src\volume_bar.c</FilePath>
