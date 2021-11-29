@@ -4,6 +4,7 @@
 #include "main.h"
 #include "menu.h"
 #include "player_func.h"
+#include "switch.h"
 #include "volume_bar.h"
 #include "random.h"
 
@@ -93,6 +94,14 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 			HAL_Delay(INPUT_DELAY);
 			btn_1_flag = 0;
 		}
+
+		char temp[10];
+		sprintf(temp, "%ld", switches[1].holdTime);
+		LCD_DrawString_Color(0, 160, temp, DARK, CYAN);
+		HAL_Delay(50);
+		sprintf(temp, "%ld", switches[1].idleTime);
+		LCD_DrawString_Color(0, 176, temp, DARK, CYAN);
+		HAL_Delay(50);
 	}
 }
 
@@ -182,7 +191,7 @@ void MENU_Equalizer() {
 			_formatBandItem(bandItem, bandId, bands[bandId]);
 			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(bandId+4), bandItem, WHITE, BLUE);
 			HAL_Delay(INPUT_DELAY);
-		} else if (btn_1_flag) {
+		} else if (btn_1_flag == 1) {
 			btn_1_flag = 0;
 			_formatBandItem(bandItem, bandId, bands[bandId]);
 			LCD_DrawString_Color(0, HEIGHT_EN_CHAR*(bandId+4), bandItem, DARK, CYAN);

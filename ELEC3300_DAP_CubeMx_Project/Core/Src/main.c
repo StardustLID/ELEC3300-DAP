@@ -230,15 +230,10 @@ int main(void)
 	}
 	*/
 	
-	while( ! XPT2046_Touch_Calibrate () );
+	// while( ! XPT2046_Touch_Calibrate () );
 
 	// LCD_GramScan ( 1 );
 	
-  // MENU_SetSongTimer(&htim6);
-  // MENU_Main();
-  // /*******************************/
-	
-	//while(1);
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
 	//codec_volume_update(&hi2c1,0xC0);
 	if (res == FR_OK)
@@ -257,7 +252,9 @@ int main(void)
 		LCD_DrawString(0,0,"Cannot mount FATFS");
 	}
 	//while(1);
-	VOL_CreateVolBar();
+
+  MENU_SelectSong(numSongs, fileNames, fileTypes);
+  VOL_CreateVolBar();
 	player_display_cover("Sample-wav-file.bin");
   HAL_Delay(200);
   HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
@@ -646,7 +643,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 9600;
+  huart1.Init.BaudRate = 115200;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;
@@ -770,7 +767,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PB0 PB1 PB2 */
   GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1|GPIO_PIN_2;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
