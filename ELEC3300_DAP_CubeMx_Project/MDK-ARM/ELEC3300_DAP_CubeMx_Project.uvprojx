@@ -336,7 +336,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F407xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../FATFS/Target;           ../FATFS/App;           ../USB_DEVICE/App;           ../USB_DEVICE/Target;           ../Core/Inc;           ../Drivers/STM32F4xx_HAL_Driver/Inc;           ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;           ../Middlewares/Third_Party/FatFs/src;           ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;           ../Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Inc;           ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;           ../Drivers/CMSIS/Include;           ../MP3/real;           ../MP3/pub;           ../MP3</IncludePath>
+              <IncludePath>../FATFS/Target;            ../FATFS/App;            ../USB_DEVICE/App;            ../USB_DEVICE/Target;            ../Core/Inc;            ../Drivers/STM32F4xx_HAL_Driver/Inc;            ../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;            ../Middlewares/Third_Party/FatFs/src;            ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;            ../Middlewares/ST/STM32_USB_Device_Library/Class/AUDIO/Inc;            ../Drivers/CMSIS/Device/ST/STM32F4xx/Include;            ../Drivers/CMSIS/Include;            ../MP3/real;            ../MP3/pub;            ../MP3</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -441,6 +441,16 @@
               <FilePath>..\Core\Src\uart.c</FilePath>
             </File>
             <File>
+              <FileName>random.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\random.c</FilePath>
+            </File>
+            <File>
+              <FileName>player_func.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\player_func.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/main.c</FilePath>
@@ -454,16 +464,6 @@
               <FileName>stm32f4xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/stm32f4xx_hal_msp.c</FilePath>
-            </File>
-            <File>
-              <FileName>random.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\random.c</FilePath>
-            </File>
-            <File>
-              <FileName>player_func.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Core\Src\player_func.c</FilePath>
             </File>
           </Files>
         </Group>
