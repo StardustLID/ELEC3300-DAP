@@ -30,7 +30,6 @@
 #include "mp3_decoder.h"
 #include "eeprom.h"
 #include "lcdtp.h"
-#include "xpt2046.h"
 #include "menu.h"
 #include "volume_bar.h"
 #include "uart.h"
@@ -234,9 +233,6 @@ int main(void)
 	
 	//write_song_to_play_list(0xa, 2);
 	//eeprom_earse_all();
-	//while( ! XPT2046_Touch_Calibrate () );
-
-	// LCD_GramScan ( 1 );
 	
 	HAL_UART_Receive_IT(&huart1, &uart1_rx_byte, 1);
 	
