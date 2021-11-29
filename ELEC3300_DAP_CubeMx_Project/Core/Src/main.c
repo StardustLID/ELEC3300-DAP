@@ -242,6 +242,7 @@ int main(void)
 	
 	
 	//write_song_to_play_list(4,1);
+	/*
 	uint8_t* play_list;
 	uint8_t num = 0;
 	play_list = read_playlist(2, &num);
@@ -251,14 +252,14 @@ int main(void)
 		sprintf(string, "data: %d ", *(play_list + i));
 		LCD_DrawString(0,i*20,string);
 	}
-	
+	*/
 	//codec_volume_update(&hi2c1,0xC0);
 	if (res == FR_OK)
 	{
 		scan_file("0:/MUSIC", &numSongs, fileNames, fileTypes);
 		
-		// wav_read_header("Sample-wav-file.wav");
-		// wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
+		//wav_read_header("Sample-wav-file.wav");
+		//wav_play_music(&hi2s3, &hi2c1,"Sample-wav-file.wav");
 		
 		
 		//mp3_read_header("Kalimba.mp3");
@@ -271,13 +272,10 @@ int main(void)
 
 	// player_display_cover("Sample-wav-file.bin");
   // HAL_Delay(200);
-  HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 	
 	play_wav = 0;
-	/*
-	mp3_read_header("Julie-London-Fly-Me-to-the-Moon.mp3");
-	mp3_play_music(&hi2s3, &hi2c1,"Julie-London-Fly-Me-to-the-Moon.mp3");
-  */
+	//mp3_read_header("Fly-Me-to-the-Moon.mp3");
+	//mp3_play_music(&hi2s3, &hi2c1,"Fly-Me-to-the-Moon.mp3");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -654,7 +652,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 9600;
+  huart1.Init.BaudRate = 115200;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;

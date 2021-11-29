@@ -24,7 +24,7 @@ void mp3_read_header(char* file_name){
 	strcat(path, "0:/MUSIC/");
 	strcat(path, file_name);
 	
-	char ReadBuffer[256] = {0};
+	char ReadBuffer[10] = {0};
 	f_open(&myFILE, path, FA_READ |FA_OPEN_EXISTING);
 	
 	f_lseek(&myFILE, 3); // skip "ID3"
