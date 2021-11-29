@@ -7,6 +7,9 @@
 #include "switch.h"
 #include "volume_bar.h"
 #include "random.h"
+#include "mp3_decoder.h"
+#include "wav_decoder.h"
+#include "eeprom.h"
 
 #define WELCOME_DELAY 1000
 #define INPUT_DELAY 80
@@ -135,13 +138,13 @@ void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 	HAL_TIM_Base_Start_IT(&htim6);
 
-	if (fileTypes[song_id] == 1) {
-		mp3_read_header(fileNames[song_id]);
-		mp3_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
-	} else if (fileTypes[song_id] == 2) {
+	// if (fileTypes[song_id] == 1) {
+	// 	mp3_read_header(fileNames[song_id]);
+	// 	mp3_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
+	// } else if (fileTypes[song_id] == 2) {
 		wav_read_header(fileNames[song_id]);
 		wav_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
-	}
+	// }
 
 	LCD_DrawString(0, 0, "DONE");
 	while(1){}

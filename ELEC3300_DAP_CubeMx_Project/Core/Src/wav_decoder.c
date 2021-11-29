@@ -207,7 +207,8 @@ void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file
 	}
 
 	f_lseek(&myFILE, wav_get_data_offest());  // jump to the music data
-	f_read(&myFILE, codec_out_buffer, AUDIO_BUFFER_SIZE, &fnum);
+	f_read(&myFILE, codec_out_buffer, AUDIO_HALF_BUFFER_SIZE, &fnum);
+	f_read(&myFILE, codec_out_buffer + AUDIO_HALF_BUFFER_SIZE, AUDIO_HALF_BUFFER_SIZE, &fnum);
 	//f_read(&myFILE, codec_out_buffer + AUDIO_HALF_BUFFER_SIZE, AUDIO_BUFFER_SIZE, &fnum);
 	
 	wav_play_flag = 1;
