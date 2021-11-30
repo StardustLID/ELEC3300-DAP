@@ -224,6 +224,7 @@ void MENU_PlayPlaylist(uint8_t playlistSize, uint8_t* playlist, char** fileNames
 		wav_read_header(fileNames[playlist[i] - 1]);
 		wav_play_music(&hi2s3, &hi2c1, fileNames[playlist[i] - 1]);
 	}
+	HAL_TIM_Base_Stop_IT(&htim6);
 
 	menu_id = 0;
 }
