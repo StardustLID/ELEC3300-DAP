@@ -22,7 +22,9 @@ extern volatile uint8_t song_id;
 extern uint8_t play_flag;
 extern uint8_t bands[5];
 
-uint32_t encoder_value = 0;
+uint8_t* playlist;
+volatile uint8_t playlist_size = 0;
+volatile uint32_t encoder_value = 0;
 volatile uint16_t playtimeElapsed = 0; // in seconds
 volatile uint8_t inPlayMenu = 0;
 
@@ -127,6 +129,7 @@ void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	LCD_Clear(0, 0, 240, 320, DARK);
 	btnFlagReset();
 	inPlayMenu = 1;
+	static uint8_t song_cnt = 0;
 
 	LCD_DrawString_Color(40, 240, fileNames[song_id], DARK, CYAN);
 	_renderButton(&btn_backward, CYAN, WHITE);
@@ -142,20 +145,8 @@ void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes) {
 	wav_read_header(fileNames[song_id]);
 	wav_play_music(&hi2s3, &hi2c1, fileNames[song_id]);
 	
-	// while (1) {
-	// 	uint32_t enc_prev = encoder_value;
-	// 	encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
-		
-	// 	if (encoder_value > enc_prev && volume < 92) {
-	// 		VOL_UpdateVolBar(volume, true);
-	// 		volume++;
-	// 		HAL_Delay(40);
-	// 	} else if (encoder_value < enc_prev && volume > 0) {
-	// 		VOL_UpdateVolBar(volume, false);
-	// 		volume--;
-	// 		HAL_Delay(40);
-	// 	}
-	// }
+	if (song_cnt < playlist_size) song_cnt++;
+	song_id = playlist[song_cnt];
 }
 
 void MENU_Equalizer() {

@@ -8,7 +8,7 @@
 #include "point.h"
 
 #define VOL_BAR_X0 7
-#define VOL_BAR_Y0 67
+#define VOL_BAR_Y0 59
 #define VOL_BAR_UPDATE_X0 8 // VOL_BAR_X0 + 1
 #define VOL_BAR_UPDATE_X1 15 // VOL_BAR_X0 + WIDTH_EN_CHAR - 3
 #define LEVEL_HEIGHT 2
@@ -24,7 +24,7 @@ typedef struct {
 
 static const VolumeBar volumeBar = {
 	.pos = {VOL_BAR_X0, VOL_BAR_Y0},
-    .height = 186, // 2 px per interval, 1 px for box
+    .height = 202, // 2 px per interval, 1 px for box
     .width = WIDTH_EN_CHAR + 2,
 	.usColor = CYAN
 };

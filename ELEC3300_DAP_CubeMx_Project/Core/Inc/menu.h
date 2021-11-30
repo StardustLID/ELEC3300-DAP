@@ -11,7 +11,9 @@
 #define SONG_NAME_USP 272
 #define BTN_HEIGHT 30
 
-extern uint32_t encoder_value;
+extern uint8_t* playlist;
+extern volatile uint8_t playlist_size;
+extern volatile uint32_t encoder_value;
 extern uint8_t volume;
 extern volatile uint16_t playtimeElapsed;
 extern volatile uint8_t inPlayMenu;

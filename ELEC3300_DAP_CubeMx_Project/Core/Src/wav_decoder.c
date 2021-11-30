@@ -2,6 +2,7 @@
 #include "main.h"
 #include "fatfs.h"
 #include "lcdtp.h"
+#include "menu.h"
 #include <string.h>
 #include "wav_decoder.h"
 #include "codec.h"
@@ -260,6 +261,18 @@ void wav_play_music(I2S_HandleTypeDef *hi2s, I2C_HandleTypeDef *hi2c, char *file
 			file_read_flag = 0;
 			HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 		}
+		
+		uint32_t enc_prev = encoder_value;
+		encoder_value = (uint32_t)(__HAL_TIM_GET_COUNTER(&htim5));
+		
+		if (encoder_value > enc_prev && volume < 100) {
+			VOL_UpdateVolBar(volume, true);
+			volume++;
+		} else if (encoder_value < enc_prev && volume > 0) {
+			VOL_UpdateVolBar(volume, false);
+			volume--;
+		}
+		codec_volume_update(&hi2c1, volume + 60);
 	}
 	HAL_I2S_DMAStop(hi2s);
 	f_close(&myFILE);
