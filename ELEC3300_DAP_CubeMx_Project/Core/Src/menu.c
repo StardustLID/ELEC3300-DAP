@@ -10,6 +10,7 @@
 #include "mp3_decoder.h"
 #include "wav_decoder.h"
 #include "eeprom.h"
+#include "file_sys_func.h"
 
 #define WELCOME_DELAY 1000
 #define INPUT_DELAY 80
@@ -140,12 +141,17 @@ void MENU_PlaySong(uint8_t songId, char** fileNames, uint8_t* fileTypes) {
 	_renderButton(&btn_playpause, CYAN, WHITE);
 	_renderButton(&btn_forward, CYAN, WHITE);
 
+	char bin_file_name[40] = {0};
+	obtain_file_name_bin(fileNames[songId], bin_file_name);
+	player_display_cover(bin_file_name);
+
 	VOL_CreateVolBar();
 	HAL_Delay(50);
 	HAL_TIM_Encoder_Start(&htim5, TIM_CHANNEL_ALL);
 	HAL_TIM_Base_Start_IT(&htim6);
 
 	// 	mp3_play_music(&hi2s3, &hi2c1, fileNames[songId]);
+
 	wav_read_header(fileNames[songId]);
 	wav_play_music(&hi2s3, &hi2c1, fileNames[songId]);
 

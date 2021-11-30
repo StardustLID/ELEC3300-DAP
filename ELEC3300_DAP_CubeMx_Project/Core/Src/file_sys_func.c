@@ -81,3 +81,15 @@ void find_file_type(char* file_name, char* output_file_type){
 	}
 	*(output_file_type + i) = '\0';
 }
+
+void obtain_file_name_bin(char* file_name, char* file_name_with_bin){
+	char* ptr = file_name;
+	uint8_t i = 0;
+	while(*ptr != '.'){
+		*(file_name_with_bin + i) = *ptr;
+		ptr++;
+		i++;
+	}
+
+	strcat(file_name_with_bin, ".bin");
+}
