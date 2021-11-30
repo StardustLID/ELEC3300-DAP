@@ -174,6 +174,10 @@ void MENU_CreatePlaylist(uint8_t numSongs, char** fileNames, uint8_t* fileTypes)
 	_formatSongItem(songItem, fileNames, fileTypes, 0);
 	LCD_DrawString_Color(0, 64, songItem, WHITE, BLUE);
 
+	song_id = 0;
+	_formatSongItem(songItem, fileNames, fileTypes, 0);
+	LCD_DrawString_Color(0, 64, songItem, WHITE, BLUE);
+
 	// poll for button input
 	while (1) {
 		if (btnFlag[2]) {
