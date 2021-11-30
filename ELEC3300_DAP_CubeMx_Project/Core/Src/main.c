@@ -270,8 +270,8 @@ int main(void)
   // HAL_Delay(200);
 	
 	play_wav = 0;
-	//mp3_read_header("Fly-Me-to-the-Moon.mp3");
-	//mp3_play_music(&hi2s3, &hi2c1,"Fly-Me-to-the-Moon.mp3");
+  
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -290,9 +290,17 @@ int main(void)
       case 2:
       MENU_Equalizer();
       break;
-      
+
       case 3:
-      MENU_PlaySong(numSongs, fileNames, fileTypes);
+      MENU_CreatePlaylist(numSongs, fileNames, fileTypes);
+      break;
+
+      case 4:
+      MENU_PlayPlaylist(playlistSize, read_playlist(1, &playlistSize), fileNames);
+      break;
+      
+      case 5:
+      MENU_PlaySong(song_id, fileNames, fileTypes);
       break;
     }
     /* USER CODE END WHILE */
@@ -648,7 +656,7 @@ static void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
+  huart1.Init.BaudRate = 9600;
   huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
   huart1.Init.Parity = UART_PARITY_NONE;

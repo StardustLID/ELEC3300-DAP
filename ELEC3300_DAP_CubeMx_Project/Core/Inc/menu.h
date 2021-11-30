@@ -11,7 +11,8 @@
 #define SONG_NAME_USP 272
 #define BTN_HEIGHT 30
 
-extern uint32_t encoder_value;
+extern volatile uint8_t playlistSize;
+extern volatile uint32_t encoder_value;
 extern uint8_t volume;
 extern volatile uint16_t playtimeElapsed;
 extern volatile uint8_t inPlayMenu;
@@ -64,7 +65,10 @@ void MENU_SelectSong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes);
 /**
  * @note the menu when a song is being played
  */
-void MENU_PlaySong(uint8_t numSongs, char** fileNames, uint8_t* fileTypes);
+void MENU_PlaySong(uint8_t songId, char** fileNames, uint8_t* fileTypes);
+
+void MENU_CreatePlaylist(uint8_t numSongs, char** fileNames, uint8_t* fileTypes);
+void MENU_PlayPlaylist(uint8_t playlistSize, uint8_t* playlist, char** fileNames);
 
 void MENU_Equalizer(void);
 void MENU_UpdatePlayTime(void);
