@@ -271,11 +271,7 @@ int main(void)
 	
 	play_wav = 0;
   
-  // eeprom_earse_all();
-  // write_song_to_play_list(5, 1);
-  // write_song_to_play_list(1, 1);
-  // write_song_to_play_list(2, 1);
-  // playlist = read_playlist(1, &playlist_size);
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -294,9 +290,17 @@ int main(void)
       case 2:
       MENU_Equalizer();
       break;
-      
+
       case 3:
-      MENU_PlaySong(numSongs, fileNames, fileTypes);
+      MENU_CreatePlaylist(numSongs, fileNames, fileTypes);
+      break;
+
+      case 4:
+      MENU_PlayPlaylist(playlistSize, read_playlist(1, &playlistSize), fileNames);
+      break;
+      
+      case 5:
+      MENU_PlaySong(song_id, fileNames, fileTypes);
       break;
     }
     /* USER CODE END WHILE */
